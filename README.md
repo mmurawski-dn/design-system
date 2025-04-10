@@ -27,3 +27,9 @@ Add Storybook support:
 ```
 
 This will install and start Storybook dev server on port 6006.
+
+## How to run Storybook
+
+```bash
+dap-workspace git:(andrei/storybook) ✗ npx nx run web:storybook
+```
