@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, within } from '@storybook/test';
+import classNames from 'classnames';
 import {
   ButtonSchema,
   buttonSchemas,
@@ -10,7 +11,7 @@ import {
   DsIcon,
   IconSize,
 } from '@design-system/ui';
-import './ds-button.stories.scss';
+import styles from './ds-button.stories.module.scss';
 
 const meta: Meta<typeof DsButton> = {
   title: 'Design System/Button',
@@ -89,10 +90,12 @@ export const Showcase: Story = {
       showTitle?: boolean,
     ) => {
       return (
-        <div className="row">
+        <div className={classNames(styles.row)}>
           {buttonSizes.map(size => (
             <DsButton
-              className="button-showcase"
+              className={classNames(styles.buttonShowcase, {
+                [styles[`iconButton-${size}`]]: !showTitle,
+              })}
               key={`${schema}-${variant}-${size}`}
               schema={schema}
               variant={variant}
@@ -114,10 +117,10 @@ export const Showcase: Story = {
       title?: boolean,
     ) => {
       return (
-        <div className="variant-container">
+        <div className={classNames(styles.variantContainer)} key={schema + variant}>
           {title && (
-            <div className="row">
-              <h4 className="variant-title">{variant}</h4>
+            <div className={classNames(styles.row)}>
+              <h4 className={classNames(styles.variantTitle)}>{variant}</h4>
             </div>
           )}
           {renderButtonRow(schema, variant, disabled, false, true)}
@@ -128,18 +131,18 @@ export const Showcase: Story = {
     };
 
     return (
-      <div className="combinations-container">
+      <div className={classNames(styles.combinationsContainer)}>
         {buttonSchemas.map(schema => (
-          <div key={schema} className="schema-container">
-            <h3 className="schema-title">{schema}</h3>
+          <div key={schema} className={classNames(styles.schemaContainer)}>
+            <h3 className={classNames(styles.schemaTitle)}>{schema}</h3>
 
             {buttonVariants.map(variant =>
               renderButtonContainer(schema, variant, false, schema === 'primary'),
             )}
           </div>
         ))}
-        <div className="schema-container">
-          <h3 className="schema-title">Disabled</h3>
+        <div className={classNames(styles.schemaContainer)}>
+          <h3 className={classNames(styles.schemaTitle)}>Disabled</h3>
 
           {buttonVariants.map(variant => renderButtonContainer('primary', variant, true))}
         </div>

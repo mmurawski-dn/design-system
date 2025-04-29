@@ -73,7 +73,9 @@
 
   &.input {
     .control {
-      padding: 8px 12px;
+      padding: 7px 16px;
+      line-height: 24px;
+      font-style: normal;
     }
 
     .icon {
@@ -113,8 +115,8 @@
 }
 
 .control {
+  @extend .p-special;
   width: 100%;
-  font-size: 14px;
   border: 1px solid var(--neutral-4);
   border-radius: 4px;
   transition: border-color 0.2s;
@@ -129,6 +131,10 @@
     border-color: var(--neutral-10);
     color: var(--neutral-4);
     cursor: not-allowed;
+
+    &::placeholder {
+      color: var(--neutral-4);
+    }
   }
 }
 
