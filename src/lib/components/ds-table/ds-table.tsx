@@ -17,6 +17,7 @@ import * as React from 'react';
 
 import DsIcon from '../ds-icon/ds-icon';
 import { Table, TableBody, TableCell, TableRow } from './core-table';
+import DsTableBulkActions from './ds-table-bulk-actions';
 import DsTableHeader from './ds-table-header';
 
 import { CSSProperties } from 'react';
@@ -24,6 +25,7 @@ import Button from '../ds-button/ds-button';
 import { DsCheckbox } from '../ds-checkbox';
 import styles from './ds-table.module.scss';
 import type { DataTableProps } from './ds-table.types';
+
 /**
  * Design system Table component
  */
@@ -50,6 +52,7 @@ const DsTable = <TData, TValue>({
   onTableCreated,
   selectable = false,
   onSelectionChange,
+  actions = [],
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -231,6 +234,10 @@ const DsTable = <TData, TValue>({
     </TableRow>
   );
 
+  const selectedRows = Object.keys(rowSelection)
+    .map(key => rows.find(row => row.id === key))
+    .filter(Boolean) as TData[];
+
   return (
     <div className={classnames(styles.container, className)}>
       {filterElement}
@@ -277,6 +284,16 @@ const DsTable = <TData, TValue>({
           </Table>
         )}
       </div>
+      {selectable && actions.length > 0 && (
+        <DsTableBulkActions
+          numSelectedRows={selectedRows.length}
+          actions={actions.map(action => ({
+            ...action,
+            onClick: () => action.onClick(selectedRows),
+          }))}
+          onClearSelection={table.resetRowSelection}
+        />
+      )}
     </div>
   );
 };

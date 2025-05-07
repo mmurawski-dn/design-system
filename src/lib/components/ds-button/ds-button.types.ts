@@ -33,4 +33,9 @@ export interface DsButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElem
    * @default false
    */
   disabled?: boolean;
+
+  /**
+   * Class name for the button content
+   */
+  contentClassName?: string;
 }

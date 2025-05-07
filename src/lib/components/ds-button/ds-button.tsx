@@ -1,5 +1,5 @@
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 import styles from './ds-button.module.scss';
 import { DsButtonProps } from './ds-button.types';
 
@@ -12,6 +12,7 @@ const DsButton: React.FC<DsButtonProps> = ({
   size = 'medium',
   disabled = false,
   className,
+  contentClassName,
   children,
   ...props
 }) => {
@@ -25,7 +26,7 @@ const DsButton: React.FC<DsButtonProps> = ({
 
   return (
     <button className={buttonClass} disabled={disabled} {...props}>
-      <span className={styles.content}>{children}</span>
+      <span className={classNames(styles.content, contentClassName)}>{children}</span>
     </button>
   );
 };

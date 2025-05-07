@@ -1,6 +1,12 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
+export interface Action<TData> {
+  icon: string | React.ReactNode;
+  label: string;
+  onClick: (rows: TData[]) => void;
+}
+
 export interface DataTableProps<TData, TValue> {
   /**
    * Columns of the table
@@ -115,4 +121,9 @@ export interface DataTableProps<TData, TValue> {
    * Function to handle selection change
    */
   onSelectionChange?: (selectedRows: Record<string, boolean>) => void;
+
+  /**
+   * Actions to be shown in the bulk actions
+   */
+  actions?: Action<TData>[];
 }

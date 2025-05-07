@@ -285,6 +285,17 @@ export const Selectable: Story = {
   },
 };
 
+export const WithBulkActions: Story = {
+  args: {
+    selectable: true,
+    actions: [
+      { icon: 'alarm', label: 'Notify', onClick: () => {} },
+      { icon: 'folder_open', label: 'Folder', onClick: () => {} },
+      { icon: 'delete_outline', label: 'Delete', onClick: () => {} },
+    ],
+  },
+};
+
 // Add more stories for other features like:
 // - Virtualized
 // - Custom Cell Rendering
