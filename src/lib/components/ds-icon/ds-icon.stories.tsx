@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useEffect, useMemo, useState } from 'react';
-import './ds-icon.stories.scss';
-import materialIcons from './material-icons.json';
 import DsIcon from './ds-icon';
+import './ds-icon.stories.scss';
+import { materialIcons } from './material-icons';
 
 const meta: Meta<typeof DsIcon> = {
   title: 'Design System/Icon',
