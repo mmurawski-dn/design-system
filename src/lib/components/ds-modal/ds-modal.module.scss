@@ -1,0 +1,66 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent gray */
+    z-index: 999;
+}
+
+.modalContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 30rem;
+    height: 35rem;
+    border-radius: 4px;
+    padding: 2rem;
+    background: #FFFFFF;
+    border: 2px solid #0064FA;
+}
+
+
+
+.modalButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #E2E2E2
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+}
+
+.modalTitle {
+    margin-left: 0;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    vertical-align: middle;
+}
+
+.closeButton {
+    margin-right: 0;
+}
+
+.modalContent {
+    height: 78%;
+}
+
+.cancelButton {
+    margin-right: 0.5rem;
+    @extend .saveButton;
+}
+
+.saveButton {
+    width: 100px;
+}

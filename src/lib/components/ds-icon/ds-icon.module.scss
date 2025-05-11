@@ -15,5 +15,6 @@ $sizes: (
 @each $name, $size in $sizes {
   .#{$name} {
     font-size: $size;
+    cursor: pointer;
   }
 }
