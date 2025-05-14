@@ -270,7 +270,8 @@ $expand-toggle-icon-color: #6b7b8e;
 .bulkActionsContent {
   display: flex;
   align-items: center;
-  padding: 6px;
+  padding-right: 6px;
+  padding-left: 6px;
 }
 
 .selectedCountContainer {
