@@ -24,8 +24,8 @@ const DsFormControl: React.FC<DsFormControlProps> = ({
     if (as === 'select') {
       const value = props.value || (props as any).defaultValue;
       const options = props.options || [];
-      return <DsSelect id={controlId} value={value} options={options} disabled={disabled} {...props} />;    }
-
+      return <DsSelect id={controlId} value={value} options={options} disabled={disabled} {...props} />;
+    }
     const ControlElement = as;
     return (
       <ControlElement
