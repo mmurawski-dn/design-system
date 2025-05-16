@@ -1,4 +1,5 @@
 import React from 'react';
+import { IconName } from '../ds-icon';
 
 export interface DsSelectOption {
   /**
@@ -12,7 +13,7 @@ export interface DsSelectOption {
   /**
    * Optional icon to display next to the label
    */
-  icon?: string;
+  icon?: IconName;
 }
 
 export interface DsSelectProps {

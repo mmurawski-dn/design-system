@@ -13,7 +13,7 @@ interface DsTableHeaderProps<TData> {
   selectable?: boolean;
 }
 
-const DsTableHeader = <TData,>({
+const DsTableHeader = <TData, >({
   table,
   stickyHeader = true,
   bordered = true,
@@ -49,7 +49,7 @@ const DsTableHeader = <TData,>({
               />
             </TableHead>
           )}
-          {expandable && <TableHead className={styles.expandColumn}></TableHead>}
+          {expandable && <TableHead className={styles.expandColumn} />}
           {headerGroup.headers.map(header => {
             return (
               <TableHead
@@ -70,8 +70,8 @@ const DsTableHeader = <TData,>({
                     {header.column.getCanSort() && (
                       <div className={styles.pageButtonIconContainer}>
                         {{
-                          asc: <DsIcon name="arrow_drop_up" className={styles.pageButtonIcon} />,
-                          desc: <DsIcon name="arrow_drop_down" className={styles.pageButtonIcon} />,
+                          asc: <DsIcon icon="arrow_drop_up" className={styles.pageButtonIcon} />,
+                          desc: <DsIcon icon="arrow_drop_down" className={styles.pageButtonIcon} />,
                         }[header.column.getIsSorted() as string] ?? (
                           <div className={styles.pageButtonIcon} />
                         )}

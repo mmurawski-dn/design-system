@@ -1,5 +1,6 @@
 import React from 'react';
 import { DsSelectOption } from '../ds-select';
+import { IconType } from '../ds-icon';
 
 export const controlTypes = ['input', 'textarea', 'select'] as const;
 export type ControlType = (typeof controlTypes)[number];
@@ -29,7 +30,7 @@ export interface DsFormControlProps
   /**
    * Icon to display on the left side of the text field
    */
-  icon?: string;
+  icon?: IconType;
   /**
    * Message under the control
    */

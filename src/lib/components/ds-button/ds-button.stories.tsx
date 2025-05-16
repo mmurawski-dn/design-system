@@ -102,7 +102,7 @@ export const Showcase: Story = {
               size={size}
               disabled={disabled}
             >
-              {showIcon && <DsIcon key={`${size}`} name="add" size={size as IconSize} />}
+              {showIcon && <DsIcon key={`${size}`} icon="add" size={size as IconSize} />}
               {showTitle && <span>{size} Button</span>}
             </DsButton>
           ))}

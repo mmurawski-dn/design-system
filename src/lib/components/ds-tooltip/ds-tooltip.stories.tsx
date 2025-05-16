@@ -46,7 +46,7 @@ const defaultTooltipText = 'This is the mouse over tooltip message.';
 export const Default: Story = {
   args: {
     content: defaultTooltipText,
-    children: <DsIcon name="info" />,
+    children: <DsIcon icon="info" />,
   },
   play: async ({ canvasElement }) => {
     await sanityCheck(canvasElement, defaultTooltipText);
@@ -59,7 +59,7 @@ const longTooltipText =
 export const LongText: Story = {
   args: {
     content: longTooltipText,
-    children: <DsIcon name="info" />,
+    children: <DsIcon icon="info" />,
   },
   play: async ({ canvasElement }) => {
     await sanityCheck(canvasElement, longTooltipText);

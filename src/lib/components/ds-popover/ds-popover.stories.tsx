@@ -59,7 +59,7 @@ export const Default: Story = {
   args: {
     trigger: (
       <DsButton>
-        <DsIcon name="info" /> Open Popover
+        <DsIcon icon="info" /> Open Popover
       </DsButton>
     ),
     children: (
@@ -69,13 +69,13 @@ export const Default: Story = {
         <p>Devices: 11, 2898</p>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
           <PopoverClose asChild>
-            <DsIcon className="action-icon" name="fullscreen" />
+            <DsIcon className="action-icon" icon="fullscreen" />
           </PopoverClose>
           <PopoverClose asChild>
-            <DsIcon className="action-icon" name="view_list" />
+            <DsIcon className="action-icon" icon="view_list" />
           </PopoverClose>
           <PopoverClose asChild>
-            <DsIcon className="action-icon" name="star" />
+            <DsIcon className="action-icon" icon="star" />
           </PopoverClose>
         </div>
       </div>

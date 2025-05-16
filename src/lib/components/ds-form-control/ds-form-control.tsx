@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { DsIcon } from '../ds-icon';
+import { DsIcon, IconType } from '../ds-icon';
 import { DsSelect } from '../ds-select';
 import styles from './ds-form-control.module.scss';
 import { DsFormControlProps } from './ds-form-control.types';
@@ -58,13 +58,13 @@ const DsFormControl: React.FC<DsFormControlProps> = ({
           [styles.textarea]: as === 'textarea',
         })}
       >
-        {icon && <DsIcon className={styles.icon} name={icon} size="medium" />}
+        {icon && <DsIcon className={styles.icon} icon={icon} size="medium" />}
         {renderControl()}
       </div>
 
       {message && (
         <div className={styles.message}>
-          <DsIcon name={messageIcon} size="small" />
+          <DsIcon icon={messageIcon as IconType} size="small" />
           <span className={styles.messageText}>{message}</span>
         </div>
       )}

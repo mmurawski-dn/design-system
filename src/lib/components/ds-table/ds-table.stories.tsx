@@ -285,7 +285,7 @@ export const EmptyState: Story = {
     data: [], // Provide empty data array
     emptyState: (
       <div className={styles.emptyStateContainer}>
-        <DsIcon name="info" size="large" />
+        <DsIcon icon="info" size="large" />
         <p className={styles.emptyStateContainer__text}>No matching records found.</p>
       </div>
     ),
@@ -309,9 +309,21 @@ export const WithBulkActions: Story = {
   args: {
     selectable: true,
     actions: [
-      { icon: 'alarm', label: 'Notify', onClick: () => {} },
-      { icon: 'folder_open', label: 'Folder', onClick: () => {} },
-      { icon: 'delete_outline', label: 'Delete', onClick: () => {} },
+      {
+        icon: 'alarm',
+        label: 'Notify',
+        onClick: () => {},
+      },
+      {
+        icon: 'folder_open',
+        label: 'Folder',
+        onClick: () => {},
+      },
+      {
+        icon: 'delete_outline',
+        label: 'Delete',
+        onClick: () => {},
+      },
     ],
   },
 };

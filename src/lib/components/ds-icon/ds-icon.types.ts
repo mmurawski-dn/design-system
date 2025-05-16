@@ -10,12 +10,13 @@ export type IconName = {
   [K in keyof typeof materialIcons]: K extends `${IconPrefix}::${infer Name}` ? Name : never;
 }[keyof typeof materialIcons];
 
+export type IconType = IconName | React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+
 export interface DsIconProps {
   /**
-   * The name of the Material Icon to display
+   * The icon to display. This can be a Material Icon name (e.g., 'home') or an SVG component.
    */
-  name: IconName;
-
+  icon: IconType;
   /**
    * The size of the icon
    * @default 'medium'
@@ -41,5 +42,5 @@ export interface DsIconProps {
   /**
    * Optional click handler
    */
-  onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLSpanElement | SVGSVGElement>) => void;
 }

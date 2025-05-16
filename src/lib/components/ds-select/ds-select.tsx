@@ -36,10 +36,10 @@ const DsSelect: React.FC<DsSelectProps> = ({
                   value={option.value}
                 >
                   <Select.ItemIndicator className={styles.indicator}>
-                    <DsIcon name="check" />
+                    <DsIcon icon="check" />
                   </Select.ItemIndicator>
                   <div className={styles.itemValue}>
-                    <div className={styles.itemIcon}>{option.icon && <DsIcon name={option.icon} />}</div>
+                    <div className={styles.itemIcon}>{option.icon && <DsIcon icon={option.icon} />}</div>
                     <Select.ItemText>{option.label}</Select.ItemText>
                   </div>
                 </Select.Item>

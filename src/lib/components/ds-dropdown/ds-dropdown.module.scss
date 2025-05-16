@@ -1,0 +1,78 @@
+@use 'typography' as typography;
+
+.content {
+  border-radius: 4px;
+  border: 1px solid var(--action-cta1);
+  background: var(--white);
+  box-shadow: 0 12px 36px 0 rgba(4, 69, 204, 0.40);
+  z-index: 9999;
+
+  min-width: 200px;
+  width: var(--radix-select-trigger-width);
+  max-height: var(--radix-select-content-available-height);
+}
+
+.viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+}
+
+.searchInput {
+  position: relative;
+  border-bottom: 1px solid var(--neutral-7);
+  padding-bottom: 3px;
+
+  .searchInputField {
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid var(--neutral-4);
+    border-radius: 4px;
+    transition: border-color 0.2s;
+    padding: 12px 36px 12px 16px;
+
+    &:focus {
+      outline: none;
+      border-color: var(--action-cta1);
+    }
+  }
+
+  .searchIcon {
+    position: absolute;
+    pointer-events: none;
+    color: var(--neutral-3);
+    top: 50%;
+    transform: translateY(-50%);
+    right: 12px;
+  }
+}
+
+.item {
+  @extend .p-special;
+  @include typography.ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--neutral-1);
+  padding: 8px 16px;
+  border-radius: 2px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  outline: none;
+
+  &[data-highlighted] {
+    border-left-color: var(--action-cta1);
+    background: var(--action-hover-light);
+
+    .indicator, .itemIcon {
+      color: var(--action-cta1);
+    }
+  }
+}
+
+.indicator {
+  display: flex;
+  justify-content: end;
+  min-width: var(--icon-width-medium);
+}

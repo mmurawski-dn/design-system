@@ -4,10 +4,10 @@ import styles from './ds-icon.module.scss';
 import { DsIconProps } from './ds-icon.types';
 
 /**
- * Design system Icon component that renders Google Material Icons
+ * Design system Icon component that renders Google Material Icons or inline SVGs
  */
 const DsIcon: React.FC<DsIconProps> = ({
-  name,
+  icon,
   size = 'medium',
   variant = 'filled',
   className = '',
@@ -16,11 +16,16 @@ const DsIcon: React.FC<DsIconProps> = ({
   ...rest
 }) => {
   const variantClass = variant !== 'filled' ? `material-icons-${variant}` : 'material-icons';
-  const iconClass = classNames(styles[size], variantClass, className);
+  const iconClass = classNames(styles[size], className);
+
+  if (typeof icon === 'function') {
+    const SvgComponent = icon;
+    return <SvgComponent className={iconClass} style={style} onClick={onClick} {...rest} />;
+  }
 
   return (
-    <span className={iconClass} style={style} onClick={onClick} {...rest}>
-      {name}
+    <span className={classNames(iconClass, variantClass)} style={style} onClick={onClick} {...rest}>
+      {icon}
     </span>
   );
 };

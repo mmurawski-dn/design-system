@@ -1,4 +1,5 @@
 import {
+  type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -6,21 +7,19 @@ import {
   getSortedRowModel,
   Row,
   RowSelectionState,
-  useReactTable,
-  type ColumnFiltersState,
   type SortingState,
+  useReactTable,
   type VisibilityState,
 } from '@tanstack/react-table';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import classnames from 'classnames';
 import * as React from 'react';
+import { CSSProperties } from 'react';
 
 import DsIcon from '../ds-icon/ds-icon';
 import { Table, TableBody, TableCell, TableRow } from './core-table';
 import DsTableBulkActions from './ds-table-bulk-actions';
 import DsTableHeader from './ds-table-header';
-
-import { CSSProperties } from 'react';
 import Button from '../ds-button/ds-button';
 import { DsCheckbox } from '../ds-checkbox';
 import styles from './ds-table.module.scss';
@@ -174,7 +173,7 @@ const DsTable = <TData, TValue>({
                 className={styles.expandToggleButton}
               >
                 <DsIcon
-                  name={virtualized ? (isExpanded ? 'arrow_drop_down' : 'arrow_right') : 'chevron_right'}
+                  icon={virtualized ? (isExpanded ? 'arrow_drop_down' : 'arrow_right') : 'chevron_right'}
                   className={classnames(
                     styles.pageButtonIcon,
                     !virtualized && isExpanded && 'rotate-90',

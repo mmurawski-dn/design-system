@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import DsIcon from './ds-icon';
 import './ds-icon.stories.scss';
 import { materialIcons } from './material-icons';
+import { IconName } from '@design-system/ui';
 
 const meta: Meta<typeof DsIcon> = {
   title: 'Design System/Icon',
@@ -12,9 +13,9 @@ const meta: Meta<typeof DsIcon> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    name: {
+    icon: {
       control: 'text',
-      description: 'Material icon name',
+      description: 'Material icon name or SVG component',
     },
     size: {
       control: { type: 'select' },
@@ -35,7 +36,7 @@ type Story = StoryObj<typeof DsIcon>;
 
 export const Default: Story = {
   args: {
-    name: 'home',
+    icon: 'home',
     size: 'medium',
     variant: 'filled',
   },
@@ -43,7 +44,7 @@ export const Default: Story = {
 
 export const Colored: Story = {
   args: {
-    name: 'check_circle',
+    icon: 'check_circle',
     size: 'medium',
     variant: 'filled',
     style: { color: '#4CAF50' },
@@ -51,7 +52,7 @@ export const Colored: Story = {
 };
 
 interface IconsByCategory {
-  [category: string]: string[];
+  [category: string]: IconName[];
 }
 
 // Raw GitHub content URL instead of the GitHub HTML page
@@ -66,7 +67,7 @@ export const Showcase: Story = {
     const [searchTerm, setSearchTerm] = useState('');
     const [iconsByCategory, setIconsByCategory] = useState<IconsByCategory>({});
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
     const [usedFallback, setUsedFallback] = useState(false);
 
     // Process icon data into categories
@@ -87,7 +88,7 @@ export const Showcase: Story = {
         }
 
         if (iconName) {
-          categorizedIcons[category].push(iconName);
+          categorizedIcons[category].push(iconName as IconName);
         }
       });
 
@@ -204,7 +205,7 @@ export const Showcase: Story = {
                       onClick={() => handleIconClick(iconName)}
                       title={`Click to copy: ${iconName}`}
                     >
-                      <DsIcon name={iconName} size="medium" />
+                      <DsIcon icon={iconName} size="medium" />
                       <span className="icon-name">{iconName}</span>
                     </div>
                   ))}

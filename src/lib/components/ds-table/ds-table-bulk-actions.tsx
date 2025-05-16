@@ -1,11 +1,12 @@
 import classnames from 'classnames';
 import React, { useEffect, useState } from 'react';
+import { IconType } from '@design-system/ui';
 import Button from '../ds-button/ds-button';
 import DsIcon from '../ds-icon/ds-icon';
 import styles from './ds-table.module.scss';
 
 interface Action {
-  icon: string | React.ReactNode;
+  icon: IconType;
   label: string;
   onClick: () => void;
 }
@@ -60,7 +61,7 @@ const DsTableBulkActions: React.FC<BulkActionsProps> = ({
               contentClassName={styles.actionButtonContent}
               onClick={action.onClick}
             >
-              {typeof action.icon === 'string' ? <DsIcon name={action.icon} /> : action.icon}
+              <DsIcon icon={action.icon} />
               <span className={(styles['p-s'], styles.medium)}>{action.label}</span>
             </Button>
           ))}
@@ -73,7 +74,7 @@ const DsTableBulkActions: React.FC<BulkActionsProps> = ({
           contentClassName={styles.escapeButtonContent}
           onClick={onClearSelection}
         >
-          <DsIcon name="close" />
+          <DsIcon icon="close" />
           <span className={(styles['p-s'], styles.medium)}>Esc</span>
         </Button>
       </div>
