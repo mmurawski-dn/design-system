@@ -5,6 +5,18 @@ export type TextInputSize = (typeof textInputSizes)[number];
 
 export interface DsTextInputProps {
 	/**
+	 * Unique identifier for the input field
+	 */
+	id?: string;
+	/**
+	 * The ref to the input field
+	 */
+	ref?: React.Ref<HTMLInputElement>;
+	/**
+	 * The name of the input field
+	 */
+	name?: string;
+	/**
 	 * The size of the input field
 	 * @default default
 	 */
@@ -14,6 +26,12 @@ export interface DsTextInputProps {
 	 * @default text
 	 */
 	type?: string;
+	/**
+	 * Event handler called when the input field loses focus
+	 *
+	 * @param event
+	 */
+	onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
 	/**
 	 * Callback when the value changes
 	 */

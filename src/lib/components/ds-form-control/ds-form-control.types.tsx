@@ -1,18 +1,20 @@
 import React from 'react';
-import { DsSelectOption } from '../ds-select';
-import { IconType } from '../ds-icon';
-
-export const controlTypes = ['input', 'textarea', 'select'] as const;
-export type ControlType = (typeof controlTypes)[number];
+import { DsTextInputProps } from '../ds-text-input';
+import { DsTextareaProps } from '../ds-textarea';
+import { DsSelectProps } from '../ds-select';
+import { DsNumberInputProps } from '../ds-number-input';
+import { DsPasswordInputProps } from '../ds-password-input';
 
 export const controlSchemas = ['info', 'success', 'error', 'warning'] as const;
 export type ControlSchema = (typeof controlSchemas)[number];
 
-export interface DsFormControlProps
-	extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
+export interface DsFormControlProps extends React.PropsWithChildren {
+	/**
+	 * Unique identifier for the control
+	 */
+	id?: string;
 	/**
 	 * Visual schema
-	 * @default 'info'
 	 */
 	schema?: ControlSchema;
 	/**
@@ -24,13 +26,13 @@ export interface DsFormControlProps
 	 */
 	required?: boolean;
 	/**
-	 * Disables the control
+	 * Show help icon next to the label
 	 */
-	disabled?: boolean;
+	showHelpIcon?: boolean;
 	/**
-	 * Icon to display on the left side of the text field
+	 * Callback when help icon is clicked
 	 */
-	icon?: IconType;
+	onHelpClick?: () => void;
 	/**
 	 * Message under the control
 	 */
@@ -40,23 +42,49 @@ export interface DsFormControlProps
 	 */
 	messageIcon?: string;
 	/**
-	 * Options for select control
+	 * Additional CSS class names
 	 */
-	options?: DsSelectOption[];
+	className?: string;
 	/**
-	 * Value change event handler
-	 * @param value
+	 * Additional styles to apply to the component
 	 */
-	onValueChange?: (value: string) => void;
+	style?: React.CSSProperties;
+}
+
+export interface DsFormControlDescriptionProps {
 	/**
-	 * Event handler called when the select loses focus
-	 *
-	 * @param event
+	 * The description content
 	 */
-	onBlur?: (event: React.FocusEvent) => void;
+	children: React.ReactNode;
 	/**
-	 * Element type to render: 'input' or 'textarea'
-	 * @default 'input'
+	 * Additional CSS class names
 	 */
-	as?: ControlType;
+	className?: string;
+}
+
+export interface DsFormControlCompound extends React.FC<DsFormControlProps> {
+	/**
+	 * Text input component
+	 */
+	TextInput: React.FC<Omit<DsTextInputProps, 'id'>>;
+	/**
+	 * Number input component
+	 */
+	NumberInput: React.FC<Omit<DsNumberInputProps, 'id'>>;
+	/**
+	 * Password input component
+	 */
+	PasswordInput: React.FC<Omit<DsPasswordInputProps, 'id'>>;
+	/**
+	 * Textarea component
+	 */
+	Textarea: React.FC<Omit<DsTextareaProps, 'id'>>;
+	/**
+	 * Select component
+	 */
+	Select: React.FC<Omit<DsSelectProps, 'id'>>;
+	/**
+	 * Description component
+	 */
+	Description: React.FC<DsFormControlDescriptionProps>;
 }
