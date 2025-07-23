@@ -21,7 +21,6 @@ const DsFormControl: React.FC<DsFormControlProps> = ({
 }) => {
 	const generatedId = useId();
 	const controlId = id || generatedId;
-
 	const renderControl = () => {
 		if (as === 'select') {
 			const value = props.value;
