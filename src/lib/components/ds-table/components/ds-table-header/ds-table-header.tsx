@@ -13,6 +13,7 @@ const DsTableHeader = <TData,>({
 	expandable = false,
 	selectable = false,
 	reorderable = false,
+	showSelectAllCheckbox = true,
 }: DsTableHeaderProps<TData>) => {
 	return (
 		<TableHeader className={classnames(stickyHeader && styles.stickyHeader)}>
@@ -23,21 +24,23 @@ const DsTableHeader = <TData,>({
 				>
 					{selectable && (
 						<TableHead className={classnames(styles.headerCell, styles.selectColumn)}>
-							<DsCheckbox
-								className={stylesShared.checkboxContainer}
-								checked={
-									table.getIsAllRowsSelected()
-										? true
-										: table.getIsSomeRowsSelected()
-											? 'indeterminate'
-											: false
-								}
-								onClick={(e) => {
-									e.stopPropagation();
-									const toggleHandler = table.getToggleAllRowsSelectedHandler();
-									toggleHandler(e);
-								}}
-							/>
+							{showSelectAllCheckbox && (
+								<DsCheckbox
+									className={stylesShared.checkboxContainer}
+									checked={
+										table.getIsAllRowsSelected()
+											? true
+											: table.getIsSomeRowsSelected()
+												? 'indeterminate'
+												: false
+									}
+									onClick={(e) => {
+										e.stopPropagation();
+										const toggleHandler = table.getToggleAllRowsSelectedHandler();
+										toggleHandler(e);
+									}}
+								/>
+							)}
 						</TableHead>
 					)}
 					{expandable && <TableHead className={styles.expandColumn} />}

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useMemo, useState } from 'react';
-import { ColumnDef, ColumnFiltersState } from '@tanstack/react-table';
+import { ColumnDef, ColumnFiltersState, Table } from '@tanstack/react-table';
 import classnames from 'classnames';
 import DsIcon from '../ds-icon/ds-icon';
 import { IconType } from '../ds-icon/ds-icon.types';
@@ -280,6 +280,7 @@ export const Sortable: Story = {
 export const Expandable: Story = {
 	args: {
 		expandable: true,
+		isRowExpandable: (row) => row.firstName !== 'Tanner',
 		renderExpandedRow: (row) => (
 			<div className={styles.expandedRowDetails}>
 				<h4>Expanded Details for {row.firstName}</h4>
@@ -315,6 +316,98 @@ export const Selectable: Story = {
 	args: {
 		selectable: true,
 		onSelectionChange: (selectedRows) => console.log('Selected rows:', selectedRows),
+	},
+};
+
+export const ProgrammaticRowSelection: Story = {
+	args: {
+		selectable: true,
+		showSelectAllCheckbox: false,
+		stickyHeader: true,
+		pagination: false,
+		onSelectionChange: (selectedRows) => console.log('Selected rows:', selectedRows),
+	},
+	render: function Render(args) {
+		const tableRef = React.useRef<Table<any>>(null);
+		const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+
+		const handleTableCreated = (table: any) => {
+			tableRef.current = table;
+		};
+
+		const selectRow = (rowId: string) => {
+			if (tableRef.current) {
+				tableRef.current.getRow(rowId).toggleSelected(true);
+			}
+		};
+
+		const selectAllRows = () => {
+			if (tableRef.current) {
+				tableRef.current.toggleAllRowsSelected(true);
+			}
+		};
+
+		const deselectAllRows = () => {
+			if (tableRef.current) {
+				tableRef.current.setRowSelection({});
+			}
+		};
+
+		const selectSpecificRows = () => {
+			if (tableRef.current) {
+				// Select first 3 rows
+				const newSelection: Record<string, boolean> = {};
+				tableRef.current
+					.getRowModel()
+					.rows.slice(0, 3)
+					.forEach((row: any) => {
+						newSelection[row.id] = true;
+					});
+				tableRef.current.setRowSelection(newSelection);
+			}
+		};
+
+		const handleSelectionChange = (selection: Record<string, boolean>) => {
+			const selectedIds = Object.keys(selection);
+			setSelectedRows(selectedIds);
+		};
+
+		return (
+			<div>
+				<div className={styles.programmaticSelectionDemo}>
+					<h4 className={styles.programmaticSelectionDemo__title}>Programmatic Row Selection Demo</h4>
+					<p className={styles.programmaticSelectionDemo__description}>
+						Use the buttons below to programmatically control row selection using TanStack Table v8 APIs.
+					</p>
+					<p className={styles.programmaticSelectionDemo__selectedRows}>
+						Selected rows: {selectedRows.length > 0 ? selectedRows.join(', ') : 'None'}
+					</p>
+				</div>
+
+				<div className={styles.programmaticSelectionControls}>
+					<button onClick={() => selectRow('1')} className={styles.programmaticSelectionButton}>
+						Select Row 1
+					</button>
+					<button onClick={() => selectRow('2')} className={styles.programmaticSelectionButton}>
+						Select Row 2
+					</button>
+					<button onClick={() => selectRow('3')} className={styles.programmaticSelectionButton}>
+						Select Row 3
+					</button>
+					<button onClick={selectAllRows} className={styles.programmaticSelectionButton}>
+						Select All
+					</button>
+					<button onClick={deselectAllRows} className={styles.programmaticSelectionButton}>
+						Deselect All
+					</button>
+					<button onClick={selectSpecificRows} className={styles.programmaticSelectionButton}>
+						Select First 3 Rows
+					</button>
+				</div>
+
+				<DsTable {...args} onTableCreated={handleTableCreated} onSelectionChange={handleSelectionChange} />
+			</div>
+		);
 	},
 };
 

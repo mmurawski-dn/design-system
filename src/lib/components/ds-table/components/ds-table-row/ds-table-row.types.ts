@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row } from '@tanstack/react-table';
 import { VirtualItem } from '@tanstack/react-virtual';
-import type { IconType } from '@design-system/ui';
+import { RowAction, SecondaryRowAction } from '@design-system/ui';
 
 /**
  * Props for the table row component
@@ -21,6 +21,11 @@ export interface TableRowProps<TData, TValue> {
 	 * Whether the row is expandable
 	 */
 	expandable: boolean;
+
+	/**
+	 * Optional function to determine if an individual row should be expandable
+	 */
+	isRowExpandable?: (row: TData) => boolean;
 
 	/**
 	 * Record of expanded row states
@@ -75,55 +80,10 @@ export interface TableRowProps<TData, TValue> {
 	/**
 	 * Primary actions to be shown on each row (on hover)
 	 */
-	primaryRowActions?: Array<{
-		/**
-		 * Optional label text for the action
-		 */
-		label?: string;
-
-		/**
-		 * Icon to be displayed for the action
-		 */
-		icon: IconType;
-
-		/**
-		 * Optional tooltip text to show on hover
-		 */
-		tooltip?: string;
-
-		/**
-		 * Optional function to determine if the action should be disabled
-		 */
-		disabled?: (data: TData) => boolean;
-
-		/**
-		 * Function to be called when the action is clicked
-		 */
-		onClick: (data: TData) => void;
-	}>;
+	primaryRowActions?: RowAction<TData>[];
 
 	/**
 	 * Secondary actions to be shown in a dropdown on each row (on hover)
 	 */
-	secondaryRowActions?: Array<{
-		/**
-		 * Label text for the action
-		 */
-		label: string;
-
-		/**
-		 * Icon to be displayed for the action
-		 */
-		icon: IconType;
-
-		/**
-		 * Optional function to determine if the action should be disabled
-		 */
-		disabled?: (data: TData) => boolean;
-
-		/**
-		 * Function to be called when the action is clicked
-		 */
-		onClick: (data: TData) => void;
-	}>;
+	secondaryRowActions?: SecondaryRowAction<TData>[];
 }

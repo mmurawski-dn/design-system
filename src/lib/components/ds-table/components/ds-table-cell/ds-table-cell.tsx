@@ -20,6 +20,7 @@ export const DsTableCell = <TData, TValue>({
 	secondaryRowActions = [],
 }: TableCellProps<TData, TValue>) => {
 	if (primaryRowActions.length || secondaryRowActions?.length) {
+		const hasSecondaryRowActions = secondaryRowActions?.some((action) => !action.disabled?.(row.original));
 		return (
 			<div className={styles.lastCell}>
 				<DsDefaultTableCell cell={cell} />
@@ -47,7 +48,7 @@ export const DsTableCell = <TData, TValue>({
 							</span>
 						);
 					})}
-					{secondaryRowActions?.length > 0 && (
+					{hasSecondaryRowActions && (
 						<DsDropdownMenu
 							options={secondaryRowActions.map((action, i) => ({
 								label: action.label,

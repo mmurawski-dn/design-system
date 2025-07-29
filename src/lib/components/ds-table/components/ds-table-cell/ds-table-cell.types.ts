@@ -57,7 +57,7 @@ export interface TableCellProps<TData, TValue> {
 		/**
 		 * Icon to be displayed for the action
 		 */
-		icon: IconType;
+		icon?: IconType;
 
 		/**
 		 * Optional function to determine if the action should be disabled

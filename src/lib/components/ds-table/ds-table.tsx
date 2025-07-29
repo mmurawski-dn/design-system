@@ -41,10 +41,12 @@ const DsTable = <TData extends { id: string }, TValue>({
 	fullWidth = true,
 	highlightOnHover = true,
 	expandable = false,
+	isRowExpandable,
 	renderExpandedRow,
 	filterElement,
 	onTableCreated,
 	selectable = false,
+	showSelectAllCheckbox = true,
 	onSelectionChange,
 	actions = [],
 	onRowDoubleClick,
@@ -86,10 +88,8 @@ const DsTable = <TData extends { id: string }, TValue>({
 	};
 
 	React.useEffect(() => {
-		if (onSelectionChange && selectable) {
-			onSelectionChange(rowSelection);
-		}
-	}, [rowSelection, onSelectionChange, selectable]);
+		onSelectionChange?.(rowSelection);
+	}, [rowSelection]);
 
 	const table = useReactTable({
 		data: reorderable ? data : tableData,
@@ -118,10 +118,8 @@ const DsTable = <TData extends { id: string }, TValue>({
 	});
 
 	React.useEffect(() => {
-		if (onTableCreated) {
-			onTableCreated(table);
-		}
-	}, [table, onTableCreated]);
+		onTableCreated?.(table);
+	}, [table]);
 
 	const { rows } = table.getRowModel();
 
@@ -178,6 +176,7 @@ const DsTable = <TData extends { id: string }, TValue>({
 								bordered={bordered}
 								expandable={expandable}
 								selectable={selectable}
+								showSelectAllCheckbox={showSelectAllCheckbox}
 							/>
 							<TableBody>
 								{virtualItems &&
@@ -189,6 +188,7 @@ const DsTable = <TData extends { id: string }, TValue>({
 												row={row}
 												virtualRow={virtualRow}
 												expandable={expandable}
+												isRowExpandable={isRowExpandable}
 												expandedRows={expandedRows}
 												selectable={selectable}
 												onRowClick={onRowClick}
@@ -216,6 +216,7 @@ const DsTable = <TData extends { id: string }, TValue>({
 								expandable={expandable}
 								selectable={selectable}
 								reorderable={reorderable}
+								showSelectAllCheckbox={showSelectAllCheckbox}
 							/>
 							<TableBody>
 								<SortableWrapper>
@@ -225,6 +226,7 @@ const DsTable = <TData extends { id: string }, TValue>({
 													key={row.id}
 													row={row}
 													expandable={expandable}
+													isRowExpandable={isRowExpandable}
 													expandedRows={expandedRows}
 													selectable={selectable}
 													reorderable={reorderable}

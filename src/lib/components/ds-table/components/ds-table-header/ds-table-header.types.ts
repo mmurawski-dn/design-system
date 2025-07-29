@@ -38,4 +38,10 @@ export interface DsTableHeaderProps<TData> {
 	 * @default false
 	 */
 	reorderable?: boolean;
+
+	/**
+	 * Whether to show the select/deselect all checkbox in the header
+	 * @default true
+	 */
+	showSelectAllCheckbox?: boolean;
 }

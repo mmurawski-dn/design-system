@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ColumnDef, ColumnFiltersState } from '@tanstack/react-table';
+import type { ColumnDef, ColumnFiltersState, Table } from '@tanstack/react-table';
 import { IconType } from '../ds-icon';
 
 /**
@@ -51,6 +51,16 @@ export interface RowAction<TData> {
 	 */
 	onClick: (row: TData) => void;
 }
+
+/**
+ * Represents a secondary action that can be performed on a single row
+ */
+export type SecondaryRowAction<TData> = Omit<RowAction<TData>, 'icon'> & {
+	/**
+	 * Optional icon to be displayed for the action
+	 */
+	icon?: IconType;
+};
 
 export interface DataTableProps<TData, TValue> {
 	/**
@@ -147,6 +157,11 @@ export interface DataTableProps<TData, TValue> {
 	expandable?: boolean;
 
 	/**
+	 * Optional function to determine if an individual row should be expandable
+	 */
+	isRowExpandable?: (row: TData) => boolean;
+
+	/**
 	 * Function to render the expanded row
 	 */
 	renderExpandedRow?: (row: TData) => React.ReactNode;
@@ -159,13 +174,19 @@ export interface DataTableProps<TData, TValue> {
 	/**
 	 * Function to handle table creation
 	 */
-	onTableCreated?: (table: any) => void;
+	onTableCreated?: (table: Table<TData>) => void;
 
 	/**
 	 * Whether the table rows are selectable
 	 * @default false
 	 */
 	selectable?: boolean;
+
+	/**
+	 * Whether to show the select/deselect all checkbox in the header
+	 * @default true
+	 */
+	showSelectAllCheckbox?: boolean;
 
 	/**
 	 * Function to handle selection change
@@ -185,7 +206,7 @@ export interface DataTableProps<TData, TValue> {
 	/**
 	 * Secondary actions to be shown in a dropdown on each row (on hover)
 	 */
-	secondaryRowActions?: RowAction<TData>[];
+	secondaryRowActions?: SecondaryRowAction<TData>[];
 
 	/**
 	 * Whether the table rows are reorderable via drag & drop

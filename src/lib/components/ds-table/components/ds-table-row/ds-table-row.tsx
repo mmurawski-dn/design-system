@@ -39,6 +39,7 @@ const DsTableRow = <TData, TValue>({
 	row,
 	virtualRow,
 	expandable,
+	isRowExpandable,
 	expandedRows,
 	selectable,
 	reorderable,
@@ -53,6 +54,7 @@ const DsTableRow = <TData, TValue>({
 	secondaryRowActions,
 }: TableRowProps<TData, TValue>) => {
 	const isExpanded = expandable && expandedRows[row.id];
+	const isRowExpandableForThisRow = isRowExpandable ? isRowExpandable(row.original) : expandable;
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
 		id: row.id,
 		disabled: !reorderable,
@@ -114,23 +116,28 @@ const DsTableRow = <TData, TValue>({
 				)}
 				{expandable && (
 					<TableCell className={classnames(styles.tableCell, styles.cellButton)}>
-						<DsButton
-							variant={virtualized ? 'ghost' : 'borderless'}
-							size="small"
-							onClick={(e: React.MouseEvent) => {
-								e.stopPropagation();
-								toggleRowExpanded(row.id);
-							}}
-							onDoubleClick={(e: React.MouseEvent) => {
-								e.stopPropagation();
-							}}
-							className={styles.expandToggleButton}
-						>
-							<DsIcon
-								icon={virtualized ? (isExpanded ? 'arrow_drop_down' : 'arrow_right') : 'chevron_right'}
-								className={classnames(stylesShared.pageButtonIcon, !virtualized && isExpanded && 'rotate-90')}
-							/>
-						</DsButton>
+						{isRowExpandableForThisRow && (
+							<DsButton
+								variant={virtualized ? 'ghost' : 'borderless'}
+								size="small"
+								onClick={(e: React.MouseEvent) => {
+									e.stopPropagation();
+									toggleRowExpanded(row.id);
+								}}
+								onDoubleClick={(e: React.MouseEvent) => {
+									e.stopPropagation();
+								}}
+								className={styles.expandToggleButton}
+							>
+								<DsIcon
+									icon={virtualized ? (isExpanded ? 'arrow_drop_down' : 'arrow_right') : 'chevron_right'}
+									className={classnames(
+										stylesShared.pageButtonIcon,
+										!virtualized && isExpanded && 'rotate-90',
+									)}
+								/>
+							</DsButton>
+						)}
 					</TableCell>
 				)}
 				{reorderable && (
@@ -179,7 +186,7 @@ const DsTableRow = <TData, TValue>({
 						colSpan={
 							row.getVisibleCells().length +
 							(selectable ? 1 : 0) +
-							(expandable ? 1 : 0) +
+							(isRowExpandableForThisRow ? 1 : 0) +
 							(reorderable ? 1 : 0)
 						}
 						className={styles.tableCell}
