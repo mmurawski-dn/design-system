@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import classNames from 'classnames';
 import { DsIcon, IconType } from '../ds-icon';
 import { DsSelect } from '../ds-select';
@@ -19,7 +19,8 @@ const DsFormControl: React.FC<DsFormControlProps> = ({
 	as = 'input',
 	...props
 }) => {
-	const controlId = id || React.useId();
+	const generatedId = useId();
+	const controlId = id || generatedId;
 
 	const renderControl = () => {
 		if (as === 'select') {

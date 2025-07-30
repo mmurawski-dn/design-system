@@ -152,11 +152,13 @@ const BreadcrumbStory = ({ items }: { items: DsBreadcrumbItem[] }) => {
 
 	// add reset function to window (for testing)
 	useEffect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).resetBreadcrumbItems = (initialPath: string) => {
 			setUpdatedItems(items);
 			navigate({ to: initialPath });
 		};
 		return () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			delete (window as any).resetBreadcrumbItems;
 		};
 	}, [items, navigate]);
@@ -209,6 +211,8 @@ export const Default: Story = {
 		const lastBreadcrumbItem = initialItems[initialItems.length - 1];
 		const lastItemHref =
 			lastBreadcrumbItem.type === 'link' ? lastBreadcrumbItem.href : lastBreadcrumbItem.options[0].href;
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).resetBreadcrumbItems(lastItemHref);
 
 		// Wait for state update
@@ -273,6 +277,7 @@ export const WithDropdown: Story = {
 		await userEvent.click(homeLink);
 
 		// 11. Reset to initial state
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).resetBreadcrumbItems('/network/vienna/router-a');
 
 		// Wait for state update

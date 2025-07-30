@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { expect, screen, userEvent, within } from '@storybook/test';
 import { useState } from 'react';
 import DsSelect from './ds-select';
+import { DsSelectProps } from '@design-system/ui';
 
 const meta: Meta<typeof DsSelect> = {
 	title: 'Design System/Select',
@@ -40,7 +41,7 @@ const meta: Meta<typeof DsSelect> = {
 export default meta;
 type Story = StoryObj<typeof DsSelect>;
 
-const ControlledSelectWrapper = ({ options, style, size, placeholder }: any) => {
+const ControlledSelectWrapper = ({ options, style, size, placeholder }: DsSelectProps) => {
 	const [value, setValue] = useState<string>('');
 
 	const handleValueChange = (newValue: string) => {

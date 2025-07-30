@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from './colors.stories.module.scss';
 
 const meta: Meta = {
@@ -188,7 +188,7 @@ const colorGroups = [
 const isHex = (code: string) => /^#([0-9a-f]{3,8})$/i.test(code?.trim());
 
 export const Default: Story = {
-	render: () => {
+	render: function Render() {
 		const [copied, setCopied] = useState<string | null>(null);
 
 		const handleCopy = (tone: Tone) => {
@@ -214,7 +214,7 @@ export const Default: Story = {
 								const colorCode = getCSSVariable(tone.variable);
 								return (
 									<div key={tone.name} className={styles.swatchCol}>
-										<div
+										<button
 											className={styles.swatchItem}
 											style={{
 												background: `var(--${tone.variable})`,
@@ -222,13 +222,11 @@ export const Default: Story = {
 											}}
 											title="Click to copy"
 											onClick={() => handleCopy(tone)}
-											tabIndex={0}
-											role="button"
 											aria-label={`Color ${tone.name} ${colorCode}`}
 										>
 											{tone.showCode !== false && <span className={styles.toneCode}>{colorCode}</span>}
 											{copied === tone.name && <span className={styles.copiedTooltip}>Copied</span>}
-										</div>
+										</button>
 										<div className={styles.toneNumber}>{tone.name}</div>
 									</div>
 								);

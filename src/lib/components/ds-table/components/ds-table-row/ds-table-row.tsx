@@ -51,7 +51,7 @@ const DsTableRow = <TData, TValue>({
 	toggleRowExpanded,
 	primaryRowActions,
 	secondaryRowActions,
-}: TableRowProps<TData, TValue>) => {
+}: TableRowProps<TData>) => {
 	const isExpanded = expandable && expandedRows[row.id];
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
 		id: row.id,

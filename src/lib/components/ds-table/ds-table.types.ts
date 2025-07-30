@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ColumnDef, ColumnFiltersState } from '@tanstack/react-table';
+import type { ColumnDef, ColumnFiltersState, Table } from '@tanstack/react-table';
 import { IconType } from '../ds-icon';
 
 /**
@@ -159,7 +159,7 @@ export interface DataTableProps<TData, TValue> {
 	/**
 	 * Function to handle table creation
 	 */
-	onTableCreated?: (table: any) => void;
+	onTableCreated?: (table: Table<TData>) => void;
 
 	/**
 	 * Whether the table rows are selectable

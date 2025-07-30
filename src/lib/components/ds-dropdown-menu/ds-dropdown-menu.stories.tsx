@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from '@storybook/test';
+import { expect, userEvent, within } from '@storybook/test';
 import DsDropdownMenu from './ds-dropdown-menu';
 import { delay, DsIcon } from '@design-system/ui';
 import './ds-dropdown-menu.stories.scss';
@@ -50,9 +50,10 @@ export const Default: Story = {
 		],
 		contentGap: 4,
 	},
-	render: (args) => {
-		const [clicked, setClicked] = useState<string>('');
+	render: function Render(args) {
+		const [, setClicked] = useState<string>('');
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(args as any).__reset = async () => {
 			setClicked('');
 			await delay(100);
@@ -69,6 +70,8 @@ export const Default: Story = {
 	},
 	play: async ({ canvasElement, args }) => {
 		const canvas = within(canvasElement);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const reset = (args as any).__reset;
 
 		// Check initial state

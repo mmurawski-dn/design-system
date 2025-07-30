@@ -6,7 +6,7 @@ import type { IconType } from '@design-system/ui';
 /**
  * Props for the table row component
  */
-export interface TableRowProps<TData, TValue> {
+export interface TableRowProps<TData> {
 	/**
 	 * The row data from the table
 	 */

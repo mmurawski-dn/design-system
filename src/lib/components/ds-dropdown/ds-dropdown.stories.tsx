@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fireEvent, userEvent, within } from '@storybook/test';
 import DsDropdown from './ds-dropdown';
@@ -44,10 +44,11 @@ export const Default: Story = {
 		],
 		contentGap: 4,
 	},
-	render: (args) => {
+	render: function Render(args) {
 		const [selected, setSelected] = useState<string>('');
 		const selectedOption = args.options.find((opt) => opt.href === selected);
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(args as any).__reset = async () => {
 			setSelected('');
 			await delay(100);
@@ -64,6 +65,8 @@ export const Default: Story = {
 	},
 	play: async ({ canvasElement, args }) => {
 		const canvas = within(canvasElement);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const reset = (args as any).__reset;
 
 		// Check initial state - no option selected

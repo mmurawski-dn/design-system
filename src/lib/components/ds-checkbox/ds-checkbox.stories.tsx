@@ -61,7 +61,7 @@ export const Default: Story = {
 };
 
 export const Indeterminate: Story = {
-	render: () => {
+	render: function Render() {
 		const [checked, setChecked] = useState<boolean | 'indeterminate'>('indeterminate');
 
 		return (
