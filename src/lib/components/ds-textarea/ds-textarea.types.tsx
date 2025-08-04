@@ -38,6 +38,10 @@ export interface DsTextareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAre
 	 */
 	rows?: number;
 	/**
+	 * The minimum number of characters
+	 */
+	minLength?: number;
+	/**
 	 * The maximum number of characters
 	 */
 	maxLength?: number;

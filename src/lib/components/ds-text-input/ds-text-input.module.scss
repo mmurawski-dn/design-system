@@ -11,3 +11,20 @@
 .iconButton {
 	@extend .iconButton;
 }
+
+.adornment {
+	display: flex;
+	align-items: center;
+
+	&.start {
+		margin-right: var(--spacing-xs);
+	}
+
+	&.end {
+		margin-left: var(--spacing-xs);
+	}
+
+	button {
+		@extend .iconButton;
+	}
+}

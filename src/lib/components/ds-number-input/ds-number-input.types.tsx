@@ -25,10 +25,6 @@ export interface DsNumberInputProps {
 	 */
 	style?: React.CSSProperties;
 	/**
-	 * The tooltip text to be displayed on hover
-	 */
-	tooltip?: string;
-	/**
 	 * The placeholder text
 	 */
 	placeholder?: string;
@@ -36,10 +32,6 @@ export interface DsNumberInputProps {
 	 * Whether the number input is disabled
 	 */
 	disabled?: boolean;
-	/**
-	 * Whether the number input is readonly
-	 */
-	readOnly?: boolean;
 	/**
 	 * The minimum value of the number input
 	 */
@@ -57,10 +49,10 @@ export interface DsNumberInputProps {
 	/**
 	 * The controlled value of the input
 	 */
-	value?: string;
+	value?: number | undefined;
 	/**
 	 * The initial value of the input when rendered.
 	 * Use when you don't need to control the value of the input.
 	 */
-	defaultValue?: string;
+	defaultValue?: number | undefined;
 }

@@ -1,25 +1,51 @@
 import React from 'react';
 import classNames from 'classnames';
 import styles from './ds-text-input.module.scss';
-import { DsTextInputProps } from './ds-text-input.types';
-import { DsIcon } from '../ds-icon';
+import { DsTextInputAdornmentProps, DsTextInputInputProps, DsTextInputProps } from './ds-text-input.types';
 
-/**
- * Design system TextInput component
- */
-const DsTextInput: React.FC<DsTextInputProps> = ({
+const Adornment: React.FC<DsTextInputAdornmentProps> = ({ position, className, style, children }) => {
+	const adornmentClass = classNames(
+		styles.adornment,
+		{
+			[styles.start]: position === 'start',
+			[styles.end]: position === 'end',
+		},
+		className,
+	);
+
+	return (
+		<div className={adornmentClass} style={style}>
+			{children}
+		</div>
+	);
+};
+
+const Input: React.FC<DsTextInputInputProps> = ({ onChange, onValueChange, className, style, ...props }) => {
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newValue = event.target.value;
+		onChange?.(event);
+		onValueChange?.(newValue);
+	};
+
+	return (
+		<input className={classNames(styles.input, className)} style={style} onChange={handleChange} {...props} />
+	);
+};
+
+const DsTextInput: React.FC<DsTextInputProps> & {
+	Adornment: typeof Adornment;
+	Input: typeof Input;
+} = ({
 	size = 'default',
-	leftIcon,
-	rightIcon,
 	onChange,
 	onValueChange,
 	className,
 	style = {},
-	tooltip,
 	value,
+	defaultValue,
 	placeholder,
 	disabled = false,
-	readOnly = false,
+	children,
 	...props
 }) => {
 	const containerClass = classNames(
@@ -31,6 +57,14 @@ const DsTextInput: React.FC<DsTextInputProps> = ({
 		className,
 	);
 
+	if (children) {
+		return (
+			<div className={containerClass} style={style}>
+				{children}
+			</div>
+		);
+	}
+
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = event.target.value;
 		onChange?.(event);
@@ -38,30 +72,21 @@ const DsTextInput: React.FC<DsTextInputProps> = ({
 	};
 
 	return (
-		<div className={containerClass} style={style} title={tooltip}>
-			{leftIcon && (
-				<button type="button" className={classNames(styles.iconButton, styles.left)} disabled={disabled}>
-					<DsIcon icon={leftIcon} size="tiny" />
-				</button>
-			)}
-
+		<div className={containerClass} style={style}>
 			<input
 				className={classNames(styles.input)}
 				value={value}
+				defaultValue={defaultValue}
 				placeholder={placeholder}
 				disabled={disabled}
-				readOnly={readOnly}
 				onChange={handleChange}
 				{...props}
 			/>
-
-			{rightIcon && (
-				<button type="button" className={classNames(styles.iconButton, styles.right)} disabled={disabled}>
-					<DsIcon icon={rightIcon} size="tiny" />
-				</button>
-			)}
 		</div>
 	);
 };
+
+DsTextInput.Adornment = Adornment;
+DsTextInput.Input = Input;
 
 export default DsTextInput;

@@ -3,9 +3,6 @@ import classNames from 'classnames';
 import styles from './ds-textarea.module.scss';
 import { DsTextareaProps } from './ds-textarea.types';
 
-/**
- * Design system Textarea component
- */
 const DsTextarea: React.FC<DsTextareaProps> = ({
 	onChange,
 	onValueChange,

@@ -23,14 +23,6 @@ const meta: Meta<typeof DsPasswordInput> = {
 			control: 'boolean',
 			description: 'Whether the input is disabled',
 		},
-		readOnly: {
-			control: 'boolean',
-			description: 'Whether the input is read-only',
-		},
-		tooltip: {
-			control: 'text',
-			description: 'Tooltip content to display on hover',
-		},
 		className: {
 			control: 'text',
 			description: 'Additional CSS class names',

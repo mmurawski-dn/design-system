@@ -216,10 +216,6 @@ $textarea-height-default: 120px;
 
 .iconButton {
 	@include icon-button;
-
-	&:first-child {
-		margin-right: var(--spacing-xs);
-	}
 }
 
 // Textarea specific styles

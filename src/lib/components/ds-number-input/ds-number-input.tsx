@@ -5,19 +5,14 @@ import styles from './ds-number-input.module.scss';
 import { DsNumberInputProps } from './ds-number-input.types';
 import { DsIcon } from '../ds-icon';
 
-/**
- * Design system NumberInput component
- */
 const DsNumberInput: React.FC<DsNumberInputProps> = ({
 	size = 'default',
 	onChange,
 	onValueChange,
 	className,
 	style = {},
-	tooltip,
 	placeholder,
 	disabled = false,
-	readOnly = false,
 	min,
 	max,
 	step,
@@ -39,13 +34,12 @@ const DsNumberInput: React.FC<DsNumberInputProps> = ({
 			max={max}
 			step={step}
 			disabled={disabled}
-			readOnly={readOnly}
-			value={value}
-			defaultValue={defaultValue}
+			value={typeof value !== 'undefined' ? String(value) : undefined}
+			defaultValue={typeof defaultValue !== 'undefined' ? String(defaultValue) : undefined}
 			onValueChange={(details) => onValueChange?.(details.valueAsNumber)}
 		>
 			<NumberInput.Control asChild>
-				<div className={containerClass} style={style} title={tooltip}>
+				<div className={containerClass} style={style}>
 					<NumberInput.DecrementTrigger asChild>
 						<button type="button" className={classNames(styles.iconButton)} aria-label="Decrease value">
 							<DsIcon icon="remove" size="tiny" />

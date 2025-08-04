@@ -25,10 +25,6 @@ export interface DsPasswordInputProps {
 	 */
 	style?: React.CSSProperties;
 	/**
-	 * The tooltip text to be displayed on hover
-	 */
-	tooltip?: string;
-	/**
 	 * The placeholder text
 	 */
 	placeholder?: string;
@@ -36,6 +32,11 @@ export interface DsPasswordInputProps {
 	 * The current value (for controlled usage)
 	 */
 	value?: string;
+	/**
+	 * The initial value of the input when rendered.
+	 * Use when you don't need to control the value of the input.
+	 */
+	defaultValue?: string;
 	/**
 	 * Whether the password input is disabled
 	 */

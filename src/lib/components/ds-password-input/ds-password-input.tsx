@@ -5,17 +5,14 @@ import styles from './ds-password-input.module.scss';
 import { DsPasswordInputProps } from './ds-password-input.types';
 import { DsIcon } from '../ds-icon';
 
-/**
- * Design system PasswordInput component
- */
 const DsPasswordInput: React.FC<DsPasswordInputProps> = ({
 	size = 'default',
 	onChange,
 	onValueChange,
 	className,
 	style = {},
-	tooltip,
 	value,
+	defaultValue,
 	placeholder,
 	disabled = false,
 }) => {
@@ -31,11 +28,12 @@ const DsPasswordInput: React.FC<DsPasswordInputProps> = ({
 	return (
 		<PasswordInput.Root disabled={disabled}>
 			<PasswordInput.Control>
-				<div className={containerClass} style={style} title={tooltip}>
+				<div className={containerClass} style={style}>
 					<PasswordInput.Input asChild>
 						<input
 							className={classNames(styles.input)}
 							value={value}
+							defaultValue={defaultValue}
 							placeholder={placeholder}
 							onChange={(event) => {
 								onChange?.(event);

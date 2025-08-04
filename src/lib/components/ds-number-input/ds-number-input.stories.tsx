@@ -39,14 +39,6 @@ const meta: Meta<typeof DsNumberInput> = {
 			control: 'boolean',
 			description: 'Whether the input is disabled',
 		},
-		readOnly: {
-			control: 'boolean',
-			description: 'Whether the input is read-only',
-		},
-		tooltip: {
-			control: 'text',
-			description: 'Tooltip content to display on hover',
-		},
 		className: {
 			control: 'text',
 			description: 'Additional CSS class names',
@@ -64,7 +56,7 @@ type Story = StoryObj<typeof DsNumberInput>;
 export const Default: Story = {
 	args: {
 		placeholder: 'Enter number',
-		defaultValue: '0',
+		defaultValue: 0,
 		style: { width: '200px' },
 	},
 };
@@ -72,7 +64,7 @@ export const Default: Story = {
 export const WithMinMax: Story = {
 	args: {
 		placeholder: 'Enter number',
-		defaultValue: '50',
+		defaultValue: 50,
 		min: 0,
 		max: 100,
 		step: 1,
@@ -162,7 +154,12 @@ export const Controlled: Story = {
 
 		return (
 			<div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
-				<DsNumberInput {...args} value={String(value)} onValueChange={(newValue) => setValue(newValue)} />
+				<DsNumberInput
+					{...args}
+					value={value}
+					defaultValue={0}
+					onValueChange={(newValue) => setValue(newValue)}
+				/>
 				{value !== undefined && <div>Current value: {value}</div>}
 				<button onClick={() => setValue(0)}>Reset to 0</button>
 				<button onClick={() => setValue(100)}>Set to 100</button>
@@ -225,7 +222,7 @@ export const Small: Story = {
 	args: {
 		size: 'small',
 		placeholder: 'Small number input',
-		defaultValue: '10',
+		defaultValue: 10,
 		style: { width: '150px' },
 	},
 };
@@ -233,17 +230,8 @@ export const Small: Story = {
 export const Disabled: Story = {
 	args: {
 		placeholder: 'Disabled input',
-		defaultValue: '25',
+		defaultValue: 25,
 		disabled: true,
-		style: { width: '200px' },
-	},
-};
-
-export const ReadOnly: Story = {
-	args: {
-		placeholder: 'Read-only input',
-		defaultValue: '42',
-		readOnly: true,
 		style: { width: '200px' },
 	},
 };

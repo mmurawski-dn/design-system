@@ -1,36 +1,43 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { useState } from 'react';
-import { DsTextInput } from './index';
+import DsTextInput from './ds-text-input';
+import { DsIcon } from '../ds-icon';
+import { textInputSizes } from './ds-text-input.types';
 
 const meta: Meta<typeof DsTextInput> = {
 	title: 'Design System/TextInput',
 	component: DsTextInput,
 	parameters: {
 		layout: 'centered',
+		docs: {
+			description: {
+				component:
+					'A flexible text input component that supports compound components for customizable start and end adornments.',
+			},
+		},
 	},
 	tags: ['autodocs'],
 	argTypes: {
-		type: {
-			control: { type: 'select' },
-			options: ['text', 'email', 'password', 'number', 'tel', 'url'],
-		},
 		size: {
 			control: { type: 'select' },
-			options: ['small', 'default'],
-		},
-		leftIcon: {
-			control: { type: 'text' },
-		},
-		rightIcon: {
-			control: { type: 'text' },
+			options: textInputSizes,
+			description: 'The size of the input field',
 		},
 		disabled: {
-			control: { type: 'boolean' },
+			control: 'boolean',
+			description: 'Whether the input is disabled',
 		},
-		readOnly: {
-			control: { type: 'boolean' },
+		placeholder: {
+			control: 'text',
+			description: 'The placeholder text',
 		},
+		value: {
+			control: 'text',
+			description: 'The current value',
+		},
+		onChange: { action: 'changed' },
+		onValueChange: { action: 'value changed' },
 	},
 };
 
@@ -39,13 +46,13 @@ type Story = StoryObj<typeof DsTextInput>;
 
 export const Default: Story = {
 	args: {
-		type: 'text',
-		placeholder: 'Enter text',
+		placeholder: 'Enter text...',
+		size: 'default',
 		style: { width: '200px' },
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		const input = canvas.getByPlaceholderText('Enter text');
+		const input = canvas.getByPlaceholderText('Enter text...');
 
 		// Test basic input functionality
 		await userEvent.type(input, 'Hello World');
@@ -56,68 +63,25 @@ export const Default: Story = {
 	},
 };
 
-export const WithLeftIcon: Story = {
-	args: {
-		type: 'text',
-		leftIcon: 'search',
-		placeholder: 'Search...',
-		style: { width: '200px' },
-	},
-};
-
-export const WithRightIcon: Story = {
-	args: {
-		type: 'text',
-		rightIcon: 'info',
-		placeholder: 'With right icon',
-		style: { width: '200px' },
-	},
-};
-
-export const Email: Story = {
-	args: {
-		type: 'email',
-		placeholder: 'Enter email address',
-		style: { width: '200px' },
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const input = canvas.getByPlaceholderText('Enter email address');
-
-		// Test email input
-		await userEvent.type(input, 'test@example.com');
-		await expect(input).toHaveValue('test@example.com');
-		await expect(input).toHaveAttribute('type', 'email');
-
-		// Reset
-		await userEvent.clear(input);
-	},
-};
-
 export const Small: Story = {
 	args: {
-		type: 'text',
 		size: 'small',
-		placeholder: 'Small input',
+		placeholder: 'Small input...',
 		style: { width: '150px' },
+	},
+};
+
+export const WithValue: Story = {
+	args: {
+		value: 'Hello World',
+		placeholder: 'Enter text...',
 	},
 };
 
 export const Disabled: Story = {
 	args: {
-		type: 'text',
 		placeholder: 'Disabled input',
 		disabled: true,
-		style: { width: '200px' },
-	},
-};
-
-export const ReadOnly: Story = {
-	args: {
-		type: 'text',
-		placeholder: 'Read-only input',
-		readOnly: true,
-		value: 'This is read-only text',
 		style: { width: '200px' },
 	},
 };
@@ -171,5 +135,183 @@ export const Controlled: Story = {
 			await expect(input).toHaveValue('');
 			await expect(valueDisplay).toHaveTextContent('Current value:');
 		});
+	},
+};
+
+export const WithStartAdornment: Story = {
+	render: function Render() {
+		const [value, setValue] = useState('');
+
+		return (
+			<DsTextInput size="default">
+				<DsTextInput.Adornment position="start">
+					<span
+						style={{
+							color: 'var(--color-font-secondary)',
+							fontSize: '12px',
+							fontWeight: 'bold',
+						}}
+					>
+						$
+					</span>
+				</DsTextInput.Adornment>
+				<DsTextInput.Input placeholder="Enter amount..." value={value} onValueChange={setValue} />
+			</DsTextInput>
+		);
+	},
+};
+
+export const WithEndAdornment: Story = {
+	render: function Render() {
+		const [value, setValue] = useState('');
+
+		return (
+			<DsTextInput size="default">
+				<DsTextInput.Input placeholder="Enter text..." value={value} onValueChange={setValue} />
+				<DsTextInput.Adornment position="end">
+					<button type="button" onClick={() => setValue('')}>
+						<DsIcon icon="close" size="tiny" />
+					</button>
+				</DsTextInput.Adornment>
+			</DsTextInput>
+		);
+	},
+};
+
+export const WithBothAdornments: Story = {
+	render: function Render() {
+		const [value, setValue] = useState('');
+
+		return (
+			<DsTextInput size="default">
+				<DsTextInput.Adornment position="start">
+					<DsIcon icon="search" size="tiny" />
+				</DsTextInput.Adornment>
+				<DsTextInput.Input placeholder="Search..." value={value} onValueChange={setValue} />
+				<DsTextInput.Adornment position="end">
+					<button type="button" onClick={() => setValue('')}>
+						<DsIcon icon="close" size="tiny" />
+					</button>
+				</DsTextInput.Adornment>
+			</DsTextInput>
+		);
+	},
+};
+
+export const CustomEmailAdornments: Story = {
+	name: 'Custom Adornments (Email)',
+	render: function Render() {
+		const [value, setValue] = useState('');
+
+		return (
+			<DsTextInput size="small">
+				<DsTextInput.Adornment
+					position="start"
+					style={{
+						backgroundColor: 'var(--color-background-action-weak)',
+						borderRadius: '4px',
+						padding: '2px 6px',
+					}}
+				>
+					<span
+						style={{
+							fontSize: '12px',
+							color: 'var(--color-font-secondary)',
+							fontWeight: 'bold',
+						}}
+					>
+						@
+					</span>
+				</DsTextInput.Adornment>
+				<DsTextInput.Input
+					type="email"
+					placeholder="Enter email address..."
+					value={value}
+					onValueChange={setValue}
+				/>
+				<DsTextInput.Adornment position="end">
+					<button type="button" onClick={() => console.log('Send clicked')}>
+						<DsIcon icon="send" size="tiny" filled={!!value} />
+					</button>
+				</DsTextInput.Adornment>
+			</DsTextInput>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const input = canvas.getByPlaceholderText('Enter email address...');
+
+		// Test email input
+		await userEvent.type(input, 'test@example.com');
+		await expect(input).toHaveValue('test@example.com');
+		await expect(input).toHaveAttribute('type', 'email');
+
+		// Reset
+		await userEvent.clear(input);
+	},
+};
+
+export const DisabledAdornments: Story = {
+	render: function Render() {
+		return (
+			<DsTextInput size="default" disabled={true}>
+				<DsTextInput.Adornment position="start">
+					<button type="button" disabled={true}>
+						<DsIcon icon="lock" size="tiny" />
+					</button>
+				</DsTextInput.Adornment>
+				<DsTextInput.Input value="Disabled value" />
+				<DsTextInput.Adornment position="end">
+					<button type="button" disabled={true}>
+						<DsIcon icon="visibility" size="tiny" />
+					</button>
+				</DsTextInput.Adornment>
+			</DsTextInput>
+		);
+	},
+};
+
+export const Interactive: Story = {
+	args: {
+		style: { width: '400px' },
+	},
+	render: function Render() {
+		const [value, setValue] = useState('');
+		const [showClear, setShowClear] = useState(false);
+
+		const handleValueChange = (newValue: string) => {
+			setValue(newValue);
+			setShowClear(newValue.length > 0);
+		};
+
+		const handleClear = () => {
+			setValue('');
+			setShowClear(false);
+		};
+
+		return (
+			<>
+				<DsTextInput size="default" style={{ width: '200px' }}>
+					<DsTextInput.Adornment position="start">
+						<DsIcon icon="search" size="tiny" />
+					</DsTextInput.Adornment>
+					<DsTextInput.Input
+						placeholder="Type something..."
+						value={value}
+						onValueChange={handleValueChange}
+					/>
+					<DsTextInput.Adornment position="end">
+						{showClear && (
+							<button type="button" onClick={handleClear}>
+								<DsIcon icon="close" size="tiny" />
+							</button>
+						)}
+					</DsTextInput.Adornment>
+				</DsTextInput>
+				<div style={{ marginTop: '8px', fontSize: '12px', color: 'var(--color-font-secondary)' }}>
+					Character count: {value.length}
+				</div>
+			</>
+		);
 	},
 };
