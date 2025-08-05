@@ -85,3 +85,39 @@
 		background: var(--neutral-2);
 	}
 }
+
+.badge {
+	display: flex;
+	padding: 6px 8px;
+	align-items: center;
+	color: white;
+	gap: 4px;
+	border-radius: 100px;
+	border: 1px solid white;
+	background: var(--system-status-ok);
+	text-transform: inherit;
+
+	.dot {
+		display: none;
+	}
+
+	&.healthy {
+		background: var(--system-status-ok);
+	}
+
+	&.neutral {
+		background: var(--system-status-info);
+	}
+
+	&.pending {
+		background: var(--system-status-pending);
+	}
+
+	&.in-progress {
+		background: var(--system-status-in-progress);
+	}
+
+	.label {
+		@extend .body-sm-reg;
+	}
+}

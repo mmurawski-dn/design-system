@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './ds-system-status.module.scss';
 import { DsSystemStatusProps } from './ds-system-status.types';
+import { DsIcon } from '../ds-icon';
 
 const defaultLabels: Record<DsSystemStatusProps['status'], string> = {
 	healthy: 'HEALTHY',
@@ -13,10 +14,19 @@ const defaultLabels: Record<DsSystemStatusProps['status'], string> = {
 	disabled: 'DISABLED',
 };
 
-const DsSystemStatus: React.FC<DsSystemStatusProps> = ({ status, label, className }) => {
+const DsSystemStatus: React.FC<DsSystemStatusProps> = ({
+	status,
+	label,
+	className,
+	varient = 'default',
+	icon,
+}) => {
 	return (
-		<div className={classNames(styles.container, styles[status], className)}>
-			<span className={styles.dot} />
+		<div
+			className={classNames(styles.container, styles[status], varient === 'badge' && styles.badge, className)}
+		>
+			{icon && <DsIcon icon={icon} size="small" filled />}
+			{!icon && <span className={styles.dot} />}
 			<span className={styles.label}>{label || defaultLabels[status]}</span>
 		</div>
 	);

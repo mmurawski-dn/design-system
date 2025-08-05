@@ -1,3 +1,5 @@
+import { IconType } from '../ds-icon/ds-icon.types';
+
 export const systemStatuses = [
 	'healthy',
 	'neutral',
@@ -23,4 +25,10 @@ export interface DsSystemStatusProps {
 	 * Additional CSS class names
 	 */
 	className?: string;
+	/**
+	 * The icon to be displayed
+	 */
+	icon?: IconType;
+
+	varient?: 'default' | 'badge';
 }
