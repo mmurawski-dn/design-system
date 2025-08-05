@@ -9,7 +9,7 @@ import { useDsTableContext } from '../../context/ds-table-context';
 
 const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 	const { stickyHeader, bordered, expandable, selectable, reorderable, showSelectAllCheckbox } =
-		useDsTableContext<TData>();
+		useDsTableContext<TData, unknown>();
 
 	return (
 		<TableHeader className={classnames(stickyHeader && styles.stickyHeader)}>

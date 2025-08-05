@@ -279,8 +279,7 @@ export const Sortable: Story = {
 
 export const Expandable: Story = {
 	args: {
-		expandable: true,
-		isRowExpandable: (row) => row.firstName !== 'Tanner',
+		expandable: (row) => row.firstName !== 'Tanner',
 		renderExpandedRow: (row) => (
 			<div className={styles.expandedRowDetails}>
 				<h4>Expanded Details for {row.firstName}</h4>

@@ -113,14 +113,9 @@ export interface DataTableProps<TData, TValue> {
 	highlightOnHover?: boolean;
 
 	/**
-	 * Whether the table is expandable
+	 * Whether the table is expandable or if an individual row should be expandable
 	 */
-	expandable?: boolean;
-
-	/**
-	 * Optional function to determine if an individual row should be expandable
-	 */
-	isRowExpandable?: (row: TData) => boolean;
+	expandable?: boolean | ((row: TData) => boolean);
 
 	/**
 	 * Function to render the expanded row

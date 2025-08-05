@@ -39,7 +39,6 @@ const DsRowDragHandle = ({ isDragging, attributes, listeners }: DsRowDragHandleP
 const DsTableRow = <TData, TValue>({ row, virtualRow }: TableRowProps<TData>) => {
 	const {
 		expandable,
-		isRowExpandable,
 		expandedRows,
 		selectable,
 		reorderable,
@@ -52,10 +51,10 @@ const DsTableRow = <TData, TValue>({ row, virtualRow }: TableRowProps<TData>) =>
 		toggleRowExpanded,
 		primaryRowActions,
 		secondaryRowActions,
-	} = useDsTableContext<TData>();
+	} = useDsTableContext<TData, TValue>();
+	const isExpanded = expandedRows[row.id];
+	const isExpandable = typeof expandable === 'function' ? expandable(row.original) : expandable;
 
-	const isExpanded = expandable && expandedRows[row.id];
-	const isExpandable = isRowExpandable ? isRowExpandable(row.original) : expandable;
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
 		id: row.id,
 		disabled: !reorderable,
