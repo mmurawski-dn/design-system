@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fireEvent, userEvent, within } from '@storybook/test';
 import DsDropdown from './ds-dropdown';
-import { delay, DsIcon } from '@design-system/ui';
+import { delay, DsDropdownProps, DsIcon } from '@design-system/ui';
 import './ds-dropdown.stories.scss';
 
 const meta: Meta<typeof DsDropdown> = {
@@ -27,6 +27,10 @@ const meta: Meta<typeof DsDropdown> = {
 export default meta;
 type Story = StoryObj<typeof DsDropdown>;
 
+type ExtendedProps = DsDropdownProps & {
+	__reset?: () => Promise<void>;
+};
+
 export const Default: Story = {
 	parameters: {
 		docs: {
@@ -44,11 +48,11 @@ export const Default: Story = {
 		],
 		contentGap: 4,
 	},
-	render: (args) => {
+	render: function Render(args) {
 		const [selected, setSelected] = useState<string>('');
 		const selectedOption = args.options.find((opt) => opt.href === selected);
 
-		(args as any).__reset = async () => {
+		(args as ExtendedProps).__reset = async () => {
 			setSelected('');
 			await delay(100);
 		};
@@ -64,7 +68,6 @@ export const Default: Story = {
 	},
 	play: async ({ canvasElement, args }) => {
 		const canvas = within(canvasElement);
-		const reset = (args as any).__reset;
 
 		// Check initial state - no option selected
 		await expect(canvas.getByText('Choose an option')).toBeInTheDocument();
@@ -104,7 +107,7 @@ export const Default: Story = {
 		await userEvent.keyboard('{Escape}');
 
 		// Reset selection using the wrapper's reset method
-		await reset();
+		await (args as ExtendedProps).__reset?.();
 
 		// Verify trigger shows placeholder after reset
 		await expect(canvas.getByRole('button', { name: /Choose an option/ })).toBeInTheDocument();

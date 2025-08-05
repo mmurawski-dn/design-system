@@ -36,6 +36,7 @@ const DsRowDragHandle = ({ isDragging, attributes, listeners }: DsRowDragHandleP
 	);
 };
 
+
 const DsTableRow = <TData, TValue>({ row, virtualRow }: TableRowProps<TData>) => {
 	const {
 		expandable,

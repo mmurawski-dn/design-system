@@ -66,7 +66,7 @@ export const Showcase: Story = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-	render: () => {
+	render: function Render() {
 		const [searchTerm, setSearchTerm] = useState('');
 		const [iconsByCategory, setIconsByCategory] = useState<IconsByCategory>({});
 		const [isLoading, setIsLoading] = useState(true);
@@ -74,7 +74,7 @@ export const Showcase: Story = {
 		const [usedFallback, setUsedFallback] = useState(false);
 
 		// Process icon data into categories
-		const processIconData = (data: Record<string, any>) => {
+		const processIconData = (data: Record<string, number>) => {
 			const categorizedIcons: IconsByCategory = {};
 
 			Object.keys(data).forEach((key) => {
@@ -201,7 +201,7 @@ export const Showcase: Story = {
 								<h2 className="category-title">{category}</h2>
 								<div className="results">
 									{filteredCategories[category].map((iconName) => (
-										<div
+										<button
 											key={`${category}-${iconName}`}
 											className="icon-wrapper"
 											onClick={() => handleIconClick(iconName)}
@@ -209,7 +209,7 @@ export const Showcase: Story = {
 										>
 											<DsIcon icon={iconName} size="medium" />
 											<span className="icon-name">{iconName}</span>
-										</div>
+										</button>
 									))}
 								</div>
 							</div>

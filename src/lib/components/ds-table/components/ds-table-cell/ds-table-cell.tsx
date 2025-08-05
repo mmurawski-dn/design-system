@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Cell, flexRender } from '@tanstack/react-table';
 import classnames from 'classnames';
 import { DsDropdownMenu, DsIcon } from '@design-system/ui';
@@ -28,7 +27,7 @@ export const DsTableCell = <TData, TValue>({
 					{primaryRowActions.map((action, i) => {
 						const isDisabled = action.disabled?.(row.original);
 						return (
-							<span
+							<button
 								key={action.label || i}
 								className={classnames(styles.rowActionIcon, { [styles.disabled]: isDisabled })}
 								title={action.tooltip || action.label}
@@ -40,17 +39,16 @@ export const DsTableCell = <TData, TValue>({
 									action.onClick(row.original);
 								}}
 								tabIndex={isDisabled ? -1 : 0}
-								role="button"
 								aria-label={action.label}
 								aria-disabled={isDisabled}
 							>
 								<DsIcon icon={action.icon} />
-							</span>
+							</button>
 						);
 					})}
 					{hasSecondaryRowActions && (
 						<DsDropdownMenu
-							options={secondaryRowActions.map((action, i) => ({
+							options={secondaryRowActions.map((action) => ({
 								label: action.label,
 								icon: action.icon,
 								disabled: action.disabled?.(row.original),

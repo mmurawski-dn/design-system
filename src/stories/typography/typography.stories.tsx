@@ -16,7 +16,7 @@ type Story = StoryObj<typeof meta>;
 const sampleText = 'Almost before we knew it, we had left the ground.';
 
 export const Default: Story = {
-	render: () => {
+	render: function Render() {
 		const typographyClasses = [
 			{
 				name: 'Heading 1',
@@ -147,7 +147,7 @@ export const Default: Story = {
 };
 
 export const Comparison: Story = {
-	render: () => {
+	render: function Render() {
 		const headingClasses = ['heading1', 'heading2', 'heading3', 'heading4'];
 		const bodyClasses = ['body-md-reg', 'body-sm-reg', 'body-xs-reg'];
 		const codeClasses = ['code-sm-reg', 'code-xs-reg'];

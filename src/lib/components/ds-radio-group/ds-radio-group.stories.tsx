@@ -54,7 +54,6 @@ export const Default: Story = {
 		// Locate the radio buttons by their role
 		const option1 = await canvas.findByRole('radio', { name: /Option 1/i });
 		const option2 = await canvas.findByRole('radio', { name: /Option 2/i });
-		const option3 = await canvas.findByRole('radio', { name: /Option 3/i });
 
 		// Assert that Option 1 is initially selected
 		await expect(option1).toBeChecked();

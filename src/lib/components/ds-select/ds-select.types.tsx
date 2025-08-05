@@ -54,7 +54,7 @@ export interface DsSelectProps {
 	 *
 	 * @param event
 	 */
-	onBlur?: (event: React.FocusEvent<any>) => void;
+	onBlur?: (event: React.FocusEvent) => void;
 	/**
 	 * Placeholder text to display when no option is selected
 	 */

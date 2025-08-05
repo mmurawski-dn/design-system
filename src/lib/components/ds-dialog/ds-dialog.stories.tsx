@@ -53,7 +53,7 @@ export default meta;
 type Story = StoryObj<typeof DsDialog>;
 
 export const Centered: Story = {
-	render: (args) => {
+	render: function Render(args) {
 		const [open, setOpen] = React.useState(false);
 		return (
 			<>
@@ -88,7 +88,7 @@ export const Centered: Story = {
 };
 
 export const CustomPosition: Story = {
-	render: (args) => {
+	render: function Render(args) {
 		const [open, setOpen] = React.useState(false);
 
 		return (

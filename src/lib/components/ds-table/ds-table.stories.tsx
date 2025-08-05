@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useMemo, useState } from 'react';
+
+import { useMemo, useRef, useState } from 'react';
 import { ColumnDef, ColumnFiltersState, Table } from '@tanstack/react-table';
 import classnames from 'classnames';
 import DsIcon from '../ds-icon/ds-icon';
@@ -327,8 +328,8 @@ export const ProgrammaticRowSelection: Story = {
 		onSelectionChange: (selectedRows) => console.log('Selected rows:', selectedRows),
 	},
 	render: function Render(args) {
-		const tableRef = React.useRef<Table<any>>(null);
-		const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+		const tableRef = useRef<Table<any>>(null);
+		const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
 		const handleTableCreated = (table: any) => {
 			tableRef.current = table;
@@ -608,17 +609,15 @@ export const TabFilters: Story = {
 			},
 		};
 
-		const tableColumns = useMemo(() => {
-			return args.columns.map((col) =>
-				(col as { accessorKey: string }).accessorKey === 'status' ? statusColumnDef : col,
-			);
-		}, [args.columns]);
+		const tableColumns = args.columns.map((col) =>
+			(col as { accessorKey: string }).accessorKey === 'status' ? statusColumnDef : col,
+		);
 
 		return (
 			<div className={styles.tableFilterContainer}>
 				<div className={styles.tabFilterContainer}>
 					{tabs.map((tab) => (
-						<div
+						<button
 							key={tab.name}
 							className={classnames(styles.tab, {
 								[styles.active]: activeTab === tab.value,
@@ -628,7 +627,7 @@ export const TabFilters: Story = {
 							<DsIcon icon={tab.icon} size="small" />
 							<span className={styles.title}>{tab.name}</span>
 							<span className={styles.total}>{getTabTotal(tab.value)}</span>
-						</div>
+						</button>
 					))}
 				</div>
 				<div className={styles.table}>

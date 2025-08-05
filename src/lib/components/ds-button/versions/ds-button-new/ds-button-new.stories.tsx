@@ -79,7 +79,7 @@ export const Showcase: Story = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-	render: () => {
+	render: function Render() {
 		const defaultButtonChildren = (
 			<>
 				<DsIcon icon="check_circle" size="tiny" />

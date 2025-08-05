@@ -53,7 +53,7 @@ export interface DsFormControlProps
 	 *
 	 * @param event
 	 */
-	onBlur?: (event: React.FocusEvent<any>) => void;
+	onBlur?: (event: React.FocusEvent) => void;
 	/**
 	 * Element type to render: 'input' or 'textarea'
 	 * @default 'input'

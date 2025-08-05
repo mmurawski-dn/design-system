@@ -1,14 +1,13 @@
-import React from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DsButton, DsCheckbox, DsFormControl, DsRadioGroup } from '@design-system/ui';
+import { DsButton, DsCheckbox, DsCheckboxProps, DsFormControl, DsRadioGroup } from '@design-system/ui';
 import { sampleFormSchema, SampleFormValues, SubscriptionType } from './sampleFormSchema';
 
 const defaultValues = {
 	name: '',
 	email: '',
 	description: '',
-	acceptTerms: false as any,
+	acceptTerms: false,
 	subscription: undefined,
 	contactMethod: '',
 };
@@ -50,8 +49,8 @@ const SampleForm = () => {
 		});
 	};
 
-	const handleCheckboxChange = (val: any) => {
-		setValue('acceptTerms', val, {
+	const handleCheckboxChange = (checked: DsCheckboxProps['checked']) => {
+		setValue('acceptTerms', checked as never, {
 			shouldValidate: true,
 			shouldTouch: true,
 		});
