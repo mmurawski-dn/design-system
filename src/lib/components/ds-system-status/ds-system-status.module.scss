@@ -116,6 +116,9 @@
 	&.in-progress {
 		background: var(--system-status-in-progress);
 	}
+	&.archived {
+		background: var(--system-status-archived);
+	}
 
 	.label {
 		@extend .body-sm-reg;
