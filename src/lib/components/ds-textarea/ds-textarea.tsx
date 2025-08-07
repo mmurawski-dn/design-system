@@ -9,6 +9,7 @@ const DsTextarea: React.FC<DsTextareaProps> = ({
 	className,
 	style = {},
 	value,
+	defaultValue,
 	disabled = false,
 	rows = 3,
 	placeholder,
@@ -26,6 +27,7 @@ const DsTextarea: React.FC<DsTextareaProps> = ({
 			className={classNames(styles.textarea, className)}
 			style={style}
 			value={value}
+			defaultValue={defaultValue}
 			placeholder={placeholder}
 			disabled={disabled}
 			rows={rows}

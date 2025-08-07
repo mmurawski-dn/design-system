@@ -26,6 +26,11 @@ export interface DsTextareaProps {
 	 */
 	value?: string;
 	/**
+	 * The initial value of the input when rendered.
+	 * Use when you don't need to control the value of the input.
+	 */
+	defaultValue?: string;
+	/**
 	 * Whether the textarea is disabled
 	 */
 	disabled?: boolean;
