@@ -9,3 +9,55 @@
 	box-shadow: 0 1.25px 4px 0 rgba(0, 0, 0, 0.2509803922);
 	border-radius: 4px;
 }
+
+.navigation-grid {
+	background: var(--color-secondary-100);
+}
+
+.layout {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+
+	.header {
+		display: flex;
+		height: 50px;
+
+		.logo {
+			display: flex;
+			justify-content: center;
+			width: 256px;
+			background: var(--color-secondary-300);
+
+			.toggle {
+				align-self: center;
+			}
+		}
+
+		.title {
+			background: var(--color-secondary-200);
+			flex: 1;
+		}
+	}
+}
+
+.main {
+	display: flex;
+	flex: 1;
+
+	.sidebar {
+		width: 256px;
+		background: var(--color-secondary-400);
+		transition: width 0.3s ease;
+
+		&.collapsed {
+			width: 50px;
+		}
+	}
+}
+
+.content-wrapper {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
