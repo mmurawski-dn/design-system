@@ -4,37 +4,45 @@ export function vitePluginDsMaterialIconsFont(): Plugin {
 	return {
 		name: 'vite-plugin-ds-material-icons-font',
 		transformIndexHtml(html) {
+			const stylesheets = [
+				'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0..1,0&display=block',
+				'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0..1,0&display=block',
+			];
+
+			const preconnect = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
+
 			return {
 				html,
 				tags: [
-					{
+					...preconnect.map((href) => ({
 						tag: 'link',
 						attrs: {
-							rel: 'preload',
-							href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0..1,0',
-							as: 'style',
-							onload: "this.onload=null;this.rel='stylesheet'",
+							rel: 'preconnect',
+							href,
+							crossorigin: '',
 						},
-						injectTo: 'head',
-					},
-					{
-						tag: 'link',
-						attrs: {
-							rel: 'preload',
-							href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0..1,0',
-							as: 'style',
-							onload: "this.onload=null;this.rel='stylesheet'",
+						injectTo: 'head' as const,
+					})),
+
+					...stylesheets.flatMap((href) => [
+						{
+							tag: 'link',
+							attrs: {
+								rel: 'preload',
+								as: 'style',
+								href,
+							},
+							injectTo: 'head' as const,
 						},
-						injectTo: 'head',
-					},
-					{
-						tag: 'noscript',
-						children: `
-							<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" />
-							<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" />
-						`.trim(),
-						injectTo: 'head',
-					},
+						{
+							tag: 'link',
+							attrs: {
+								rel: 'stylesheet',
+								href,
+							},
+							injectTo: 'head' as const,
+						},
+					]),
 				],
 			};
 		},
