@@ -10,10 +10,6 @@ const meta: Meta<typeof DsTextarea> = {
 	},
 	tags: ['autodocs'],
 	argTypes: {
-		tooltip: {
-			control: 'text',
-			description: 'Tooltip content to display on hover',
-		},
 		className: {
 			control: 'text',
 			description: 'Additional CSS class names',
@@ -55,7 +51,6 @@ type Story = StoryObj<typeof DsTextarea>;
 export const Default: Story = {
 	args: {
 		placeholder: 'Enter your text here...',
-		tooltip: 'Sample tooltip',
 		rows: 3,
 	},
 	play: async ({ canvasElement }) => {

@@ -3,7 +3,7 @@ import { DsPanel } from './ds-panel';
 import { DsButton } from '../ds-button/';
 import { useState } from 'react';
 import { expect, userEvent } from '@storybook/test';
-import { DsStepperVariant } from '@design-system/ui';
+import { DsPanelVariant } from '@design-system/ui';
 
 export default {
 	title: 'Design System/Panel',
@@ -40,8 +40,8 @@ export const Default: Story = {
 	play: async ({ canvas, step, args, initialArgs }) => {
 		const panelTrigger = canvas.getByLabelText('Toggle panel');
 
-		const testVariant = async (variant: DsStepperVariant) => {
-			args.variant = 'docked';
+		const testVariant = async (variant: DsPanelVariant) => {
+			args.variant = variant;
 
 			await step(`Close Panel - ${variant}`, async () => {
 				await userEvent.click(panelTrigger);

@@ -4,6 +4,7 @@
   "sourceRoot": "libs/web/src",
   "projectType": "library",
   "targets": {
+    "check-types": {},
     "check-format": {},
     "format": {},
     "nx-release-publish": {
