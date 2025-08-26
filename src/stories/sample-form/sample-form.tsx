@@ -57,7 +57,7 @@ const SampleForm = () => {
 					id="name"
 					label="Name"
 					required
-					schema="error"
+					status="error"
 					messageIcon="cancel"
 					message={touchedFields.name ? errors.name?.message : undefined}
 				>
@@ -78,7 +78,7 @@ const SampleForm = () => {
 				<DsFormControl
 					label="Email"
 					required
-					schema="error"
+					status="error"
 					messageIcon="cancel"
 					message={touchedFields.email ? errors.email?.message : undefined}
 				>
@@ -100,7 +100,7 @@ const SampleForm = () => {
 				<DsFormControl
 					label="Quantity"
 					required
-					schema="error"
+					status="error"
 					messageIcon="cancel"
 					message={touchedFields.quantity ? errors.quantity?.message : undefined}
 				>
@@ -122,7 +122,7 @@ const SampleForm = () => {
 				<DsFormControl
 					label="Preferred Contact Method"
 					required
-					schema="error"
+					status="error"
 					messageIcon="cancel"
 					message={touchedFields.contactMethod ? errors.contactMethod?.message : undefined}
 				>
@@ -149,7 +149,7 @@ const SampleForm = () => {
 				<DsFormControl
 					label="Description"
 					required
-					schema="error"
+					status="error"
 					messageIcon="cancel"
 					message={touchedFields.description ? errors.description?.message : undefined}
 				>

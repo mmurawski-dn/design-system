@@ -51,17 +51,15 @@ const DsNumberInput: FC<DsNumberInputProps> = ({
 						</button>
 					</NumberInput.DecrementTrigger>
 
-					<NumberInput.Input asChild>
-						<input
-							ref={ref}
-							name={name}
-							type="number"
-							className={classNames(styles.input)}
-							placeholder={placeholder}
-							onBlur={onBlur}
-							onChange={onChange}
-						/>
-					</NumberInput.Input>
+					<NumberInput.Input
+						ref={ref}
+						name={name}
+						type="number"
+						className={classNames(styles.input)}
+						placeholder={placeholder}
+						onBlur={onBlur}
+						onChange={onChange}
+					></NumberInput.Input>
 
 					<NumberInput.IncrementTrigger asChild>
 						<button type="button" className={classNames(styles.iconButton)} aria-label="Increase value">
