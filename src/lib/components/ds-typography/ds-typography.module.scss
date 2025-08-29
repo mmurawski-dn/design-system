@@ -1,0 +1,259 @@
+/* Semantic variant classes */
+@mixin font-base {
+	font-family: var(--font-family-base);
+	font-style: normal;
+	letter-spacing: 0;
+}
+
+@mixin link-base {
+	text-decoration-line: underline;
+	text-decoration-style: solid;
+	text-decoration-skip-ink: none;
+	text-decoration-thickness: auto;
+	text-underline-offset: auto;
+	text-underline-position: from-font;
+}
+
+@mixin code-base {
+	font-family: var(--font-family-code);
+	font-style: normal;
+	letter-spacing: 0;
+	text-align: left;
+	// Enable ligatures for better code readability
+	font-feature-settings:
+		'liga' 1,
+		'calt' 1;
+}
+
+.heading1 {
+	@include font-base;
+	font-size: var(--font-size-3xl);
+	font-weight: var(--font-weight-semi-bold);
+	line-height: var(--line-height-3xl);
+	letter-spacing: var(--letter-spacing--1percent);
+}
+
+.heading2 {
+	@include font-base;
+	font-size: var(--font-size-2xl);
+	font-weight: var(--font-weight-semi-bold);
+	line-height: var(--line-height-2xl);
+	letter-spacing: var(--letter-spacing--1percent);
+}
+
+.heading3 {
+	@include font-base;
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-semi-bold);
+	line-height: var(--line-height-xl);
+	letter-spacing: var(--letter-spacing--1percent);
+}
+
+.heading4 {
+	@include font-base;
+	font-size: var(--font-size-large);
+	font-weight: var(--font-weight-semi-bold);
+	line-height: var(--line-height-large);
+	letter-spacing: var(--letter-spacing--1percent);
+}
+
+@mixin body-md($font-weight: var(--font-weight-regular)) {
+	@include font-base;
+	font-size: var(--font-size-md);
+	font-weight: $font-weight;
+	line-height: var(--line-height-md);
+	letter-spacing: var(--letter-spacing--1percent);
+}
+
+.body-md-reg {
+	@include body-md;
+}
+
+.body-md-md {
+	@include body-md(var(--font-weight-medium));
+}
+
+.body-md-semi-bold {
+	@include body-md(var(--font-weight-semi-bold));
+}
+
+.body-md-bold {
+	@include body-md(var(--font-weight-bold));
+}
+
+.body-md-link {
+	@include body-md;
+	@include link-base;
+}
+
+@mixin body-sm($font-weight: var(--font-weight-regular)) {
+	@include font-base;
+	font-size: var(--font-size-sm);
+	font-weight: $font-weight;
+	line-height: var(--line-height-sm);
+	letter-spacing: var(--letter-spacing--1percent);
+}
+
+.body-sm-reg {
+	@include body-sm;
+}
+
+.body-sm-md {
+	@include body-sm(var(--font-weight-medium));
+}
+
+.body-sm-semi-bold {
+	@include body-sm(var(--font-weight-semi-bold));
+}
+
+.body-sm-bold {
+	@include body-sm(var(--font-weight-bold));
+}
+
+.body-sm-link {
+	@include body-sm;
+	@include link-base;
+}
+
+@mixin body-xs($font-weight: var(--font-weight-regular)) {
+	@include font-base;
+	font-size: var(--font-size-xs);
+	font-weight: $font-weight;
+	line-height: var(--line-height-xs);
+}
+
+.body-xs-reg {
+	@include body-xs;
+}
+
+.body-xs-md {
+	@include body-xs(var(--font-weight-medium));
+}
+
+.body-xs-semi-bold {
+	@include body-xs(var(--font-weight-semi-bold));
+}
+
+.body-xs-bold {
+	@include body-xs(var(--font-weight-bold));
+}
+
+.body-xs-link {
+	@include body-xs;
+	@include link-base;
+}
+
+@mixin code-sm($font-weight: var(--font-weight-regular)) {
+	@include code-base;
+	font-size: var(--font-size-sm);
+	font-weight: $font-weight;
+	line-height: var(--line-height-sm);
+	letter-spacing: var(--letter-spacing--1percent);
+}
+
+.code-sm-reg {
+	@include code-sm;
+}
+
+.code-sm-semi-bold {
+	@include code-sm(var(--font-weight-semi-bold));
+}
+
+@mixin code-xs($font-weight: var(--font-weight-regular)) {
+	@include code-base;
+	font-size: var(--font-size-xs);
+	font-weight: $font-weight;
+	line-height: var(--line-height-xs);
+	letter-spacing: var(--letter-spacing--1percent);
+}
+
+.code-xs-reg {
+	@include code-xs;
+}
+
+.code-xs-semi-bold {
+	@include code-xs(var(--font-weight-semi-bold));
+}
+
+/* Size utility classes */
+.text-xs {
+	font-size: var(--font-size-xs);
+}
+
+.text-sm {
+	font-size: var(--font-size-sm);
+}
+
+.text-base {
+	font-size: var(--font-size-md);
+}
+
+.text-lg {
+	font-size: var(--font-size-large);
+}
+
+.text-xl {
+	font-size: var(--font-size-xl);
+}
+
+.text-2xl {
+	font-size: var(--font-size-2xl);
+}
+
+.text-4xl {
+	font-size: var(--font-size-3xl);
+}
+
+.text-5xl {
+	font-size: var(--font-size-3xl);
+}
+
+.text-6xl {
+	font-size: var(--font-size-3xl);
+}
+
+.text-8xl {
+	font-size: var(--font-size-3xl);
+}
+
+/* Weight utility classes */
+.weight-light {
+	font-weight: var(--font-weight-light);
+}
+
+.weight-regular {
+	font-weight: var(--font-weight-regular);
+}
+
+.weight-medium {
+	font-weight: var(--font-weight-medium);
+}
+
+.weight-semi-bold {
+	font-weight: var(--font-weight-semi-bold);
+}
+
+.weight-bold {
+	font-weight: var(--font-weight-bold);
+}
+
+.weight-extra-bold {
+	font-weight: var(--font-weight-extra-bold);
+}
+
+/* Alignment utility classes */
+.align-left {
+	text-align: left;
+}
+
+.align-center {
+	text-align: center;
+}
+
+.align-right {
+	text-align: right;
+}
+
+.align-justify {
+	text-align: justify;
+}
