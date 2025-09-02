@@ -1,7 +1,6 @@
 import React from 'react';
 import { semanticElementMap } from './ds-typography.config';
 
-export const semanticVariants = Object.keys(semanticElementMap);
 export type SemanticVariant = keyof typeof semanticElementMap;
 
 export interface DsTypographyProps {
@@ -14,7 +13,7 @@ export interface DsTypographyProps {
 	 */
 	className?: string;
 	/**
-	 * Additional styles to apply to the icon
+	 * Additional styles to apply to the typography component
 	 */
 	style?: React.CSSProperties;
 	/**

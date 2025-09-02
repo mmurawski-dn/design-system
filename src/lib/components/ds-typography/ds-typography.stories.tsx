@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import DsTypography from './ds-typography';
 import styles from './ds-typography.stories.module.scss';
-import { SemanticVariant, semanticVariants } from './ds-typography.types';
+import { SemanticVariant } from './ds-typography.types';
 import { semanticElementMap } from './ds-typography.config';
+
+const semanticVariants = Object.keys(semanticElementMap);
 
 const meta: Meta<typeof DsTypography> = {
 	title: 'Design System/Typography',
