@@ -16,7 +16,6 @@ $button-size-large: 40px;
 	padding-block: 0;
 	padding-inline: 0;
 	align-self: stretch;
-	max-height: fit-content;
 	border: 2px solid transparent;
 	border-radius: var(--exo-spacing-2x-small);
 
@@ -25,25 +24,24 @@ $button-size-large: 40px;
 		align-items: center;
 		justify-content: center;
 		gap: var(--exo-spacing-2x-small);
-		// We need to subtract 1px from the padding to account for the border width
-		padding: calc(var(--exo-spacing-2x-small) - 1px) calc(var(--spacing-sm) - 1px);
+		padding: 0 var(--spacing-sm);
 		border: 1px solid transparent;
 		border-radius: var(--exo-spacing-2x-small);
 		flex-grow: 1;
 	}
 
-	&.small {
+	&.small .content {
 		@include typography.body-xs-md;
-		max-height: $button-size-small;
+		height: $button-size-small;
 	}
 
-	&.medium {
-		max-height: $button-size-default;
+	&.medium .content {
+		height: $button-size-default;
 	}
 
-	&.large {
+	&.large .content {
 		@include typography.body-md-md;
-		max-height: $button-size-large;
+		height: $button-size-large;
 	}
 
 	&.iconButton {
@@ -55,17 +53,17 @@ $button-size-large: 40px;
 			padding: 0;
 		}
 
-		&.large {
+		&.large .content {
 			height: $button-size-large;
 			width: $button-size-large;
 		}
 
-		&.medium {
+		&.medium .content {
 			height: $button-size-default;
 			width: $button-size-default;
 		}
 
-		&.small {
+		&.small .content {
 			height: $button-size-small;
 			width: $button-size-small;
 		}
@@ -85,7 +83,7 @@ $button-size-large: 40px;
 			}
 		}
 
-		&:focus {
+		&:focus-visible {
 			border-color: var(--color-background-selected);
 
 			.content {
@@ -96,7 +94,6 @@ $button-size-large: 40px;
 
 		&:disabled {
 			cursor: not-allowed;
-			background: var(--color-background-disable);
 
 			.content {
 				background: var(--color-background-disable);
@@ -106,11 +103,12 @@ $button-size-large: 40px;
 	}
 
 	&.secondary-filled {
-		background: var(--color-background);
+		background: transparent;
 		border: 2px solid transparent;
 		color: var(--color-background-action);
 
 		.content {
+			background: var(--color-background);
 			border-color: var(--color-border);
 		}
 
@@ -122,14 +120,17 @@ $button-size-large: 40px;
 				}
 			}
 
-			&:focus {
+			&:focus-visible {
+				background: var(--color-background);
+
 				.content {
 					border-color: var(--color-background-action-secondary);
 				}
 			}
 		}
 
-		&:focus {
+		&:focus-visible {
+			background: var(--color-background);
 			border-color: var(--color-background-action-hover);
 
 			.content {
@@ -140,7 +141,6 @@ $button-size-large: 40px;
 
 		&:disabled {
 			cursor: not-allowed;
-			background: var(--color-background);
 			color: var(--color-background-disable);
 
 			.content {
@@ -150,11 +150,12 @@ $button-size-large: 40px;
 	}
 
 	&.tertiary-filled {
-		background: var(--color-background);
+		background: transparent;
 		border: 2px solid transparent;
 		color: var(--color-background-action);
 
 		.content {
+			background: var(--color-background);
 			border-color: transparent;
 		}
 
@@ -171,7 +172,8 @@ $button-size-large: 40px;
 			}
 		}
 
-		&:focus {
+		&:focus-visible {
+			background: var(--color-background);
 			border-color: var(--color-background-action-hover);
 
 			.content {
@@ -183,17 +185,17 @@ $button-size-large: 40px;
 
 		&:disabled {
 			cursor: not-allowed;
-			background: var(--color-background);
 			color: var(--color-background-disable);
 		}
 	}
 
 	&.secondary-ghost {
-		background: var(--color-background-action-secondary);
+		background: transparent;
 		border: 2px solid transparent;
 		color: var(--color-background-selected);
 
 		.content {
+			background: var(--color-background-action-secondary);
 			border-color: var(--color-background-selected);
 		}
 
@@ -204,14 +206,15 @@ $button-size-large: 40px;
 				}
 			}
 
-			&:focus {
+			&:focus-visible {
 				.content {
 					border-color: var(--color-background-action-secondary);
 				}
 			}
 		}
 
-		&:focus {
+		&:focus-visible {
+			background: var(--color-background);
 			border-color: var(--color-background-selected);
 
 			.content {
@@ -222,7 +225,6 @@ $button-size-large: 40px;
 
 		&:disabled {
 			cursor: not-allowed;
-			background: var(--color-background);
 			color: var(--color-background-disable);
 
 			.content {
@@ -232,11 +234,12 @@ $button-size-large: 40px;
 	}
 
 	&.tertiary-ghost {
-		background: var(--color-background);
+		background: transparent;
 		border: 2px solid transparent;
 		color: var(--color-background-selected);
 
 		.content {
+			background: var(--color-background);
 			border-color: transparent;
 		}
 
@@ -252,7 +255,8 @@ $button-size-large: 40px;
 			}
 		}
 
-		&:focus {
+		&:focus-visible {
+			background: var(--color-background);
 			border-color: var(--color-background-selected);
 
 			.content {
@@ -263,7 +267,6 @@ $button-size-large: 40px;
 
 		&:disabled {
 			cursor: not-allowed;
-			background: var(--color-background);
 			color: var(--color-background-disable);
 
 			.content {
@@ -273,19 +276,20 @@ $button-size-large: 40px;
 	}
 
 	&.primary-danger {
-		background: var(--color-background-danger-strong);
 		border: 2px solid transparent;
 		color: var(--color-font-on-action);
 
 		.content {
-			//border-color: var(--color-background-selected);
+			background: var(--color-background-danger-strong);
 		}
 
 		&:hover {
-			background: var(--color-background-danger-strong-hover);
+			.content {
+				background: var(--color-background-danger-strong-hover);
+			}
 		}
 
-		&:focus {
+		&:focus-visible {
 			border-color: var(--color-background-danger-strong);
 
 			.content {
@@ -296,20 +300,21 @@ $button-size-large: 40px;
 
 		&:disabled {
 			cursor: not-allowed;
-			background: var(--color-background-disable);
 
 			.content {
+				background: var(--color-background-disable);
 				border-color: var(--color-background-disable);
 			}
 		}
 	}
 
 	&.secondary-danger {
-		background: var(--color-background);
+		background: transparent;
 		border: 2px solid transparent;
 		color: var(--color-background-danger-strong);
 
 		.content {
+			background: var(--color-background);
 			border-color: var(--color-background-danger-strong);
 		}
 
@@ -323,14 +328,15 @@ $button-size-large: 40px;
 				}
 			}
 
-			&:focus {
+			&:focus-visible {
 				.content {
 					border-color: var(--color-background-action-secondary);
 				}
 			}
 		}
 
-		&:focus {
+		&:focus-visible {
+			background: var(--color-background);
 			border-color: var(--color-background-danger-strong);
 
 			.content {
@@ -342,7 +348,6 @@ $button-size-large: 40px;
 
 		&:disabled {
 			cursor: not-allowed;
-			background: var(--color-background);
 			color: var(--color-background-disable);
 
 			.content {
@@ -352,11 +357,12 @@ $button-size-large: 40px;
 	}
 
 	&.tertiary-danger {
-		background: var(--color-background);
+		background: transparent;
 		border: 2px solid transparent;
 		color: var(--color-background-danger-strong);
 
 		.content {
+			background: var(--color-background);
 			border-color: transparent;
 		}
 
@@ -366,14 +372,17 @@ $button-size-large: 40px;
 				background: var(--color-background-danger-weak);
 			}
 
-			&:focus {
+			&:focus-visible {
+				background: var(--color-background);
+
 				.content {
 					border-color: var(--color-background);
 				}
 			}
 		}
 
-		&:focus {
+		&:focus-visible {
+			background: var(--color-background);
 			border-color: var(--color-background-danger-strong);
 
 			.content {
