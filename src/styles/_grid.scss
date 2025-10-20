@@ -77,7 +77,7 @@ $grid-hd: (
   */
 }
 
-.ds-grid > * {
+.ds-grid > [class^='ds-grid'] {
 	grid-column: var(--col-start, auto) / span var(--col-span, 1);
 	grid-row: var(--row-start, auto) / span var(--row-span, 1);
 }
