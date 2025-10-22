@@ -1,19 +1,33 @@
 @use 'sass:map';
 @use 'sass:math';
 
-:root {
-	--grid-gutter: 16px;
-}
-
 // max columns
 $columns: 12;
 // max rows
 $rows: 8;
 
+$gutter: 16px;
+$margin-y: 16px;
+$margin-x: 20px;
+
 $grid-hd: (
-	gutter: var(--grid-gutter),
-	margin: 16px 20px,
+	gutter: $gutter,
+	margin: $margin-y $margin-x,
 );
+
+:root {
+	--grid-gutter: #{$gutter};
+	--grid-margin: #{$margin-x};
+	--grid-columns: #{$columns};
+	--grid-column-size: calc(
+		((100vw - 2 * var(--grid-margin)) - ((var(--grid-columns) - 1) * var(--grid-gutter))) /
+			var(--grid-columns)
+	);
+
+	@for $i from 1 through $columns {
+		--col-span-#{$i}: calc(#{$i} * var(--grid-column-size) + #{($i - 1)} * var(--grid-gutter));
+	}
+}
 
 @mixin grid-setup($grid-setup) {
 	gap: map.get($grid-setup, 'gutter');
