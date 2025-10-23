@@ -55,6 +55,7 @@ const DsSelect: FC<DsSelectProps> = ({
 					</div>
 					<div className={styles.triggerIcons}>
 						{selectedOption && (
+<<<<<<< HEAD
 							/*
 							 * Using a div instead of a button because:
 							 *
@@ -64,6 +65,10 @@ const DsSelect: FC<DsSelectProps> = ({
 							<div
 								role="button"
 								tabIndex={0}
+=======
+							<button
+								type="button"
+>>>>>>> origin/v25.3.1
 								onPointerDown={(e) => e.stopPropagation()}
 								onClick={(event) => {
 									event.preventDefault();
