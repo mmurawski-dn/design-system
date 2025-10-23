@@ -66,6 +66,20 @@ const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 						</TableHead>
 					)}
 					{headerGroup.headers.map((header, idx) => {
+						const getHeaderStyle = () => {
+							const hasCustomSize = header.column.getSize() !== defaultColumnSizing.size;
+							if (!hasCustomSize) return undefined;
+
+							if (virtualized) {
+								return {
+									flexBasis: header.column.getSize(),
+									flexGrow: idx === headerGroup.headers.length - 1 ? 1 : 0,
+								};
+							}
+
+							return { width: header.getSize() };
+						};
+
 						return (
 							<TableHead
 								key={header.id}
@@ -75,16 +89,7 @@ const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 									header.column.getCanSort() && styles.sortableHeader,
 								)}
 								onClick={header.column.getToggleSortingHandler()}
-								style={
-									header.column.getSize() !== defaultColumnSizing.size
-										? virtualized
-											? {
-													flexBasis: header.column.getSize(),
-													flexGrow: idx === headerGroup.headers.length - 1 ? 1 : 0,
-												}
-											: { width: header.getSize() }
-										: undefined
-								}
+								style={getHeaderStyle()}
 							>
 								{header.isPlaceholder ? null : (
 									<div className={styles.headerSortContainer}>

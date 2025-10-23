@@ -148,33 +148,36 @@ const DsTableRow = <TData, TValue>({ ref, row, virtualRow }: DsTableRowProps<TDa
 				{reorderable && (
 					<DsRowDragHandle isDragging={isDragging} attributes={attributes} listeners={listeners} />
 				)}
-				{row.getVisibleCells().map((cell, idx) => (
-					<TableCell
-						key={cell.id}
-						className={styles.tableCell}
-						style={
-							cell.column.getSize() !== defaultColumnSizing.size
-								? virtualized
-									? {
-											flexBasis: cell.column.getSize(),
-											flexGrow: idx === row.getVisibleCells().length - 1 ? 1 : 0,
-										}
-									: { width: cell.column.getSize() }
-								: undefined
+				{row.getVisibleCells().map((cell, idx) => {
+					const getCellStyle = () => {
+						const hasCustomSize = cell.column.getSize() !== defaultColumnSizing.size;
+						if (!hasCustomSize) return undefined;
+
+						if (virtualized) {
+							return {
+								flexBasis: cell.column.getSize(),
+								flexGrow: idx === row.getVisibleCells().length - 1 ? 1 : 0,
+							};
 						}
-					>
-						{idx === row.getVisibleCells().length - 1 ? (
-							<DsTableCell
-								row={row}
-								cell={cell as Cell<TData, TValue>}
-								primaryRowActions={primaryRowActions}
-								secondaryRowActions={secondaryRowActions}
-							/>
-						) : (
-							<DsTableCell row={row} cell={cell as Cell<TData, TValue>} />
-						)}
-					</TableCell>
-				))}
+
+						return { width: cell.column.getSize() };
+					};
+
+					return (
+						<TableCell key={cell.id} className={styles.tableCell} style={getCellStyle()}>
+							{idx === row.getVisibleCells().length - 1 ? (
+								<DsTableCell
+									row={row}
+									cell={cell as Cell<TData, TValue>}
+									primaryRowActions={primaryRowActions}
+									secondaryRowActions={secondaryRowActions}
+								/>
+							) : (
+								<DsTableCell row={row} cell={cell as Cell<TData, TValue>} />
+							)}
+						</TableCell>
+					);
+				})}
 			</TableRow>
 			{isExpanded && renderExpandedRow && (
 				<TableRow
