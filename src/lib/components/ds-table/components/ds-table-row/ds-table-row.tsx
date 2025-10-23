@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { Cell, defaultColumnSizing } from '@tanstack/react-table';
+import { Cell } from '@tanstack/react-table';
 import classnames from 'classnames';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -11,6 +11,7 @@ import styles from './ds-table-row.module.scss';
 import stylesShared from '../../styles/shared/ds-table-shared.module.scss';
 import { useDsTableContext } from '../../context/ds-table-context';
 import { mergeRefs } from '../../utils/merge-refs';
+import { getColumnStyle } from '../../utils/column-styling';
 
 interface DsRowDragHandleProps {
 	isDragging: boolean;
@@ -149,23 +150,12 @@ const DsTableRow = <TData, TValue>({ ref, row, virtualRow }: DsTableRowProps<TDa
 					<DsRowDragHandle isDragging={isDragging} attributes={attributes} listeners={listeners} />
 				)}
 				{row.getVisibleCells().map((cell, idx) => {
-					const getCellStyle = () => {
-						const hasCustomSize = cell.column.getSize() !== defaultColumnSizing.size;
-						if (!hasCustomSize) return undefined;
-
-						if (virtualized) {
-							return {
-								flexBasis: cell.column.getSize(),
-								flexGrow: idx === row.getVisibleCells().length - 1 ? 1 : 0,
-							};
-						}
-
-						return { width: cell.column.getSize() };
-					};
+					const isLastColumn = idx === row.getVisibleCells().length - 1;
+					const cellStyle = getColumnStyle(cell.column.getSize(), virtualized, isLastColumn);
 
 					return (
-						<TableCell key={cell.id} className={styles.tableCell} style={getCellStyle()}>
-							{idx === row.getVisibleCells().length - 1 ? (
+						<TableCell key={cell.id} className={styles.tableCell} style={cellStyle}>
+							{isLastColumn ? (
 								<DsTableCell
 									row={row}
 									cell={cell as Cell<TData, TValue>}

@@ -1,4 +1,4 @@
-import { defaultColumnSizing, flexRender } from '@tanstack/react-table';
+import { flexRender } from '@tanstack/react-table';
 import classnames from 'classnames';
 import { DsCheckbox, DsIcon } from '@design-system/ui';
 import { TableHead, TableHeader, TableRow } from '../core-table';
@@ -6,6 +6,7 @@ import styles from './ds-table-header.module.scss';
 import stylesShared from '../../styles/shared/ds-table-shared.module.scss';
 import { DsTableHeaderProps } from './ds-table-header.types';
 import { useDsTableContext } from '../../context/ds-table-context';
+import { getColumnStyle } from '../../utils/column-styling';
 
 const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 	const {
@@ -66,19 +67,8 @@ const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 						</TableHead>
 					)}
 					{headerGroup.headers.map((header, idx) => {
-						const getHeaderStyle = () => {
-							const hasCustomSize = header.column.getSize() !== defaultColumnSizing.size;
-							if (!hasCustomSize) return undefined;
-
-							if (virtualized) {
-								return {
-									flexBasis: header.column.getSize(),
-									flexGrow: idx === headerGroup.headers.length - 1 ? 1 : 0,
-								};
-							}
-
-							return { width: header.getSize() };
-						};
+						const isLastColumn = idx === headerGroup.headers.length - 1;
+						const headerStyle = getColumnStyle(header.column.getSize(), virtualized, isLastColumn);
 
 						return (
 							<TableHead
@@ -89,7 +79,7 @@ const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 									header.column.getCanSort() && styles.sortableHeader,
 								)}
 								onClick={header.column.getToggleSortingHandler()}
-								style={getHeaderStyle()}
+								style={headerStyle}
 							>
 								{header.isPlaceholder ? null : (
 									<div className={styles.headerSortContainer}>
