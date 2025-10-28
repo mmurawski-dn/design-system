@@ -26,9 +26,6 @@ export interface DsFileUploadProps
 	/** Maximum number of concurrent uploads */
 	maxConcurrent?: number;
 
-	/** Chunk size for multipart uploads (in bytes) */
-	chunkSize?: number;
-
 	/** Additional metadata to attach to uploads */
 	metadata?: Record<string, string>;
 

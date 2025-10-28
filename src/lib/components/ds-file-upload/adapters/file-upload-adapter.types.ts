@@ -2,7 +2,6 @@ export interface FileUploadOptions {
 	file: File;
 	fileId: string;
 	metadata?: Record<string, string>;
-	chunkSize?: number;
 	onProgress?: (progress: number) => void;
 	signal?: AbortSignal;
 }
@@ -12,7 +11,7 @@ export interface FileUploadResult {
 	url?: string;
 	error?: string;
 	isRetryable?: boolean;
-	metadata?: Record<string, never>;
+	metadata?: Record<string, string | number>;
 }
 
 export interface FileUploadAdapter {

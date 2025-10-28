@@ -34,7 +34,6 @@ export interface UseFileUploadConfig {
 	adapter: FileUploadAdapter;
 	autoUpload?: boolean;
 	maxConcurrent?: number;
-	chunkSize?: number;
 	metadata?: Record<string, string>;
 	onUploadComplete?: (fileId: string, result: FileUploadResult) => void;
 	onUploadError?: (fileId: string, error: string) => void;
@@ -61,7 +60,7 @@ export function useFileUpload(config: UseFileUploadConfig): UseFileUploadReturn 
 	const [acceptedFiles, setAcceptedFiles] = useState<UploadFile[]>([]);
 	const [abortControllers, setAbortControllers] = useState<Map<string, AbortController>>(new Map());
 
-	const { adapter, autoUpload = true, maxConcurrent = 3, chunkSize, metadata } = config;
+	const { adapter, autoUpload = true, maxConcurrent = 3, metadata } = config;
 
 	const addFiles = (newFiles: File[]): UploadFile[] => {
 		const newFilesOnly = newFiles.filter(
@@ -167,7 +166,6 @@ export function useFileUpload(config: UseFileUploadConfig): UseFileUploadReturn 
 				file,
 				fileId,
 				metadata,
-				chunkSize,
 				signal: abortController.signal,
 				onProgress: (progress) => {
 					updateFileProgress(fileId, progress);
