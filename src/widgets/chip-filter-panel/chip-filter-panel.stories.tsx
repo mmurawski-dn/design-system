@@ -1,4 +1,3 @@
-// AI Generated file
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import ChipFilterPanel from './chip-filter-panel';
@@ -20,17 +19,9 @@ const meta: Meta<typeof ChipFilterPanel> = {
 			action: 'clear-all',
 			description: 'Callback when "Clear all filters" is clicked',
 		},
-		maxVisibleFilters: {
-			control: 'number',
-			description: 'Maximum number of filters to show before collapsing',
-		},
-		expanded: {
-			control: 'boolean',
-			description: 'Whether the panel is expanded to show all filters (controlled)',
-		},
-		onExpandToggle: {
-			action: 'expand-toggle',
-			description: 'Callback when expand/collapse is toggled',
+		onFilterDelete: {
+			action: 'delete-filter',
+			description: 'Callback when filter is deleted',
 		},
 	},
 };
@@ -55,60 +46,8 @@ const sampleFilters: FilterChipItem[] = [
 ];
 
 export const Default: Story = {
-	args: {
-		filters: sampleFilters.slice(0, 3).map((filter) => ({
-			...filter,
-			onDelete: () => console.log('Delete', filter.label),
-		})),
-		onClearAll: () => console.log('Clear all filters'),
-	},
-};
-
-export const WithManyFilters: Story = {
-	args: {
-		filters: sampleFilters.map((filter) => ({
-			...filter,
-			onDelete: () => console.log('Delete', filter.label),
-		})),
-		maxVisibleFilters: 5,
-		onClearAll: () => console.log('Clear all filters'),
-	},
-};
-
-export const WithDialog: Story = {
-	render: () => {
-		const [filters, setFilters] = useState<FilterChipItem[]>(
-			sampleFilters.map((filter) => ({
-				...filter,
-				onDelete: () => {
-					setFilters((prev) => prev.filter((f) => f.id !== filter.id));
-				},
-			})),
-		);
-
-		return (
-			<div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-				<ChipFilterPanel filters={filters} maxVisibleFilters={5} onClearAll={() => setFilters([])} />
-				<p style={{ fontSize: '12px', color: '#666' }}>
-					Total filters: {filters.length}
-					<br />
-					Click "+X filters show all" to open the dialog
-				</p>
-			</div>
-		);
-	},
-};
-
-export const Interactive: Story = {
-	render: () => {
-		const [filters, setFilters] = useState<FilterChipItem[]>(
-			sampleFilters.map((filter) => ({
-				...filter,
-				onDelete: () => {
-					setFilters((prev) => prev.filter((f) => f.id !== filter.id));
-				},
-			})),
-		);
+	render: function Render() {
+		const [filters, setFilters] = useState<FilterChipItem[]>(sampleFilters);
 
 		const handleClearAll = () => {
 			setFilters([]);
@@ -121,16 +60,26 @@ export const Interactive: Story = {
 				{
 					id: newId,
 					label: `New Filter ${prev.length + 1}`,
-					onDelete: () => {
-						setFilters((current) => current.filter((f) => f.id !== newId));
-					},
 				},
 			]);
 		};
 
+		const handleFilterDelete = (filter: FilterChipItem) => {
+			setFilters((prev) => prev.filter((f) => f.id !== filter.id));
+		};
+
+		const handleFilterSelect = (filter: FilterChipItem) => {
+			setFilters((prev) => prev.map((f) => (f.id === filter.id ? { ...f, selected: !f.selected } : f)));
+		};
+
 		return (
 			<div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-				<ChipFilterPanel filters={filters} maxVisibleFilters={5} onClearAll={handleClearAll} />
+				<ChipFilterPanel
+					filters={filters}
+					onClearAll={handleClearAll}
+					onFilterDelete={handleFilterDelete}
+					onFilterSelect={handleFilterSelect}
+				/>
 				<div style={{ display: 'flex', gap: '8px' }}>
 					<button
 						onClick={handleAddFilter}
@@ -146,6 +95,14 @@ export const Interactive: Story = {
 					</button>
 					<p style={{ fontSize: '12px', color: '#666', alignSelf: 'center' }}>
 						Total filters: {filters.length}
+					</p>
+					<p style={{ fontSize: '12px', color: '#666', alignSelf: 'center' }}>
+						Selected filters: [
+						{filters
+							.filter((filter) => filter.selected)
+							.map((filter) => `"${filter.label}"`)
+							.join(', ')}
+						]
 					</p>
 				</div>
 			</div>

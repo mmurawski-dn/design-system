@@ -11,9 +11,9 @@ export interface FilterChipItem {
 	 */
 	label: string;
 	/**
-	 * Callback when the chip is deleted/unchecked
+	 * Whether the filter chip is selected/checked
 	 */
-	onDelete?: () => void;
+	selected?: boolean;
 }
 
 export interface ChipFilterPanelProps {
@@ -26,10 +26,13 @@ export interface ChipFilterPanelProps {
 	 */
 	onClearAll?: () => void;
 	/**
-	 * Maximum number of filters to show before showing "+X filters" chip
-	 * @default 5
+	 * Callback when the chip is deleted/unchecked
 	 */
-	maxVisibleFilters?: number;
+	onFilterDelete?: (filter: FilterChipItem) => void;
+	/**
+	 * Callback when the chip is selected
+	 */
+	onFilterSelect?: (filter: FilterChipItem) => void;
 	/**
 	 * Additional CSS class names
 	 */
