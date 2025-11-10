@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
 	FileUploadFileAcceptDetails,
 	FileUploadFileRejectDetails,
@@ -42,6 +42,7 @@ export interface UseFileUploadConfig {
 	metadata?: Record<string, string>;
 	onUploadComplete?: (fileId: string, result: FileUploadResult) => void;
 	onUploadError?: (fileId: string, error: string) => void;
+	onAllUploadsComplete?: () => void;
 }
 
 export interface UseFileUploadUserCallbacks {
@@ -90,7 +91,9 @@ export function useFileUpload({
 	metadata,
 	onUploadComplete,
 	onUploadError,
+	onAllUploadsComplete,
 }: UseFileUploadConfig): UseFileUploadReturn {
+	const prevUploadingCount = useRef(0);
 	const [files, setFiles] = useState<UploadFileMeta[]>([]);
 	const [acceptedFiles, setAcceptedFiles] = useState<UploadFile[]>([]);
 	const [abortControllers, setAbortControllers] = useState<Map<string, AbortController>>(new Map());
@@ -274,6 +277,22 @@ export function useFileUpload({
 		setAcceptedFiles([]);
 		setAbortControllers(new Map());
 	};
+
+	useEffect(() => {
+		const uploadingCount = files.filter((f) => f.status === 'uploading').length;
+
+		if (prevUploadingCount.current > 0 && uploadingCount === 0 && files.length > 0) {
+			const allComplete = files.every(
+				(f) => f.status === 'completed' || f.status === 'error' || f.status === 'cancelled',
+			);
+
+			if (allComplete) {
+				onAllUploadsComplete?.();
+			}
+		}
+
+		prevUploadingCount.current = uploadingCount;
+	}, [files, onAllUploadsComplete]);
 
 	const getProps = (userCallbacks?: UseFileUploadUserCallbacks) => {
 		const handleFileAccept = (details: FileUploadFileAcceptDetails) => {
