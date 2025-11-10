@@ -5,6 +5,7 @@ import { useFileUpload } from './hooks/use-file-upload';
 import { createTestPlayFunction } from './ds-file-upload.stories.util';
 import { MockAdapterPresets } from './stories/adapters/mock-file-upload-adapter';
 import { FileUpload } from './components/file-upload';
+// @ts-expect-error mdx file (needed for story)
 import DocsPage from './stories/adapters/MyCustomFileUploadAdapter.docs.mdx';
 
 const meta: Meta<typeof DsFileUpload> = {
@@ -19,7 +20,7 @@ const meta: Meta<typeof DsFileUpload> = {
 					'const adapter = new MyCustomFileUploadAdapter({\n' +
 					"\tbucket: 'my-bucket',\n" +
 					"\tregion: 'us-east-1',\n" +
-					'\tgetPresignedUrl: async (fileName) => `https://example-bucket.s3.amazonaws.com/${fileName}?signature=mocked`,\n' +
+					'\tgetPresignedUrl: async (fileName) => `https://example-bucket.s3.amazonaws.com/${fileName}?signature=mocked`\n' +
 					'});\n' +
 					'\n' +
 					'return (\n' +
@@ -67,7 +68,11 @@ export const Default: Story = {
 			);
 		},
 		onUploadComplete: (fileId, result) => {
-			console.log('✅ Upload complete:', fileId, result.url);
+			if (result.success) {
+				console.log('✅ Upload complete:', fileId, result.url);
+			} else {
+				console.error('❌ Upload failed:', fileId, result.error);
+			}
 		},
 		onUploadError: (fileId, error) => {
 			console.error('❌ Upload failed:', fileId, error);

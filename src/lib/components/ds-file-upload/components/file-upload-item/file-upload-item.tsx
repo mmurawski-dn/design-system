@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Progress } from '@ark-ui/react';
+import { DsTooltip } from '@design-system/ui';
 import { DsButton } from '../../../ds-button';
 import { DsIcon } from '../../../ds-icon';
 import { getErrorMessage } from '../../utils';
@@ -47,52 +48,60 @@ export const FileUploadItem: React.FC<FileUploadItemProps> = ({
 					</Progress.Root>
 				</div>
 
-				{(status === 'pending' || status === 'error') && (
-					<DsButton
-						type="button"
-						design="v1.2"
-						buttonType="tertiary"
-						aria-label={`Remove ${name} upload`}
-						onClick={() => onRemove?.(id)}
-					>
-						<DsIcon icon="do_not_disturb_on" size="small" />
-					</DsButton>
+				{(status === 'interrupted' || status === 'cancelled') && onRetry && (
+					<DsTooltip content="Retry">
+						<DsButton
+							type="button"
+							design="v1.2"
+							buttonType="tertiary"
+							aria-label={`Retry ${name} upload`}
+							onClick={() => onRetry(id)}
+						>
+							<DsIcon icon="refresh" size="small" />
+						</DsButton>
+					</DsTooltip>
 				)}
 
-				{(status === 'interrupted' || status === 'cancelled') && onRetry && (
-					<DsButton
-						type="button"
-						design="v1.2"
-						buttonType="tertiary"
-						aria-label={`Retry ${name} upload`}
-						onClick={() => onRetry(id)}
-					>
-						<DsIcon icon="refresh" size="small" />
-					</DsButton>
+				{(status === 'pending' || status === 'error' || status === 'interrupted') && (
+					<DsTooltip content="Remove">
+						<DsButton
+							type="button"
+							design="v1.2"
+							buttonType="tertiary"
+							aria-label={`Remove ${name} upload`}
+							onClick={() => onRemove?.(id)}
+						>
+							<DsIcon icon="do_not_disturb_on" size="small" />
+						</DsButton>
+					</DsTooltip>
 				)}
 
 				{status === 'uploading' && onCancel && (
-					<DsButton
-						type="button"
-						design="v1.2"
-						buttonType="tertiary"
-						aria-label={`Cancel ${name} upload`}
-						onClick={() => onCancel(id)}
-					>
-						<DsIcon icon="close" size="small" />
-					</DsButton>
+					<DsTooltip content="Cancel">
+						<DsButton
+							type="button"
+							design="v1.2"
+							buttonType="tertiary"
+							aria-label={`Cancel ${name} upload`}
+							onClick={() => onCancel(id)}
+						>
+							<DsIcon icon="close" size="small" />
+						</DsButton>
+					</DsTooltip>
 				)}
 
 				{status === 'completed' && (
-					<DsButton
-						type="button"
-						design="v1.2"
-						buttonType="tertiary"
-						aria-label={`Delete ${name}`}
-						onClick={() => onDelete?.(id)}
-					>
-						<DsIcon icon="delete" size="small" />
-					</DsButton>
+					<DsTooltip content="Delete">
+						<DsButton
+							type="button"
+							design="v1.2"
+							buttonType="tertiary"
+							aria-label={`Delete ${name}`}
+							onClick={() => onDelete?.(id)}
+						>
+							<DsIcon icon="delete" size="small" />
+						</DsButton>
+					</DsTooltip>
 				)}
 			</div>
 

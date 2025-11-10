@@ -83,12 +83,17 @@ export interface UseFileUploadReturn {
 /**
  * File upload state management hook
  */
-export function useFileUpload(config: UseFileUploadConfig): UseFileUploadReturn {
+export function useFileUpload({
+	adapter,
+	autoUpload = true,
+	maxConcurrent = 3,
+	metadata,
+	onUploadComplete,
+	onUploadError,
+}: UseFileUploadConfig): UseFileUploadReturn {
 	const [files, setFiles] = useState<UploadFileMeta[]>([]);
 	const [acceptedFiles, setAcceptedFiles] = useState<UploadFile[]>([]);
 	const [abortControllers, setAbortControllers] = useState<Map<string, AbortController>>(new Map());
-
-	const { adapter, autoUpload = true, maxConcurrent = 3, metadata } = config;
 
 	const addFiles = (newFiles: File[]): UploadFile[] => {
 		const newFilesOnly = newFiles.filter(
@@ -203,18 +208,18 @@ export function useFileUpload(config: UseFileUploadConfig): UseFileUploadReturn 
 			if (result.success) {
 				updateFileStatus(fileId, 'completed');
 				updateFileProgress(fileId, 100);
-				config.onUploadComplete?.(fileId, result);
+				onUploadComplete?.(fileId, result);
 			} else {
 				// Determine status based on retryability
 				const status = result.isRetryable ? 'interrupted' : 'error';
 				updateFileStatus(fileId, status, result.error);
-				config.onUploadError?.(fileId, result.error || 'Upload failed');
+				onUploadError?.(fileId, result.error || 'Upload failed');
 			}
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'Upload failed';
 			// Network/unexpected errors are retryable
 			updateFileStatus(fileId, 'interrupted', errorMessage);
-			config.onUploadError?.(fileId, errorMessage);
+			onUploadError?.(fileId, errorMessage);
 		} finally {
 			setAbortControllers((prev) => {
 				const next = new Map(prev);

@@ -32,6 +32,13 @@ export function formatFileSize(bytes: number): string {
 	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
+/**
+ * Check if two files are equal
+ *
+ * @see https://github.com/chakra-ui/zag/blob/698fff1d2/packages/utilities/file-utils/src/is-file-equal.ts
+ * @param file1
+ * @param file2
+ */
 export function isFileEqual(file1: FileMeta, file2: FileMeta): boolean {
 	return file1.name === file2.name && file1.size === file2.size && file1.type === file2.type;
 }
