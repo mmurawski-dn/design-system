@@ -6,7 +6,7 @@ import { createTestPlayFunction } from './ds-file-upload.stories.util';
 import { MockAdapterPresets } from './stories/adapters/mock-file-upload-adapter';
 import { FileUpload } from './components/file-upload';
 // @ts-expect-error mdx file (needed for story)
-import DocsPage from './stories/adapters/MyCustomFileUploadAdapter.docs.mdx';
+import DocsPage from './stories/adapters/simple-file-upload-adapter.docs.mdx';
 
 const meta: Meta<typeof DsFileUpload> = {
 	title: 'Design System/FileUpload',
@@ -17,11 +17,8 @@ const meta: Meta<typeof DsFileUpload> = {
 			page: DocsPage,
 			source: {
 				code: `
-const adapter = new MyCustomFileUploadAdapter({
-	bucket: 'my-bucket',
-	region: 'us-east-1',
-	getPresignedUrl: async (fileName) => \`https://example-bucket.s3.amazonaws.com/\${fileName}?signature=mocked\`
-});
+const presignedUrl = await getPresignedUrl(fileName);
+const adapter = getSimpleFileUploadAdapter({ presignedUrl });
 
 return (
 	<DsFileUpload

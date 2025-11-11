@@ -1,10 +1,16 @@
-import { FileUploadAdapter, FileUploadOptions, FileUploadResult } from './file-upload-adapter.types';
+import {
+	FileUploadAdapter,
+	FileUploadOptions,
+	FileUploadResult,
+} from '../../adapters/file-upload-adapter.types';
 
-export class MyCustomFileUploadAdapter implements FileUploadAdapter {
-	async upload(options: FileUploadOptions): Promise<FileUploadResult> {
-		try {
-			const presignedUrl = await this.config.getPresignedUrl(options.file.name);
+interface SimpleFileUploadAdapterConfig {
+	presignedUrl: string;
+}
 
+export function getSimpleFileUploadAdapter(config: SimpleFileUploadAdapterConfig): FileUploadAdapter {
+	return {
+		async upload(options: FileUploadOptions): Promise<FileUploadResult> {
 			const xhr = new XMLHttpRequest();
 
 			return new Promise((resolve, reject) => {
@@ -16,7 +22,7 @@ export class MyCustomFileUploadAdapter implements FileUploadAdapter {
 
 				xhr.addEventListener('load', () => {
 					if (xhr.status >= 200 && xhr.status < 300) {
-						resolve({ success: true, url: presignedUrl });
+						resolve({ success: true, url: config.presignedUrl });
 					} else {
 						reject(new Error(`Upload failed: ${xhr.statusText}`));
 					}
@@ -31,15 +37,10 @@ export class MyCustomFileUploadAdapter implements FileUploadAdapter {
 					resolve({ success: false, error: 'Upload cancelled' });
 				});
 
-				xhr.open('PUT', presignedUrl);
+				xhr.open('PUT', config.presignedUrl);
 				xhr.setRequestHeader('Content-Type', options.file.type || 'application/octet-stream');
 				xhr.send(options.file);
 			});
-		} catch (error) {
-			return {
-				success: false,
-				error: error instanceof Error ? error.message : 'Upload failed',
-			};
-		}
-	}
+		},
+	};
 }
