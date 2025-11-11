@@ -1,14 +1,6 @@
 import { FileUploadAdapter, FileUploadOptions, FileUploadResult } from './file-upload-adapter.types';
 
 export class MyCustomFileUploadAdapter implements FileUploadAdapter {
-	constructor(
-		private config: {
-			bucket: string;
-			region: string;
-			getPresignedUrl: (fileName: string) => Promise<string>;
-		},
-	) {}
-
 	async upload(options: FileUploadOptions): Promise<FileUploadResult> {
 		try {
 			const presignedUrl = await this.config.getPresignedUrl(options.file.name);
@@ -26,20 +18,18 @@ export class MyCustomFileUploadAdapter implements FileUploadAdapter {
 					if (xhr.status >= 200 && xhr.status < 300) {
 						resolve({ success: true, url: presignedUrl });
 					} else {
-						resolve({ success: false, error: `Upload failed: ${xhr.statusText}` });
+						reject(new Error(`Upload failed: ${xhr.statusText}`));
 					}
 				});
 
 				xhr.addEventListener('error', () => {
-					resolve({ success: false, error: 'Network error' });
+					reject(new Error('Network error'));
 				});
 
-				if (options.signal) {
-					options.signal.addEventListener('abort', () => {
-						xhr.abort();
-						resolve({ success: false, error: 'Upload cancelled' });
-					});
-				}
+				options.signal?.addEventListener('abort', () => {
+					xhr.abort();
+					resolve({ success: false, error: 'Upload cancelled' });
+				});
 
 				xhr.open('PUT', presignedUrl);
 				xhr.setRequestHeader('Content-Type', options.file.type || 'application/octet-stream');

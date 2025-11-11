@@ -16,23 +16,23 @@ const meta: Meta<typeof DsFileUpload> = {
 		docs: {
 			page: DocsPage,
 			source: {
-				code:
-					'const adapter = new MyCustomFileUploadAdapter({\n' +
-					"\tbucket: 'my-bucket',\n" +
-					"\tregion: 'us-east-1',\n" +
-					'\tgetPresignedUrl: async (fileName) => `https://example-bucket.s3.amazonaws.com/${fileName}?signature=mocked`\n' +
-					'});\n' +
-					'\n' +
-					'return (\n' +
-					'\t<DsFileUpload\n' +
-					'\t\tadapter={adapter}\n' +
-					"\t\tonFilesAdded={(files) => console.log('📁 Files added:', files.map((f) => f.name))}\n" +
-					"\t\tonUploadComplete={(fileId, result) => console.log('✅ Upload complete:', fileId, result.url)}\n" +
-					"\t\tonUploadError={(fileId, error) => console.error('❌ Upload failed:', fileId, error)}\n" +
-					"\t\tonFileRemoved={(fileId) => console.log('🗑️ File removed:', fileId)}\n" +
-					"\t\tonAllUploadsComplete={() => console.log('🎉 All uploads complete!')}\n" +
-					'\t/>\n' +
-					');',
+				code: `
+const adapter = new MyCustomFileUploadAdapter({
+	bucket: 'my-bucket',
+	region: 'us-east-1',
+	getPresignedUrl: async (fileName) => \`https://example-bucket.s3.amazonaws.com/\${fileName}?signature=mocked\`
+});
+
+return (
+	<DsFileUpload
+		adapter={adapter}
+		onFilesAdded={(files) => console.log('📁 Files added:', files.map((f) => f.name))}
+		onUploadComplete={(fileId, result) => console.log('✅ Upload complete:', fileId, result.url)}
+		onUploadError={(fileId, error) => console.error('❌ Upload failed:', fileId, error)}
+		onFileRemoved={(fileId) => console.log('🗑️ File removed:', fileId)}
+		onAllUploadsComplete={() => console.log('🎉 All uploads complete!')}
+	/>
+);`,
 			},
 		},
 	},

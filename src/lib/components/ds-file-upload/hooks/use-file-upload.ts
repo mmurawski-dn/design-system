@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
 	FileUploadFileAcceptDetails,
 	FileUploadFileRejectDetails,
@@ -93,46 +93,33 @@ export function useFileUpload({
 	onUploadError,
 	onAllUploadsComplete,
 }: UseFileUploadConfig): UseFileUploadReturn {
-	const prevUploadingCount = useRef(0);
-	const abortControllers = useRef<Map<string, AbortController>>(new Map());
+	const [abortControllers] = useState(() => new Map<string, AbortController>());
 	const [files, setFiles] = useState<UploadFileMeta[]>([]);
-	const [acceptedFiles, setAcceptedFiles] = useState<UploadFile[]>([]);
+	const acceptedFiles = files.filter((file) => file.status !== 'error');
 
-	const addFiles = (newFiles: File[]): UploadFile[] => {
+	if (files.length && !files.some((f) => f.status === 'uploading')) {
+		onAllUploadsComplete?.();
+	}
+
+	const addFiles = (newFiles: UploadFile[]): UploadFile[] => {
 		const newFilesOnly = newFiles.filter(
 			(file) => !acceptedFiles.some((existing) => isFileEqual(existing, file)),
 		);
 
-		const duplicateFiles = newFiles.filter((file) => {
-			const uploadFile = file as UploadFile;
-
-			if (!uploadFile.id) {
-				const found = files.filter((existing) => isFileEqual(existing, file));
-				if (found.length) {
-					const alreadyAdded = found.some((existing) => existing.errors?.includes('FILE_EXISTS'));
-					return !alreadyAdded;
-				}
-			}
-		});
+		const duplicateFiles = newFiles.filter(
+			(file) => !file.id && files.find((otherFile) => isFileEqual(file, otherFile)),
+		);
 
 		if (duplicateFiles.length > 0) {
 			const duplicateFilesWithErrors = duplicateFiles.map((file) => ({
 				file,
-				errors: ['FILE_EXISTS'] as FileError[],
+				errors: ['FILE_EXISTS'],
 			}));
 			addRejectedFiles(duplicateFilesWithErrors);
 		}
 
-		const newAcceptedFiles: UploadFile[] = newFilesOnly.map((file) => {
-			Object.assign(file, {
-				id: `${file.name}-${Date.now()}-${Math.random()}`,
-			});
-			return file as UploadFile;
-		});
-		setAcceptedFiles((prev) => [...prev, ...newAcceptedFiles]);
-
-		const newUploadFiles: UploadFileMeta[] = newAcceptedFiles.map((file) => ({
-			id: file.id,
+		const newUploadFiles: UploadFileMeta[] = newFilesOnly.map((file) => ({
+			id: `${file.name}-${Date.now()}-${Math.random()}`,
 			name: file.name,
 			size: file.size,
 			type: file.type,
@@ -143,12 +130,12 @@ export function useFileUpload({
 		setFiles((prev) => [...prev, ...newUploadFiles]);
 
 		if (autoUpload) {
-			newAcceptedFiles.forEach((file) => {
+			newUploadFiles.forEach((file) => {
 				uploadSingleFile(file);
 			});
 		}
 
-		return newAcceptedFiles;
+		return newUploadFiles;
 	};
 
 	const addRejectedFiles = (filesWithErrors: FileWithErrors[]) => {
@@ -193,7 +180,7 @@ export function useFileUpload({
 	const uploadSingleFile = async (file: UploadFile) => {
 		const fileId = file.id;
 		const abortController = new AbortController();
-		abortControllers.current.set(fileId, abortController);
+		abortControllers.set(fileId, abortController);
 
 		updateFileStatus(file.id, 'uploading');
 
@@ -224,7 +211,7 @@ export function useFileUpload({
 			updateFileStatus(fileId, 'interrupted', errorMessage);
 			onUploadError?.(fileId, errorMessage);
 		} finally {
-			abortControllers.current.delete(fileId);
+			abortControllers.delete(fileId);
 		}
 	};
 
@@ -233,15 +220,13 @@ export function useFileUpload({
 
 		for (let i = 0; i < pendingFiles.length; i += maxConcurrent) {
 			const batch = pendingFiles.slice(i, i + maxConcurrent);
-			await Promise.all(batch.map((f) => uploadFile(f.id)));
+			await Promise.allSettled(batch.map((f) => uploadFile(f.id)));
 		}
 	};
 
 	const cancelUpload = async (fileId: string) => {
-		const controller = abortControllers.current.get(fileId);
-		if (controller) {
-			controller.abort();
-		}
+		abortControllers.get(fileId)?.abort();
+		abortControllers.delete(fileId);
 
 		if (adapter.cancel) {
 			await adapter.cancel(fileId);
@@ -257,38 +242,18 @@ export function useFileUpload({
 	};
 
 	const removeFile = (fileId: string) => {
-		const controller = abortControllers.current.get(fileId);
-		if (controller) {
-			controller.abort();
-		}
+		abortControllers.get(fileId)?.abort();
+		abortControllers.delete(fileId);
 
 		setFiles((prev) => prev.filter((file) => file.id !== fileId));
-		setAcceptedFiles((prev) => prev.filter((file) => file.id !== fileId));
 	};
 
 	const clearFiles = () => {
-		abortControllers.current.forEach((controller) => controller.abort());
+		abortControllers.forEach((controller) => controller.abort());
+		abortControllers.clear();
 
 		setFiles([]);
-		setAcceptedFiles([]);
-		abortControllers.current.clear();
 	};
-
-	useEffect(() => {
-		const uploadingCount = files.filter((f) => f.status === 'uploading').length;
-
-		if (prevUploadingCount.current > 0 && uploadingCount === 0 && files.length > 0) {
-			const allComplete = files.every(
-				(f) => f.status === 'completed' || f.status === 'error' || f.status === 'cancelled',
-			);
-
-			if (allComplete) {
-				onAllUploadsComplete?.();
-			}
-		}
-
-		prevUploadingCount.current = uploadingCount;
-	}, [files, onAllUploadsComplete]);
 
 	const getProps = (userCallbacks?: UseFileUploadUserCallbacks) => {
 		const handleFileAccept = (details: FileUploadFileAcceptDetails) => {
