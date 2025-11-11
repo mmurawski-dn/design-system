@@ -94,9 +94,9 @@ export function useFileUpload({
 	onAllUploadsComplete,
 }: UseFileUploadConfig): UseFileUploadReturn {
 	const prevUploadingCount = useRef(0);
+	const abortControllers = useRef<Map<string, AbortController>>(new Map());
 	const [files, setFiles] = useState<UploadFileMeta[]>([]);
 	const [acceptedFiles, setAcceptedFiles] = useState<UploadFile[]>([]);
-	const [abortControllers, setAbortControllers] = useState<Map<string, AbortController>>(new Map());
 
 	const addFiles = (newFiles: File[]): UploadFile[] => {
 		const newFilesOnly = newFiles.filter(
@@ -193,7 +193,7 @@ export function useFileUpload({
 	const uploadSingleFile = async (file: UploadFile) => {
 		const fileId = file.id;
 		const abortController = new AbortController();
-		setAbortControllers((prev) => new Map(prev).set(fileId, abortController));
+		abortControllers.current.set(fileId, abortController);
 
 		updateFileStatus(file.id, 'uploading');
 
@@ -224,11 +224,7 @@ export function useFileUpload({
 			updateFileStatus(fileId, 'interrupted', errorMessage);
 			onUploadError?.(fileId, errorMessage);
 		} finally {
-			setAbortControllers((prev) => {
-				const next = new Map(prev);
-				next.delete(fileId);
-				return next;
-			});
+			abortControllers.current.delete(fileId);
 		}
 	};
 
@@ -242,7 +238,7 @@ export function useFileUpload({
 	};
 
 	const cancelUpload = async (fileId: string) => {
-		const controller = abortControllers.get(fileId);
+		const controller = abortControllers.current.get(fileId);
 		if (controller) {
 			controller.abort();
 		}
@@ -261,7 +257,7 @@ export function useFileUpload({
 	};
 
 	const removeFile = (fileId: string) => {
-		const controller = abortControllers.get(fileId);
+		const controller = abortControllers.current.get(fileId);
 		if (controller) {
 			controller.abort();
 		}
@@ -271,11 +267,11 @@ export function useFileUpload({
 	};
 
 	const clearFiles = () => {
-		abortControllers.forEach((controller) => controller.abort());
+		abortControllers.current.forEach((controller) => controller.abort());
 
 		setFiles([]);
 		setAcceptedFiles([]);
-		setAbortControllers(new Map());
+		abortControllers.current.clear();
 	};
 
 	useEffect(() => {
