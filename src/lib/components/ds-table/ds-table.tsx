@@ -217,6 +217,20 @@ const DsTable = <TData extends { id: string }, TValue>({
 		toggleRowExpanded,
 	};
 
+	// In virtualized tables, the rows should all be positioned at the top with a `translateY` offset.
+	// We're using a Grid for this rather than `position: absolute` to ensure that each cell align with
+	// other cells in the same column (mimicking the native table behavior).
+	const columnsGridTemplate = columns
+		.reduce<string[]>(
+			(acc, col) => {
+				acc.push(col.size ? `${col.size}px` : 'auto');
+
+				return acc;
+			},
+			selectable ? ['max-content'] : [],
+		)
+		.join(' ');
+
 	return (
 		<DsTableContext.Provider value={contextValue}>
 			<div
@@ -229,9 +243,19 @@ const DsTable = <TData extends { id: string }, TValue>({
 				)}
 			>
 				<DragWrapper>
-					<Table className={classnames(fullWidth && styles.fullWidth, !bordered && styles.tableNoBorder)}>
+					<Table
+						style={{ '--ds-table-columns-template': columnsGridTemplate } as React.CSSProperties}
+						className={classnames(
+							fullWidth && styles.fullWidth,
+							!bordered && styles.tableNoBorder,
+							virtualized && styles.virtualized,
+						)}
+					>
 						<DsTableHeader table={table} />
-						<TableBody style={{ height: virtualized ? `${rowVirtualizer.getTotalSize()}px` : undefined }}>
+						<TableBody
+							style={{ height: virtualized ? `${rowVirtualizer.getTotalSize()}px` : undefined }}
+							className={classnames(virtualized && styles.virtualizedBody)}
+						>
 							{virtualized ? (
 								rowVirtualizer.getVirtualItems().map((virtualRow: VirtualItem) => {
 									const row = rows[virtualRow.index];

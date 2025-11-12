@@ -727,6 +727,7 @@ export const Virtualized: Story = {
 		);
 	},
 	args: {
+		selectable: true,
 		columns: columns.map((col) => {
 			if ('accessorKey' in col && col.accessorKey === 'age') {
 				return {
