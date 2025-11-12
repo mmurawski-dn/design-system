@@ -399,8 +399,15 @@ export const WithRowActions: Story = {
 	args: {
 		primaryRowActions: [
 			{
-				icon: 'visibility',
+				icon: 'edit',
 				label: 'Edit',
+				onClick: (data) => {
+					alert(`Row clicked ${JSON.stringify(data)}`);
+				},
+			},
+			{
+				icon: 'open_in_new',
+				label: 'Open in New Window',
 				disabled: (data) => {
 					return data.firstName === 'Tanner'; // Example condition to disable action
 				},
