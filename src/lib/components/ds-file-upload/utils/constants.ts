@@ -3,7 +3,7 @@ import { FileUploadFileMimeType } from '@ark-ui/react';
 /**
  * Default allowed file types for the file upload component
  */
-export const DEFAULT_ALLOWED_FILE_TYPES: Record<FileUploadFileMimeType, string[]> = {
+export const DEFAULT_ALLOWED_FILE_TYPES: Partial<Record<FileUploadFileMimeType, string[]>> = {
 	'application/pdf': ['.pdf'],
 	'text/csv': ['.csv'],
 	'application/zip': ['.zip'],

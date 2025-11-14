@@ -59,7 +59,7 @@ export interface FileUploadProps {
 	 * Maps MIME types to their file extensions
 	 * @example { 'application/pdf': ['.pdf'], 'image/png': ['.png'] }
 	 */
-	accept?: Record<FileUploadFileMimeType, string[]>;
+	accept?: Partial<Record<FileUploadFileMimeType, string[]>>;
 	/**
 	 * File states to display (managed externally)
 	 */

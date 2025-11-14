@@ -5,12 +5,16 @@ import { formatFileSize } from './format-file-size';
  * Generate helper text based on validation props
  */
 export function generateHelperText(
-	accept: Record<FileUploadFileMimeType, string[]> | undefined,
+	accept: Partial<Record<FileUploadFileMimeType, string[]>> | undefined,
 	maxFileSize: number,
 	maxFiles: number,
 ): string {
 	// Extract file extensions from accept object
-	const extensions = accept ? Object.values(accept).flat() : [];
+	const extensions = accept
+		? Object.values(accept)
+				.flat()
+				.filter((ext): ext is string => !!ext)
+		: [];
 	const uniqueExtensions = [...new Set(extensions)];
 	const fileTypes = uniqueExtensions.map((ext) => ext.toUpperCase()).join(', ');
 
