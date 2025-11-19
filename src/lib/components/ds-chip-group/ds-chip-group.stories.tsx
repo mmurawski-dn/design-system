@@ -1,36 +1,36 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import ChipFilterPanel from './chip-filter-panel';
-import { FilterChipItem } from './chip-filter-panel.types';
-import styles from './chip-filter-panel.stories.module.scss';
+import DsChipGroup from './ds-chip-group';
+import { ChipItem } from './ds-chip-group.types';
+import styles from './ds-chip-group.stories.module.scss';
 
-const meta: Meta<typeof ChipFilterPanel> = {
-	title: 'Widgets/ChipFilterPanel',
-	component: ChipFilterPanel,
+const meta: Meta<typeof DsChipGroup> = {
+	title: 'Design System/Chip Group',
+	component: DsChipGroup,
 	parameters: {
 		layout: 'padded',
 	},
 	tags: ['autodocs'],
 	argTypes: {
-		filters: {
+		items: {
 			control: 'object',
-			description: 'Array of filter chip items to display',
+			description: 'Array of chip items to display',
 		},
 		onClearAll: {
 			action: 'clear-all',
-			description: 'Callback when "Clear all filters" is clicked',
+			description: 'Callback when "Clear all" is clicked',
 		},
-		onFilterDelete: {
-			action: 'delete-filter',
-			description: 'Callback when filter is deleted',
+		onItemDelete: {
+			action: 'delete-item',
+			description: 'Callback when item is deleted',
 		},
 	},
 };
 
 export default meta;
-type Story = StoryObj<typeof ChipFilterPanel>;
+type Story = StoryObj<typeof DsChipGroup>;
 
-const sampleFilters: FilterChipItem[] = [
+const sampleFilters: ChipItem[] = [
 	{ id: '1', label: 'Status: Active' },
 	{ id: '2', label: 'Running: From 100 to 10,000' },
 	{ id: '3', label: 'Completed from 20,000 to 100,000' },
@@ -48,7 +48,7 @@ const sampleFilters: FilterChipItem[] = [
 
 export const Default: Story = {
 	render: function Render() {
-		const [filters, setFilters] = useState<FilterChipItem[]>(sampleFilters);
+		const [filters, setFilters] = useState<ChipItem[]>(sampleFilters);
 
 		const handleClearAll = () => {
 			setFilters([]);
@@ -65,21 +65,21 @@ export const Default: Story = {
 			]);
 		};
 
-		const handleFilterDelete = (filter: FilterChipItem) => {
+		const handleFilterDelete = (filter: ChipItem) => {
 			setFilters((prev) => prev.filter((f) => f.id !== filter.id));
 		};
 
-		const handleFilterSelect = (filter: FilterChipItem) => {
+		const handleFilterSelect = (filter: ChipItem) => {
 			setFilters((prev) => prev.map((f) => (f.id === filter.id ? { ...f, selected: !f.selected } : f)));
 		};
 
 		return (
 			<div className={styles.container}>
-				<ChipFilterPanel
-					filters={filters}
+				<DsChipGroup
+					items={filters}
 					onClearAll={handleClearAll}
-					onFilterDelete={handleFilterDelete}
-					onFilterSelect={handleFilterSelect}
+					onItemDelete={handleFilterDelete}
+					onItemSelect={handleFilterSelect}
 				/>
 				<div className={styles.controlsContainer}>
 					<button onClick={handleAddFilter} className={styles.addButton}>

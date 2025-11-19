@@ -88,8 +88,8 @@ Orchestrates multiple adapters:
 ```typescript
 const {
   columnFilters, // For TanStack Table
-  filterChips, // For ChipFilterPanel
-  filterNavItems, // For TableFilterModal navigation
+  filterChips, // For DsChipGroup
+  filterNavItems, // For FilterModal navigation
   enhancedColumns, // Columns with filter functions
   handlers, // { applyFilters, clearAll, deleteChip, updateFilter }
   renderFilterContent, // Render function for modal
@@ -115,8 +115,8 @@ const { columnFilters, filterChips, filterNavItems, enhancedColumns, handlers, r
 
 return (
   <>
-    <ChipFilterPanel filters = { filterChips }
-onClearAll = { handlers.clearAll }
+    <DsChipGroup items={filterChips}
+onClearAll={handlers.clearAll}
 />
 < DsTable
 columns = { enhancedColumns }

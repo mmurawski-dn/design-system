@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Row } from '@tanstack/react-table';
-import { FilterChipItem } from '../../../../../widgets';
+import { ChipItem } from '@design-system/ui';
 
 /**
  * Base filter adapter interface that all filters must implement
@@ -38,13 +38,13 @@ export interface FilterAdapter<TData = any, TFilterValue = any> {
 	 * Convert filter value to filter chips for display
 	 * Returns empty array if no chips should be shown
 	 */
-	toChips: (value: TFilterValue) => FilterChipItem[];
+	toChips: (value: TFilterValue) => ChipItem[];
 
 	/**
 	 * Remove a chip from the filter value
 	 * Returns updated filter value with the chip's effect removed
 	 */
-	fromChip: (chip: FilterChipItem, currentValue: TFilterValue) => TFilterValue;
+	fromChip: (chip: ChipItem, currentValue: TFilterValue) => TFilterValue;
 
 	/**
 	 * Calculate how many active filters are applied

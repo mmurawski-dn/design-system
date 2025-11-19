@@ -214,8 +214,8 @@ export const FiltersPanel: Story = {
         </DsButton>
 
         {filterChips.length > 0 && (
-          <ChipFilterPanel
-            filters={filterChips}
+          <DsChipGroup
+            items={filterChips}
             onClearAll={() => { handlers.clearAll(); setIsOpen(false); }}
             onFilterDelete={handlers.deleteChip}
           />

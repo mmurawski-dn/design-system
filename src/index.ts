@@ -31,3 +31,4 @@ export * from './lib/components/ds-modal';
 export * from './lib/components/ds-drawer';
 export * from './lib/components/ds-status-badge';
 export * from './lib/components/ds-chip';
+export * from './lib/components/ds-chip-group';

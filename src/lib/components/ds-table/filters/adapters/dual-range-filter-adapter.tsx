@@ -1,6 +1,6 @@
 import { Row } from '@tanstack/react-table';
+import { ChipItem } from '@design-system/ui';
 import { FilterAdapter } from '../types/filter-adapter.types';
-import { FilterChipItem } from '../../../../../widgets';
 import { RangeFilter } from '../components/range-filter';
 
 export interface RangeValue {
@@ -91,7 +91,7 @@ export function createDualRangeFilterAdapter<TData>(
 		cellRenderer: undefined, // Let the column definition handle rendering
 
 		toChips: (value) => {
-			const chips: FilterChipItem[] = [];
+			const chips: ChipItem[] = [];
 
 			Object.entries(value).forEach(([fieldKey, range]) => {
 				const hasFilter = range.from !== undefined || range.to !== undefined;

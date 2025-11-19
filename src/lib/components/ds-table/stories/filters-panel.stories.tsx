@@ -5,7 +5,7 @@ import DsIcon from '../../ds-icon/ds-icon';
 import DsTable from '../ds-table';
 import DsButton from '../../ds-button/ds-button';
 import { FilterModal } from '../filters/components/filter-modal';
-import { ChipFilterPanel } from '../../../../widgets';
+import { DsChipGroup } from '../../ds-chip-group';
 import { useTableFilters } from '../filters/hooks/use-table-filters';
 import { Workflow, workflowFilters } from './filters-panel/workflow-filters.config';
 import styles from '../ds-table.stories.module.scss';
@@ -286,11 +286,7 @@ export const FiltersPanel: Story = {
 					</DsButton>
 				</div>
 				{filterChips.length > 0 && (
-					<ChipFilterPanel
-						filters={filterChips}
-						onClearAll={handleClearAll}
-						onFilterDelete={handlers.deleteChip}
-					/>
+					<DsChipGroup items={filterChips} onClearAll={handleClearAll} onItemDelete={handlers.deleteChip} />
 				)}
 				<DsTable {...args} columns={enhancedColumns} columnFilters={columnFilters} />
 				<FilterModal

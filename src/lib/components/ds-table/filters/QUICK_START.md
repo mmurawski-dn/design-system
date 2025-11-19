@@ -64,10 +64,10 @@ function MyTable() {
 
       {/* Chips */}
       {filterChips.length > 0 && (
-        <ChipFilterPanel
-          filters={filterChips}
+        <DsChipGroup
+          items={filterChips}
           onClearAll={handlers.clearAll}
-          onFilterDelete={handlers.deleteChip}
+          onItemDelete={handlers.deleteChip}
         />
       )}
 

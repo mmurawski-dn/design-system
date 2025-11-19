@@ -3,34 +3,36 @@ import * as RadixDialog from '@radix-ui/react-dialog';
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import classNames from 'classnames';
 import { DsButton, DsCheckbox, DsChip, DsIcon, DsTypography } from '@design-system/ui';
-import styles from './chip-filter-panel.module.scss';
-import { ChipFilterPanelProps } from './chip-filter-panel.types';
+import styles from './ds-chip-group.module.scss';
+import { DsChipGroupProps } from './ds-chip-group.types';
 import { useChipRowCalculation } from './hooks/use-chip-row-calculation';
 
 /**
- * Chip filter widget
+ * Design system chip group component displays a collection of chips with overflow handling
+ * Used for displaying filters, selected items, tags, etc.
  */
-const ChipFilterPanel: React.FC<ChipFilterPanelProps> = ({
-	filters,
+const DsChipGroup: React.FC<DsChipGroupProps> = ({
+	items,
+	label = 'Filtered by:',
 	onClearAll,
-	onFilterDelete,
-	onFilterSelect,
+	onItemDelete,
+	onItemSelect,
 	className,
 	style,
 }) => {
 	const [dialogOpen, setDialogOpen] = useState(false);
-	const showAllFiltersRef = useRef<HTMLDivElement>(null);
+	const showAllChipsRef = useRef<HTMLDivElement>(null);
 	const chipsWrapperRef = useRef<HTMLDivElement>(null);
 	const visibleCount = useChipRowCalculation({
 		chipsWrapperRef,
-		totalFilters: filters.length,
+		totalFilters: items.length,
 	});
 
-	if (filters.length === 0) {
+	if (items.length === 0) {
 		return null;
 	}
 
-	const hiddenCount = filters.length - visibleCount;
+	const hiddenCount = items.length - visibleCount;
 	const showExpandButton = hiddenCount > 0;
 
 	const handleOpenDialog = () => {
@@ -38,8 +40,8 @@ const ChipFilterPanel: React.FC<ChipFilterPanelProps> = ({
 	};
 
 	let dialogStyle: React.CSSProperties = {};
-	if (showExpandButton && showAllFiltersRef.current) {
-		const rect = showAllFiltersRef.current.getBoundingClientRect();
+	if (showExpandButton && showAllChipsRef.current) {
+		const rect = showAllChipsRef.current.getBoundingClientRect();
 		dialogStyle = {
 			position: 'fixed',
 			top: rect.bottom + 4,
@@ -49,18 +51,20 @@ const ChipFilterPanel: React.FC<ChipFilterPanelProps> = ({
 
 	return (
 		<div className={classNames(styles.container, className)} style={style}>
-			<DsTypography variant="body-sm-reg" className={styles.label}>
-				Filtered by:
-			</DsTypography>
+			{label && (
+				<DsTypography variant="body-sm-reg" className={styles.label}>
+					{label}
+				</DsTypography>
+			)}
 
 			<div ref={chipsWrapperRef} className={styles.chipsWrapper}>
-				{filters.map((filter, index) => (
+				{items.map((item, index) => (
 					<DsChip
-						key={filter.id}
-						label={filter.label}
-						selected={filter.selected}
-						onClick={() => onFilterSelect?.(filter)}
-						onDelete={() => onFilterDelete?.(filter)}
+						key={item.id}
+						label={item.label}
+						selected={item.selected}
+						onClick={() => onItemSelect?.(item)}
+						onDelete={() => onItemDelete?.(item)}
 						className={classNames({
 							[styles.hidden]: index >= visibleCount,
 						})}
@@ -68,18 +72,20 @@ const ChipFilterPanel: React.FC<ChipFilterPanelProps> = ({
 				))}
 				{showExpandButton && (
 					<DsChip
-						ref={showAllFiltersRef}
-						label={`+${hiddenCount} filters show all`}
+						ref={showAllChipsRef}
+						label={`+${hiddenCount} ${hiddenCount === 1 ? 'item' : 'items'} show all`}
 						onClick={handleOpenDialog}
 						className={styles.expandChip}
 					/>
 				)}
 			</div>
 
-			<DsButton design="v1.2" buttonType="tertiary" variant="ghost" size="small" onClick={onClearAll}>
-				<DsIcon icon="close" />
-				Clear all filters
-			</DsButton>
+			{onClearAll && (
+				<DsButton design="v1.2" buttonType="tertiary" variant="ghost" size="small" onClick={onClearAll}>
+					<DsIcon icon="close" />
+					Clear all
+				</DsButton>
+			)}
 
 			<RadixDialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
 				<VisuallyHidden>
@@ -88,15 +94,15 @@ const ChipFilterPanel: React.FC<ChipFilterPanelProps> = ({
 				<RadixDialog.Portal>
 					<RadixDialog.Content style={dialogStyle} className={styles.dialog}>
 						<div className={styles.dialogContent}>
-							{filters
-								.filter((filter, index) => index >= visibleCount)
-								.map((filter) => (
-									<div key={filter.id} className={styles.filterCheckbox}>
+							{items
+								.filter((item, index) => index >= visibleCount)
+								.map((item) => (
+									<div key={item.id} className={styles.itemCheckbox}>
 										<DsCheckbox
-											id={`filter-${filter.id}`}
-											checked={filter.selected}
-											onCheckedChange={() => onFilterSelect?.(filter)}
-											label={filter.label}
+											id={`chip-${item.id}`}
+											checked={item.selected}
+											onCheckedChange={() => onItemSelect?.(item)}
+											label={item.label}
 										/>
 									</div>
 								))}
@@ -108,4 +114,4 @@ const ChipFilterPanel: React.FC<ChipFilterPanelProps> = ({
 	);
 };
 
-export default ChipFilterPanel;
+export default DsChipGroup;

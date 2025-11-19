@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
+import { ChipItem } from '@design-system/ui';
 import { ColumnFilterState, FilterAdapter, FilterState } from '../types/filter-adapter.types';
-import { FilterChipItem } from '../../../../../widgets';
 import { FilterNavItem } from '../components/filter-modal';
 
 export interface UseTableFiltersResult<TData, TValue> {
@@ -18,7 +18,7 @@ export interface UseTableFiltersResult<TData, TValue> {
 	/**
 	 * Filter chips for display
 	 */
-	filterChips: FilterChipItem[];
+	filterChips: ChipItem[];
 
 	/**
 	 * Filter navigation items with counts
@@ -52,7 +52,7 @@ export interface UseTableFiltersResult<TData, TValue> {
 		/**
 		 * Delete a specific chip
 		 */
-		deleteChip: (chip: FilterChipItem) => void;
+		deleteChip: (chip: ChipItem) => void;
 	};
 
 	/**
@@ -81,7 +81,7 @@ export function useTableFilters<TData, TValue>(
 
 	const [filterState, setFilterState] = useState<FilterState>(initialState);
 	const [columnFilters, setColumnFilters] = useState<ColumnFilterState[]>([]);
-	const [filterChips, setFilterChips] = useState<FilterChipItem[]>([]);
+	const [filterChips, setFilterChips] = useState<ChipItem[]>([]);
 
 	// Generate filter nav items with counts (updates as user changes filters in modal)
 	const filterNavItems: FilterNavItem[] = filterAdapters.map((adapter) => ({
@@ -120,7 +120,7 @@ export function useTableFilters<TData, TValue>(
 
 	const applyFilters = () => {
 		const filters: ColumnFilterState[] = [];
-		const chips: FilterChipItem[] = [];
+		const chips: ChipItem[] = [];
 
 		filterAdapters.forEach((adapter) => {
 			const value = filterState[adapter.id];
@@ -151,7 +151,7 @@ export function useTableFilters<TData, TValue>(
 		setFilterChips([]);
 	};
 
-	const deleteChip = (chip: FilterChipItem) => {
+	const deleteChip = (chip: ChipItem) => {
 		const filterKey = typeof chip.metadata?.key === 'string' ? chip.metadata.key : undefined;
 		if (!filterKey) return;
 
@@ -162,7 +162,7 @@ export function useTableFilters<TData, TValue>(
 		const newValue = adapter.fromChip(chip, currentValue);
 
 		// Regenerate chips to check if this was the last one
-		const chips: FilterChipItem[] = [];
+		const chips: ChipItem[] = [];
 		filterAdapters.forEach((adapter) => {
 			const value = adapter.id === filterKey ? newValue : filterState[adapter.id];
 			const adapterChips = adapter.toChips(value);

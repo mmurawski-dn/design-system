@@ -72,8 +72,8 @@ function MyTable() {
 
   return (
     <>
-      <ChipFilterPanel
-        filters={filterChips}
+      <DsChipGroup
+        items={filterChips}
         onClearAll={() => handlers.clearAll()}
         onFilterDelete={handlers.deleteChip}
       />
