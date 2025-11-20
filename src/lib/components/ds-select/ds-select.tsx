@@ -48,7 +48,7 @@ const DsSelect = ({
 		option.label.toLowerCase().includes(searchTerm.toLowerCase()),
 	);
 
-	const normalizedValue = Array.isArray(value) ? value : [value].filter((value) => value !== undefined);
+	const normalizedValue = Array.isArray(value) ? value : [value].filter((value) => !!value);
 
 	const select = useSelect({
 		collection,
