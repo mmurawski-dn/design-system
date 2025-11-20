@@ -11,14 +11,14 @@ export interface DsSelectOption {
 	/**
 	 * Value to return when the option is selected
 	 */
-	value: OptionValue;
+	value: SelectOptionValue;
 	/**
 	 * Optional icon to display next to the label
 	 */
 	icon?: IconName;
 }
 
-type OptionValue = string;
+export type SelectOptionValue = string;
 
 export type DsSelectProps = {
 	/**
@@ -69,12 +69,12 @@ export type DsSelectProps = {
 	(
 		| {
 				multiple?: undefined | false;
-				value: OptionValue;
-				onValueChange?: (value: OptionValue) => void;
+				value: SelectOptionValue;
+				onValueChange?: (value: SelectOptionValue) => void;
 		  }
 		| {
 				multiple: true;
-				value: OptionValue[];
-				onValueChange?: (value: OptionValue[]) => void;
+				value: SelectOptionValue[];
+				onValueChange?: (value: SelectOptionValue[]) => void;
 		  }
 	);
