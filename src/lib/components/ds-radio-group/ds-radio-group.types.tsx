@@ -46,6 +46,14 @@ export interface DsRadioGroupItemProps
 	 */
 	disabled?: boolean;
 	/**
+	 * Optional label text for the radio item
+	 */
+	label?: string;
+	/**
+	 * Optional additional info text displayed below the label
+	 */
+	labelInfo?: string;
+	/**
 	 * Additional CSS class names
 	 */
 	className?: string;
@@ -64,7 +72,7 @@ export interface DsRadioGroupItemProps
  * Use compound component pattern instead: <DsRadioGroup.Root><DsRadioGroup.Item /></DsRadioGroup.Root>
  * @deprecated
  */
-export interface DsRadioOption<ValueType = string> {
+export interface DsRadioOptionLegacy<ValueType = string> {
 	/**
 	 * Display label for the radio option
 	 */
@@ -84,11 +92,11 @@ export interface DsRadioOption<ValueType = string> {
 }
 
 /**
- * DEPRECATED: Legacy props for DsRadioGroup component
+ * DEPRECATED: Legacy props for DsRadioGroupLegacy component
  * Use compound component pattern instead
  * @deprecated
  */
-export interface DsRadioGroupProps<TOption extends DsRadioOption = DsRadioOption>
+export interface DsRadioGroupLegacyProps<TOption extends DsRadioOptionLegacy = DsRadioOptionLegacy>
 	extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
 	/**
 	 * The radio group options

@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, within } from '@storybook/test';
-import DsRadioGroup from './ds-radio-group';
+import { DsRadioGroupLegacy } from './ds-radio-group';
 
-const meta: Meta<typeof DsRadioGroup> = {
+const meta: Meta<typeof DsRadioGroupLegacy> = {
 	title: 'Design System/RadioGroup',
-	component: DsRadioGroup,
+	component: DsRadioGroupLegacy,
 	parameters: {
 		layout: 'centered',
 	},
@@ -37,7 +37,7 @@ const meta: Meta<typeof DsRadioGroup> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof DsRadioGroup>;
+type Story = StoryObj<typeof DsRadioGroupLegacy>;
 
 export const Default: Story = {
 	args: {

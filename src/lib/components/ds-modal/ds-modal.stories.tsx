@@ -282,15 +282,14 @@ export const Default: Story = {
 								{/* Subscription Section */}
 								<div>
 									<h3 className={styles.formSectionTitle}>Subscription Plan</h3>
-									<DsRadioGroup
-										options={[
-											{ label: 'Basic', value: 'basic' },
-											{ label: 'Pro', value: 'pro' },
-											{ label: 'Enterprise', value: 'enterprise' },
-										]}
+									<DsRadioGroup.Root
 										value={watch('subscription') || ''}
 										onValueChange={(value) => handleValueChange('subscription', value)}
-									/>
+									>
+										<DsRadioGroup.Item value="basic" label="Basic" />
+										<DsRadioGroup.Item value="pro" label="Pro" />
+										<DsRadioGroup.Item value="enterprise" label="Enterprise" />
+									</DsRadioGroup.Root>
 									{errors.subscription && (
 										<span className={styles.errorMessage}>{errors.subscription.message}</span>
 									)}

@@ -1,4 +1,91 @@
 import { CSSProperties, MouseEvent, ReactNode } from 'react';
+import { IconType } from '../ds-icon';
+
+/**
+ * DEPRECATED: Legacy dropdown menu option configuration
+ * Use compound component pattern instead
+ * @deprecated
+ */
+export interface DsDropdownMenuOptionLegacy {
+	/**
+	 * Display label for the menu option
+	 */
+	label: string;
+	/**
+	 * Optional icon to display
+	 */
+	icon?: IconType;
+	/**
+	 * Whether this option is disabled
+	 */
+	disabled?: boolean;
+	/**
+	 * Click handler for the option
+	 */
+	onClick?: (e: MouseEvent<HTMLElement>) => void;
+	/**
+	 * Optional value for selection tracking
+	 */
+	value?: string;
+}
+
+/**
+ * DEPRECATED: Legacy props for DsDropdownMenuLegacy component
+ * Use compound component pattern instead
+ * @deprecated
+ */
+export interface DsDropdownMenuLegacyProps {
+	/**
+	 * The options to be displayed in the dropdown menu
+	 */
+	options: DsDropdownMenuOptionLegacy[];
+	/**
+	 * Optional children to be rendered inside the component
+	 * Typically used for the trigger element
+	 */
+	children?: ReactNode | undefined;
+	/**
+	 * The gap between the trigger and dropdown content in pixels
+	 * @default 0
+	 */
+	contentGap?: number;
+	/**
+	 * Additional CSS class names
+	 */
+	className?: string;
+	/**
+	 * Optional inline styles to apply to the component
+	 */
+	style?: CSSProperties;
+	/**
+	 * The alignment of the dropdown content
+	 * @default 'center'
+	 */
+	align?: 'start' | 'center' | 'end';
+	/**
+	 * The side of the dropdown content
+	 * @default 'bottom'
+	 */
+	side?: 'top' | 'right' | 'bottom' | 'left';
+	/**
+	 * Whether to render in place instead of using portals
+	 * @default false
+	 */
+	disablePortal?: boolean;
+	/**
+	 * Whether to disable the search functionality
+	 * @default false
+	 */
+	disableSearch?: boolean;
+	/**
+	 * Currently selected value (for selection tracking)
+	 */
+	selected?: string;
+	/**
+	 * Callback when an option with a value is selected
+	 */
+	onSelect?: (value: string) => void;
+}
 
 /**
  * Props for the DsDropdownMenu Root component
