@@ -1,6 +1,6 @@
 @use '@design-system/ui/src/styles/typography';
 
-.navMenu {
+.tabList {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
@@ -15,7 +15,7 @@
 	}
 }
 
-.navItem {
+.tabItem {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -34,17 +34,19 @@
 		color 0.2s;
 	gap: var(--spacing-xs);
 
-	&:hover:not(:disabled):not(.selected) {
+	&:hover:not(:disabled):not(.selected):not([data-disabled]) {
 		background: var(--color-background-action-tertiary);
 		color: var(--color-font-main);
 	}
 
-	&.selected {
+	&.selected,
+	&[data-state='active'] {
 		background: var(--color-background-action-secondary-hover);
 		color: var(--color-font-main);
 	}
 
-	&:disabled {
+	&:disabled,
+	&[data-disabled] {
 		cursor: not-allowed;
 		color: var(--color-font-secondary);
 		opacity: 0.5;
@@ -57,19 +59,19 @@
 	}
 }
 
-.navItemLabel {
+.tabItemLabel {
 	@include typography.ellipsis;
 	flex: 1;
 	color: inherit;
 }
 
-.navItemCount {
+.tabItemCount {
 	display: flex;
 	align-items: center;
 	gap: var(--spacing-xs);
 }
 
-.navItemDot {
+.tabItemDot {
 	width: 10px;
 	height: 10px;
 	border-radius: 50%;
@@ -78,6 +80,6 @@
 	flex-shrink: 0;
 }
 
-.navItemCountText {
+.tabItemCountText {
 	color: var(--color-font-secondary);
 }

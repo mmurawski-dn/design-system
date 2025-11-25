@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import DsNavMenu from './ds-nav-menu';
-import { NavMenuItem } from './ds-nav-menu.types';
+import DsVerticalTabs from './ds-vertical-tabs';
+import { VerticalTabItem } from './ds-vertical-tabs.types';
 
-const meta: Meta<typeof DsNavMenu> = {
-	title: 'Design System/Nav Menu',
-	component: DsNavMenu,
+const meta: Meta<typeof DsVerticalTabs> = {
+	title: 'Design System/Vertical Tabs',
+	component: DsVerticalTabs,
 	parameters: {
 		layout: 'centered',
 	},
@@ -13,7 +13,7 @@ const meta: Meta<typeof DsNavMenu> = {
 	argTypes: {
 		items: {
 			control: 'object',
-			description: 'Array of navigation items',
+			description: 'Array of tab items',
 		},
 		selectedItem: {
 			control: 'object',
@@ -31,9 +31,9 @@ const meta: Meta<typeof DsNavMenu> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof DsNavMenu>;
+type Story = StoryObj<typeof DsVerticalTabs>;
 
-const sampleItems: NavMenuItem[] = [
+const sampleItems: VerticalTabItem[] = [
 	{ id: 'status', label: 'Status', count: 2 },
 	{ id: 'running', label: 'Running/Completed' },
 	{ id: 'category', label: 'Category' },
@@ -43,7 +43,7 @@ const sampleItems: NavMenuItem[] = [
 	{ id: 'nextRun', label: 'Next run' },
 ];
 
-const sampleItemsWithDisabled: NavMenuItem[] = [
+const sampleItemsWithDisabled: VerticalTabItem[] = [
 	{ id: 'status', label: 'Status', count: 2, disabled: true },
 	{ id: 'running', label: 'Running/Completed' },
 	{ id: 'category', label: 'Category' },
@@ -94,11 +94,11 @@ export const WithDisabledItems: Story = {
 
 export const Interactive: Story = {
 	render: function Render(args) {
-		const [selected, setSelected] = useState<NavMenuItem>(sampleItems[0]);
+		const [selected, setSelected] = useState<VerticalTabItem>(sampleItems[0]);
 
 		return (
 			<div style={{ width: '364px', height: '400px', border: '1px solid #e0e0e0' }}>
-				<DsNavMenu {...args} items={sampleItems} selectedItem={selected} onSelect={setSelected} />
+				<DsVerticalTabs {...args} items={sampleItems} selectedItem={selected} onSelect={setSelected} />
 				<div style={{ padding: '16px', borderTop: '1px solid #e0e0e0', background: '#f5f5f5' }}>
 					<p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
 						Selected: <strong>{selected.label}</strong>

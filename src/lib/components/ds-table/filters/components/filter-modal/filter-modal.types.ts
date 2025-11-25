@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { NavMenuItem } from '@design-system/ui';
+import { VerticalTabItem } from '@design-system/ui';
 
 export interface FilterModalProps {
 	/**
@@ -30,7 +30,7 @@ export interface FilterModalProps {
 	/**
 	 * Array of filter navigation items
 	 */
-	filterNavItems?: NavMenuItem[];
+	filterNavItems?: VerticalTabItem[];
 	/**
 	 * Currently selected filter category ID
 	 */
@@ -42,7 +42,7 @@ export interface FilterModalProps {
 	/**
 	 * Content to display in the filter panel (right side)
 	 */
-	children?: (item: NavMenuItem) => ReactNode;
+	children?: (item: VerticalTabItem) => ReactNode;
 	/**
 	 * Whether apply button is disabled
 	 */

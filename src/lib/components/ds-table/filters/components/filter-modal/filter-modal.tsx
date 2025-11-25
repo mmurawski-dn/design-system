@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import classNames from 'classnames';
-import { DsButton, DsIcon, DsModal, DsNavMenu, NavMenuItem } from '@design-system/ui';
+import { DsButton, DsIcon, DsModal, DsVerticalTabs, VerticalTabItem } from '@design-system/ui';
 import { FilterModalProps } from './filter-modal.types';
 import styles from './filter-modal.module.scss';
 
@@ -19,7 +19,7 @@ const FilterModal = ({
 	applyDisabled = false,
 	clearAllDisabled = false,
 }: FilterModalProps) => {
-	const [selectedFilter, setSelectedFilter] = useState<NavMenuItem>(filterNavItems[0]);
+	const [selectedFilter, setSelectedFilter] = useState<VerticalTabItem>(filterNavItems[0]);
 
 	return (
 		<DsModal
@@ -37,7 +37,7 @@ const FilterModal = ({
 			</DsModal.Header>
 
 			<DsModal.Body className={styles.filterBody}>
-				<DsNavMenu
+				<DsVerticalTabs
 					items={filterNavItems}
 					selectedItem={selectedFilter}
 					onSelect={setSelectedFilter}

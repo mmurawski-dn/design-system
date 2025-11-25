@@ -34,4 +34,4 @@ export * from './lib/components/ds-confirmation';
 export * from './lib/components/ds-file-upload';
 export * from './lib/components/ds-chip';
 export * from './lib/components/ds-chip-group';
-export * from './lib/components/ds-nav-menu';
+export * from './lib/components/ds-vertical-tabs';
