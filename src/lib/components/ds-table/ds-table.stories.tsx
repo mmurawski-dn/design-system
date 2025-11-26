@@ -11,6 +11,7 @@ import { DsTableApi, ScrollParams } from './ds-table.types';
 import { DsSpinner } from '../ds-spinner';
 import { generatePersonData, simulateApiCall } from './utils/story-data-generator';
 import styles from './ds-table.stories.module.scss';
+import { StatusItem } from './stories/components/status-item/status-item';
 
 export enum Status {
 	Relationship = 'relationship',
@@ -586,12 +587,7 @@ export const TabFilters: Story = {
 			cell: (info) => {
 				const status = info.getValue() as Status;
 				const icon = getStatusIcon(status);
-				return (
-					<div className={styles.customTabRow}>
-						<DsIcon icon={icon} size="small" />
-						<span>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
-					</div>
-				);
+				return <StatusItem icon={icon} label={status} />;
 			},
 		};
 
