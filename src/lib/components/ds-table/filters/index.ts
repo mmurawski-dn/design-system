@@ -29,7 +29,7 @@
  * ### Factory Functions:
  * - `createCheckboxFilterAdapter` - Multi-select checkbox filters
  * - `createDualRangeFilterAdapter` - Numeric range filters (with multiple fields)
- * - `createCustomFilterAdapter` - Full control for complex scenarios
+ * - `createFilterAdapter` - Base function for custom filters (full control)
  *
  * ### Hook:
  * - `useTableFilters` - Orchestrates multiple filters, manages state
@@ -38,7 +38,7 @@
  * - `FilterAdapter` - Core adapter interface
  * - `CheckboxFilterItem` - Item type for checkbox filters
  * - `RangeFilterValue` - Value type for range filters
- * - `FilterNavItem` - Nav item for filter modal
+ * - `FilterModalProps` - Props for filter modal component
  *
  * ## Example:
  * See `stories/filters-panel.stories.tsx` and `stories/filters-panel/workflow-filters.config.tsx`

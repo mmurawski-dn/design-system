@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Row } from '@tanstack/react-table';
 import { FilterAdapter } from '../types/filter-adapter.types';
 import { CheckboxFilter, CheckboxFilterItem } from '../components/checkbox-filter';
+import { createFilterAdapter } from './filter-adapter';
 
 export interface CheckboxFilterAdapterConfig<TData, TValue> {
 	/**
@@ -44,13 +45,14 @@ export interface CheckboxFilterAdapterConfig<TData, TValue> {
 
 /**
  * Factory function to create a checkbox filter adapter
- * Handles multi-select checkbox filtering with inclusion model
+ *
+ * Handles multi-select checkbox filtering with inclusion model:
  * - Empty selection = show all data (no filter active)
  * - Selected items = show only those items
  */
 export function createCheckboxFilterAdapter<TData, TValue = string>(
 	config: CheckboxFilterAdapterConfig<TData, TValue>,
-): FilterAdapter<TData, CheckboxFilterItem<TValue>[]> {
+): FilterAdapter<TData, CheckboxFilterItem<TValue>[], TValue> {
 	const {
 		id,
 		label,
@@ -58,15 +60,15 @@ export function createCheckboxFilterAdapter<TData, TValue = string>(
 		renderer,
 		chipLabelTemplate = (item) => `${label}: ${item.label}`,
 		cellRenderer,
-		getRowValue = (row) => row.getValue(id) as TValue,
+		getRowValue = (row) => row.getValue(id),
 	} = config;
 
-	return {
+	return createFilterAdapter<TData, CheckboxFilterItem<TValue>[], TValue>({
 		id,
 		label,
 		initialValue: [], // Start with nothing selected (show all)
 
-		columnFilterFn: (row, columnId, filterValue) => {
+		filterFn: (row, columnId, filterValue) => {
 			// Empty selection = no filter = show all
 			if (filterValue.length === 0) {
 				return true;
@@ -105,8 +107,6 @@ export function createCheckboxFilterAdapter<TData, TValue = string>(
 			return selectedItems.length > 0;
 		},
 
-		reset: () => [], // Reset to empty (show all)
-
 		renderFilter: (value, onChange) => {
 			return (
 				<CheckboxFilter
@@ -117,5 +117,5 @@ export function createCheckboxFilterAdapter<TData, TValue = string>(
 				/>
 			);
 		},
-	};
+	});
 }

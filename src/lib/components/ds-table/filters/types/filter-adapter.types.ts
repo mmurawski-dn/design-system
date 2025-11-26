@@ -5,8 +5,12 @@ import { ChipItem } from '@design-system/ui';
 /**
  * Base filter adapter interface that all filters must implement
  * This provides a consistent contract for filter behavior
+ *
+ * @template TData - The row data type
+ * @template TFilterValue - The filter state value type
+ * @template TCellValue - The actual cell value type from the table (defaults to unknown)
  */
-export interface FilterAdapter<TData, TFilterValue> {
+export interface FilterAdapter<TData, TFilterValue, TCellValue = unknown> {
 	/**
 	 * Unique identifier for the filter (should match column accessorKey)
 	 */
@@ -30,9 +34,10 @@ export interface FilterAdapter<TData, TFilterValue> {
 
 	/**
 	 * Optional custom cell renderer for the table column
+	 * Receives the actual cell value from the table, not the filter value
 	 * If not provided, default rendering will be used
 	 */
-	cellRenderer?: (value: TFilterValue) => ReactNode;
+	cellRenderer?: (value: TCellValue) => ReactNode;
 
 	/**
 	 * Convert filter value to filter chips for display

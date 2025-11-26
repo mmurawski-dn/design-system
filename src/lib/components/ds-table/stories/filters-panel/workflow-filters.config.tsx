@@ -43,11 +43,10 @@ import DsStatusBadge from '../../../ds-status-badge/ds-status-badge';
 import { DsStatus } from '../../../ds-status-badge/ds-status-badge.types';
 import { IconType } from '../../../ds-icon/ds-icon.types';
 import {
-	createCheckboxFilterAdapter,
-	createCustomFilterAdapter,
-	createDualRangeFilterAdapter,
-	FilterAdapter,
 	CheckboxFilterItem,
+	createCheckboxFilterAdapter,
+	createDualRangeFilterAdapter,
+	createFilterAdapter,
 } from '../../filters';
 import { LastEditedFilter, LastEditedFilterValue } from './components/last-edited-filter/last-edited-filter';
 import { LastEditedCell } from './components/last-edited-cell/last-edited-cell';
@@ -136,7 +135,7 @@ export const statusFilterAdapter = createCheckboxFilterAdapter<Workflow, DsStatu
 	items: statusItems,
 	renderer: (item) => renderStatusBadge(item.value),
 	chipLabelTemplate: (item) => `Status: ${item.label}`,
-	cellRenderer: (value) => renderStatusBadge(value as DsStatus),
+	cellRenderer: (value) => renderStatusBadge(value),
 });
 
 /**
@@ -257,7 +256,11 @@ const parseTimestamp = (timestamp: string): Date => {
  * This is a reference implementation for building custom filters
  * that don't fit the checkbox or dual-range patterns.
  */
-export const lastEditedFilterAdapter = createCustomFilterAdapter<Workflow, LastEditedFilterValue>({
+export const lastEditedFilterAdapter = createFilterAdapter<
+	Workflow,
+	LastEditedFilterValue,
+	Workflow['lastEdited']
+>({
 	id: 'lastEdited',
 	label: 'Last edited',
 	initialValue: {
@@ -365,7 +368,7 @@ export const lastEditedFilterAdapter = createCustomFilterAdapter<Workflow, LastE
 	renderFilter: (value, onChange) => (
 		<LastEditedFilter value={value} onChange={onChange} availableEditors={availableEditors} />
 	),
-	cellRenderer: (value: Workflow['lastEdited']) => (
+	cellRenderer: (value) => (
 		<LastEditedCell editor={value.editor} timestamp={value.timestamp} colorIndex={value.colorIndex} />
 	),
 });
@@ -373,8 +376,8 @@ export const lastEditedFilterAdapter = createCustomFilterAdapter<Workflow, LastE
 /**
  * All workflow filters
  */
-export const workflowFilters: FilterAdapter<Workflow>[] = [
+export const workflowFilters = [
 	statusFilterAdapter,
 	runningCompletedFilterAdapter,
 	lastEditedFilterAdapter,
-];
+] as const;

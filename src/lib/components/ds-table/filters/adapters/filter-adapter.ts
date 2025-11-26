@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { FilterAdapter } from '../types/filter-adapter.types';
 
-export interface CustomFilterAdapterConfig<TData, TFilterValue> {
+export interface FilterAdapterConfig<TData, TFilterValue, TCellValue = unknown> {
 	/**
 	 * Unique identifier (should match column accessorKey)
 	 */
@@ -20,27 +20,27 @@ export interface CustomFilterAdapterConfig<TData, TFilterValue> {
 	/**
 	 * Filter function - determines if row matches filter value
 	 */
-	filterFn: FilterAdapter<TData, TFilterValue>['columnFilterFn'];
+	filterFn: FilterAdapter<TData, TFilterValue, TCellValue>['columnFilterFn'];
 
 	/**
 	 * Convert filter value to display chips
 	 */
-	toChips: FilterAdapter<TData, TFilterValue>['toChips'];
+	toChips: FilterAdapter<TData, TFilterValue, TCellValue>['toChips'];
 
 	/**
 	 * Remove chip effect from filter value
 	 */
-	fromChip: FilterAdapter<TData, TFilterValue>['fromChip'];
+	fromChip: FilterAdapter<TData, TFilterValue, TCellValue>['fromChip'];
 
 	/**
 	 * Calculate active filter count
 	 */
-	getActiveCount: FilterAdapter<TData, TFilterValue>['getActiveCount'];
+	getActiveCount: FilterAdapter<TData, TFilterValue, TCellValue>['getActiveCount'];
 
 	/**
 	 * Check if filter has active values
 	 */
-	hasActiveFilters: FilterAdapter<TData, TFilterValue>['hasActiveFilters'];
+	hasActiveFilters: FilterAdapter<TData, TFilterValue, TCellValue>['hasActiveFilters'];
 
 	/**
 	 * Render the filter UI
@@ -48,22 +48,27 @@ export interface CustomFilterAdapterConfig<TData, TFilterValue> {
 	renderFilter: (value: TFilterValue, onChange: (value: TFilterValue) => void) => ReactNode;
 
 	/**
-	 * Optional custom cell renderer
+	 * Optional custom cell renderer for table cells
+	 * Note: This receives the cell value from the table, not the filter value
 	 */
-	cellRenderer?: (value: TFilterValue) => ReactNode;
+	cellRenderer?: (value: TCellValue) => ReactNode;
 }
 
 /**
- * Factory function to create a custom filter adapter
+ * Base factory function to create a filter adapter
  *
- * Provides maximum flexibility for app-specific filtering needs.
+ * This is the core function that all specialized filter adapters use internally.
  * Use this when checkbox or dual-range adapters don't fit your requirements.
  *
- * ## When to use:
+ * ## When to use directly:
  * - Complex filtering logic (e.g., editor + date range)
  * - Unique UI that doesn't fit generic patterns
  * - Combining multiple sub-filters
  * - Special chip generation requirements
+ *
+ * ## When to use specialized helpers instead:
+ * - **Checkbox filters**: Use `createCheckboxFilterAdapter` for multi-select
+ * - **Range filters**: Use `createDualRangeFilterAdapter` for numeric ranges
  *
  * ## Example:
  * ```typescript
@@ -72,7 +77,7 @@ export interface CustomFilterAdapterConfig<TData, TFilterValue> {
  *   dateRange: { from?: Date; to?: Date };
  * }
  *
- * const myFilter = createCustomFilterAdapter<DataType, MyFilterValue>({
+ * const myFilter = createFilterAdapter<DataType, MyFilterValue>({
  *   id: 'myColumn',
  *   label: 'My Filter',
  *   initialValue: { users: [], dateRange: {} },
@@ -111,11 +116,16 @@ export interface CustomFilterAdapterConfig<TData, TFilterValue> {
  * });
  * ```
  *
+ * ## Reference Implementation:
  * See `workflow-filters.config.tsx` for a complete example (lastEditedFilterAdapter).
+ *
+ * ## Note:
+ * Most use cases are covered by `createCheckboxFilterAdapter` or `createDualRangeFilterAdapter`.
+ * Only use this base function directly when you need completely custom filter logic.
  */
-export function createCustomFilterAdapter<TData, TFilterValue>(
-	config: CustomFilterAdapterConfig<TData, TFilterValue>,
-): FilterAdapter<TData, TFilterValue> {
+export function createFilterAdapter<TData, TFilterValue, TCellValue = unknown>(
+	config: FilterAdapterConfig<TData, TFilterValue, TCellValue>,
+): FilterAdapter<TData, TFilterValue, TCellValue> {
 	return {
 		id: config.id,
 		label: config.label,
