@@ -19,6 +19,7 @@ export * from './lib/components/ds-dialog';
 export * from './lib/components/ds-panel';
 export * from './lib/components/ds-stepper';
 export * from './lib/components/ds-text-input';
+export * from './lib/components/ds-expandable-text-input';
 export * from './lib/components/ds-textarea';
 export * from './lib/components/ds-number-input';
 export * from './lib/components/ds-password-input';

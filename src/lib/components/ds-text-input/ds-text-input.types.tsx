@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 
 export const textInputSizes = ['small', 'default'] as const;
 export type TextInputSize = (typeof textInputSizes)[number];
@@ -89,4 +89,9 @@ export interface DsTextInputProps {
 	 * Adornment to display at the end of the input
 	 */
 	endAdornment?: React.ReactNode;
+
+	tabIndex?: number;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	InputWrapper?: ComponentType<any>;
 }

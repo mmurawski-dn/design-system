@@ -1,0 +1,70 @@
+.expandableInput {
+	width: max-content;
+	transition: 0.3s all;
+
+	&:not(.expanded) {
+		gap: 0;
+		padding-inline: var(--spacing-xs);
+	}
+
+	.trigger:focus {
+		outline: none;
+	}
+
+	// Increase the clickable area of the start adornment.
+	.trigger::before {
+		content: '';
+		display: block;
+		position: absolute;
+		inset: 0;
+		cursor: pointer;
+	}
+
+	&:has(:disabled) .trigger::before {
+		cursor: not-allowed;
+	}
+
+	&.expanded .trigger {
+		pointer-events: none;
+
+		&::before {
+			display: none;
+		}
+	}
+
+	.clearTrigger {
+		transition: 0.3s all;
+	}
+
+	&:not(.expanded) .clearTrigger {
+		display: none;
+	}
+
+	&:not(.dirty) .clearTrigger {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	// See: https://css-tricks.com/css-grid-can-do-auto-height-transitions/
+	.inputExpander {
+		display: grid;
+		grid-template-columns: 0fr;
+		overflow: hidden;
+		transition: 0.3s all;
+
+		input {
+			min-width: 0;
+			opacity: 0;
+			transition: 0.15s all;
+		}
+	}
+
+	&.expanded .inputExpander {
+		grid-template-columns: 1fr;
+
+		input {
+			opacity: 1;
+			transition: 0.3s all 0.15s;
+		}
+	}
+}
