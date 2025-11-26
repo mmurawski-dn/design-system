@@ -20,8 +20,7 @@ const meta: Meta<typeof DsVerticalTabs> = {
 		docs: {
 			description: {
 				component: `
-DsVerticalTabs is a compound component for creating flexible vertical tab navigation.
-Built on Ark UI Tabs with vertical orientation, providing full accessibility support.
+DsVerticalTabs is a compound component for creating flexible vertical tab navigation, providing full accessibility support.
 
 ## Usage Pattern
 
