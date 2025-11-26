@@ -40,7 +40,7 @@ export function SelectItemsChips({ showAll, onShowAll, onValueChange, count }: S
 			})}
 
 			{!showAll && selectedItems.length > count && (
-				<DsChip label={`+${selectedItems.length - count}`} onClick={onShowAll} />
+				<DsChip label={`+${selectedItems.length - count}`} onClick={onShowAll} size="small" />
 			)}
 
 			<DsButton

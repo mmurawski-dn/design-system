@@ -145,6 +145,9 @@ export const Default: Story = {
 	args: {
 		options: mockOptions,
 		clearable: true,
+		style: {
+			width: '200px',
+		},
 	},
 	play: async ({ canvasElement }) => {
 		await sanityCheck(canvasElement);
@@ -179,6 +182,9 @@ export const WithSearch: Story = {
 			},
 		],
 		clearable: true,
+		style: {
+			width: '200px',
+		},
 	},
 };
 

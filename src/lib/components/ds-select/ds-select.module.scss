@@ -31,6 +31,7 @@
 }
 
 .item {
+	@include typography.body-sm-reg;
 	display: flex;
 	align-items: center;
 	gap: 8px;
