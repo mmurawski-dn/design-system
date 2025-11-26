@@ -53,6 +53,7 @@ export function DsExpandableTextInput({
 			InputWrapper={InputExpander}
 			startAdornment={
 				<button
+					type="button"
 					className={styles.trigger}
 					aria-label="Open text input"
 					aria-hidden={expanded}
