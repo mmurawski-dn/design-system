@@ -126,6 +126,7 @@ export const Showcase: Story = {
 			'tertiary-dark',
 			'primary-dark',
 			'secondary-dark',
+			'secondary-light-dark',
 		];
 		const isSupported = (buttonType: string, variant: string) =>
 			supportedCombos.includes(`${buttonType}-${variant}`);
@@ -133,6 +134,7 @@ export const Showcase: Story = {
 		const rowDefs = [
 			{ label: 'Primary', buttonType: 'primary', icon: false },
 			{ label: 'Secondary', buttonType: 'secondary', icon: false },
+			{ label: 'Secondary-Light', buttonType: 'secondary-light', icon: false, variant: 'dark' },
 			{ label: 'Tertiary', buttonType: 'tertiary', icon: false },
 			{ label: 'Icon Primary', buttonType: 'primary', icon: true },
 			{ label: 'Icon Secondary', buttonType: 'secondary', icon: true },
