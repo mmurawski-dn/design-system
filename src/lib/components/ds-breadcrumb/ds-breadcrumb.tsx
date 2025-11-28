@@ -50,7 +50,9 @@ const DsBreadcrumb: React.FC<DsBreadcrumbProps> = ({ items, onSelect, className 
 												value={search}
 												onValueChange={setSearch}
 												onKeyDown={(e) => e.stopPropagation()}
-												startAdornment={<DsIcon icon="search" size="tiny" />}
+												slots={{
+													startAdornment: <DsIcon icon="search" size="tiny" />,
+												}}
 											/>
 										</DsDropdownMenu.Search>
 										{item.options

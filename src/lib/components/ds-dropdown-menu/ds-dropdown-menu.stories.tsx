@@ -181,7 +181,9 @@ export const SelectableList: Story = {
 							value={search}
 							onValueChange={setSearch}
 							onKeyDown={(e) => e.stopPropagation()}
-							startAdornment={<DsIcon icon="search" size="tiny" />}
+							slots={{
+								startAdornment: <DsIcon icon="search" size="tiny" />,
+							}}
 						/>
 					</DsDropdownMenu.Search>
 					{filteredOptions.map((option) => (
@@ -265,7 +267,9 @@ export const CheckboxList: Story = {
 							value={search}
 							onValueChange={setSearch}
 							onKeyDown={(e) => e.stopPropagation()}
-							startAdornment={<DsIcon icon="search" size="tiny" />}
+							slots={{
+								startAdornment: <DsIcon icon="search" size="tiny" />,
+							}}
 						/>
 					</DsDropdownMenu.Search>
 					{filteredItems.map((item) => (
@@ -373,7 +377,9 @@ export const RadioList: Story = {
 							value={search}
 							onValueChange={setSearch}
 							onKeyDown={(e) => e.stopPropagation()}
-							startAdornment={<DsIcon icon="search" size="tiny" />}
+							slots={{
+								startAdornment: <DsIcon icon="search" size="tiny" />,
+							}}
 						/>
 					</DsDropdownMenu.Search>
 					<DsRadioGroup.Root className="radio-group" value={tempSelected} onValueChange={setTempSelected}>

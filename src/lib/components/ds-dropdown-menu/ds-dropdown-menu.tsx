@@ -336,7 +336,9 @@ export const DsDropdownMenuLegacy: React.FC<DsDropdownMenuLegacyProps> = ({
 							placeholder="Search"
 							value={searchTerm}
 							onValueChange={setSearchTerm}
-							startAdornment={<DsIcon icon="search" size="tiny" />}
+							slots={{
+								startAdornment: <DsIcon icon="search" size="tiny" />,
+							}}
 							onKeyDown={(e) => e.stopPropagation()}
 						/>
 					)}
