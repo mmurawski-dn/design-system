@@ -7,17 +7,14 @@ import { DsSelectOption, DsSelectProps } from './ds-select.types';
 import { DsIcon } from '../ds-icon';
 import { DsCheckbox, DsCheckboxProps } from '../ds-checkbox';
 import { SelectItemsChips } from './select-items-chips';
-
-export type InternalOption = Omit<DsSelectOption, 'value'> & {
-	value: string | typeof SELECT_ALL_SYMBOL;
-};
+import { DsTypography } from '../ds-typography';
 
 const SEARCH_THRESHOLD = 13;
-const SELECT_ALL_SYMBOL = Symbol('select-all');
+const SELECT_ALL_VALUE = '__INTERNAL_SELECT_ALL_VALUE__';
 
-const SELECT_ALL: InternalOption = {
+const SELECT_ALL: DsSelectOption = {
 	label: 'All',
-	value: SELECT_ALL_SYMBOL,
+	value: SELECT_ALL_VALUE,
 };
 
 const DsSelect = ({
@@ -28,20 +25,20 @@ const DsSelect = ({
 	size,
 	clearable,
 	onClear,
+	onBlur,
 	className,
-	onValueChange,
 	placeholder = 'Click to select a value',
 	disabled,
-	multiple = false,
+	...multiselectProps
 }: DsSelectProps) => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [showAllItems, setShowAllItems] = useState(false);
 
-	const internalOptions = multiple ? [SELECT_ALL, ...userOptions] : userOptions;
+	const internalOptions = multiselectProps.multiple ? [SELECT_ALL, ...userOptions] : userOptions;
 
 	const collection = createListCollection({
 		items: internalOptions,
-		itemToValue: (item) => item.value.toString(),
+		itemToValue: (item) => item.value,
 	});
 
 	const filteredOptions = internalOptions.filter((option) =>
@@ -53,7 +50,7 @@ const DsSelect = ({
 	const select = useSelect({
 		collection,
 		disabled,
-		multiple,
+		multiple: multiselectProps.multiple,
 		value: normalizedValue,
 
 		// Override Ark's auto-generated trigger id if an id provided by the user.
@@ -67,28 +64,29 @@ const DsSelect = ({
 
 		onValueChange: (details) => {
 			// Single select mode.
-			if (!multiple) {
-				onValueChange?.(details.value[0] as never);
+			if (!multiselectProps.multiple) {
+				multiselectProps.onValueChange?.(details.value[0]);
 				return;
 			}
 
+			console.log(details.value);
 			// "Select All" clicked in multi select mode.
-			const isSelectAllClicked = details.value.includes(SELECT_ALL_SYMBOL.toString());
+			const isSelectAllClicked = details.value.includes(SELECT_ALL_VALUE);
 
 			if (isSelectAllClicked) {
 				const areAllOptionsSelected = select.selectedItems.length === userOptions.length;
 
 				const newValues = areAllOptionsSelected ? [] : userOptions.map((opt) => opt.value);
 
-				onValueChange?.(newValues as never);
+				multiselectProps.onValueChange?.(newValues);
 
 				return;
 			}
 
 			// "Regular" multi select mode.
-			const newValueWithoutSelectAll = details.value.filter((val) => val !== SELECT_ALL_SYMBOL.toString());
+			const newValueWithoutSelectAll = details.value.filter((val) => val !== SELECT_ALL_VALUE);
 
-			onValueChange?.(newValueWithoutSelectAll as never);
+			multiselectProps.onValueChange?.(newValueWithoutSelectAll);
 		},
 	});
 
@@ -97,6 +95,7 @@ const DsSelect = ({
 			<Select.Control
 				className={classNames(styles.control, size === 'small' && styles.small, className)}
 				style={style}
+				onBlur={onBlur}
 				onKeyDown={(e) => {
 					if (!clearable) {
 						return;
@@ -107,9 +106,12 @@ const DsSelect = ({
 					}
 
 					if (e.key === 'Backspace' || e.key === 'Delete') {
-						const newValue = multiple ? [] : '';
+						if (multiselectProps.multiple) {
+							multiselectProps.onValueChange?.([]);
+						} else {
+							multiselectProps.onValueChange?.('');
+						}
 
-						onValueChange?.(newValue as never);
 						onClear?.();
 					}
 				}}
@@ -122,7 +124,9 @@ const DsSelect = ({
 					// automatic labelling here.
 					aria-labelledby={null as never}
 				>
-					<Select.ValueText className={styles.valueText} placeholder={placeholder} />
+					<DsTypography className={styles.valueText} variant="body-sm-reg" asChild>
+						<Select.ValueText placeholder={placeholder} />
+					</DsTypography>
 
 					<Select.Indicator className={styles.triggerIcon}>
 						<DsIcon icon="keyboard_arrow_down" size={size === 'small' ? 'small' : 'medium'} />
@@ -146,16 +150,14 @@ const DsSelect = ({
 									className={styles.searchInputField}
 									placeholder="Search"
 									value={searchTerm}
-									tabIndex={-1}
-									onKeyDown={(e) => e.stopPropagation()}
 									onChange={(e) => setSearchTerm(e.target.value)}
 								/>
 							</div>
 						)}
 
-						{multiple && (
+						{multiselectProps.multiple && (
 							<SelectItemsChips
-								onValueChange={onValueChange as never}
+								onValueChange={multiselectProps.onValueChange}
 								showAll={showAllItems}
 								onShowAll={() => setShowAllItems(true)}
 								// TODO: Find a way to calculate this based on the size of the select.
@@ -167,11 +169,18 @@ const DsSelect = ({
 							const checked = getItemCheckedState({ item, select, options: internalOptions });
 
 							return (
-								<Select.Item key={collection.getItemValue(item)} item={item} className={styles.item}>
-									{multiple && <DsCheckbox checked={checked} />}
-									{item.icon && <DsIcon className={styles.itemIcon} icon={item.icon} aria-hidden="true" />}
-									<Select.ItemText>{item.label}</Select.ItemText>
-								</Select.Item>
+								<DsTypography
+									variant="body-sm-reg"
+									asChild
+									key={collection.getItemValue(item)}
+									className={styles.item}
+								>
+									<Select.Item item={item}>
+										{multiselectProps.multiple && <DsCheckbox checked={checked} />}
+										{item.icon && <DsIcon className={styles.itemIcon} icon={item.icon} aria-hidden="true" />}
+										<Select.ItemText>{item.label}</Select.ItemText>
+									</Select.Item>
+								</DsTypography>
 							);
 						})}
 					</Select.Content>
@@ -192,16 +201,17 @@ function getItemCheckedState({
 	select,
 	options,
 }: {
-	item: InternalOption;
-	select: UseSelectReturn<InternalOption>;
-	options: InternalOption[];
+	item: DsSelectOption;
+	select: UseSelectReturn<DsSelectOption>;
+	options: DsSelectOption[];
 }): DsCheckboxProps['checked'] {
-	const isRegularItem = item.value !== SELECT_ALL_SYMBOL;
+	const isRegularItem = item.value !== SELECT_ALL_VALUE;
 
 	if (isRegularItem) {
 		return select.getItemState({ item }).selected;
 	}
 
+	// Doing -1 since it contains the "Select All" option itself.
 	const allSelected = select.selectedItems.length === options.length - 1;
 
 	if (allSelected) {

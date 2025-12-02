@@ -2,18 +2,17 @@ import { useSelectContext, type UseSelectContext } from '@ark-ui/react/select';
 import styles from './ds-select.module.scss';
 import DsButton from '../ds-button/ds-button';
 import DsChip from '../ds-chip/ds-chip';
-import { SelectOptionValue } from './ds-select.types';
-import { type InternalOption } from './ds-select';
+import { DsSelectOption, SelectOptionValue } from './ds-select.types';
 
 type SelectItemsChipsProps = {
 	showAll: boolean;
-	onValueChange: (value: SelectOptionValue[]) => void;
+	onValueChange?: (value: SelectOptionValue[]) => void;
 	onShowAll: () => void;
 	count: number;
 };
 
 export function SelectItemsChips({ showAll, onShowAll, onValueChange, count }: SelectItemsChipsProps) {
-	const { collection, value: selectedItems }: UseSelectContext<InternalOption> = useSelectContext();
+	const { collection, value: selectedItems }: UseSelectContext<DsSelectOption> = useSelectContext();
 
 	if (!selectedItems.length) {
 		return null;
@@ -33,7 +32,7 @@ export function SelectItemsChips({ showAll, onShowAll, onValueChange, count }: S
 				const onDelete = () => {
 					const filteredValue = selectedItems.filter((v) => v !== item.value);
 
-					onValueChange(filteredValue);
+					onValueChange?.(filteredValue);
 				};
 
 				return <DsChip key={itemValue} label={item.label} onDelete={onDelete} />;
@@ -48,7 +47,7 @@ export function SelectItemsChips({ showAll, onShowAll, onValueChange, count }: S
 				buttonType="tertiary"
 				variant="ghost"
 				size="small"
-				onClick={() => onValueChange([])}
+				onClick={() => onValueChange?.([])}
 			>
 				Clear All
 			</DsButton>

@@ -31,7 +31,6 @@
 }
 
 .item {
-	@include typography.body-sm-reg;
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -40,12 +39,6 @@
 	border-radius: 2px;
 	cursor: pointer;
 	outline: none;
-
-	&[data-state='checked'] {
-		.itemValue {
-			@include typography.body-sm-md;
-		}
-	}
 
 	&[data-highlighted],
 	&:hover {
@@ -58,26 +51,11 @@
 }
 
 .valueText {
-	@include typography.body-sm-reg;
 	@include typography.ellipsis;
 	grid-column: 1;
 	grid-row: 1;
 	color: var(--color-font-secondary);
 	text-align: start;
-}
-
-.itemValue {
-	@include typography.body-sm-reg;
-	@include typography.ellipsis;
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	color: var(--color-font-secondary);
-	padding: 2px 0;
-
-	span {
-		@include typography.ellipsis;
-	}
 }
 
 .multiSelectItemsContainer {
