@@ -43,8 +43,8 @@
 
 	&:hover,
 	&:focus-within {
-		background: var(--action-hover-light);
-		color: var(--action-cta1);
+		background: var(--color-background-action-hover-weak);
+		color: var(--color-font-action);
 	}
 }
 

@@ -53,11 +53,11 @@
 	}
 
 	&:hover {
-		background-color: var(--action-hover-light);
+		background-color: var(--color-background-secondary);
 	}
 
 	&[data-state='selected'] {
-		background-color: var(--action-hover-light);
+		background-color: var(--color-background-selected-weak);
 	}
 
 	&[data-state='active'] {
@@ -108,10 +108,10 @@
 	text-align: center;
 
 	&.isDragging {
-		background: var(--action-cta1);
+		background: var(--color-background-action);
 
 		.rowDragHandle {
-			color: var(--white);
+			color: var(--color-secondary-white);
 		}
 	}
 }
