@@ -417,7 +417,6 @@ export const ProgrammaticRowSelection: Story = {
 export const MaxSelectionLimit: Story = {
 	name: 'Max N Selections',
 	args: {
-		selectable: true,
 		showSelectAllCheckbox: false,
 		onSelectionChange: (selectedRows) => console.log('Selected rows:', selectedRows),
 	},
@@ -448,7 +447,7 @@ export const MaxSelectionLimit: Story = {
 				<DsTable
 					{...args}
 					onSelectionChange={handleSelectionChange}
-					enableRowSelection={(rowData) => {
+					selectable={(rowData) => {
 						return rowSelection[rowData.id] || selectedCount < maxSelections;
 					}}
 				/>

@@ -49,7 +49,6 @@ const DsTable = <TData extends { id: string }, TValue>({
 	expandable = false,
 	renderExpandedRow,
 	selectable = false,
-	enableRowSelection,
 	showSelectAllCheckbox = true,
 	onSelectionChange,
 	onSortingChange,
@@ -125,12 +124,7 @@ const DsTable = <TData extends { id: string }, TValue>({
 			columnVisibility,
 			rowSelection,
 		},
-		enableRowSelection:
-			enableRowSelection !== undefined
-				? typeof enableRowSelection === 'function'
-					? (row) => enableRowSelection(row.original)
-					: enableRowSelection
-				: selectable,
+		enableRowSelection: typeof selectable === 'function' ? (row) => selectable(row.original) : selectable,
 	});
 
 	useImperativeHandle(
@@ -215,7 +209,6 @@ const DsTable = <TData extends { id: string }, TValue>({
 		rowSize,
 		expandable,
 		selectable,
-		enableRowSelection,
 		reorderable,
 		showSelectAllCheckbox,
 		onRowClick,
@@ -244,7 +237,10 @@ const DsTable = <TData extends { id: string }, TValue>({
 						style={
 							virtualized
 								? ({
-										'--ds-table-columns-template': createColumnsGridTemplate({ columns, selectable }),
+										'--ds-table-columns-template': createColumnsGridTemplate({
+											columns,
+											selectable: !!selectable,
+										}),
 									} as React.CSSProperties)
 								: undefined
 						}
