@@ -7,6 +7,7 @@ import { Color, DsSmartTabProps, DsSmartTabsProps } from './ds-smart-tabs.types'
 const colorMap: Record<Color, string> = {
 	'dark-blue': 'var(--color-background-info-strong)',
 	'light-blue': 'var(--color-background-active-moderate)',
+	'dark-gray': 'var(--color-background-brand)',
 	green: 'var(--color-background-success-strong)',
 	fuchsia: 'var(--color-data-fuchsia)',
 	blue: 'var(--color-icon-information-secondary)',

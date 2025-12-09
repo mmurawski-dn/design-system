@@ -4,6 +4,7 @@ import { IconType } from '../ds-icon/ds-icon.types';
 export const colors = [
 	'dark-blue',
 	'light-blue',
+	'dark-gray',
 	'green',
 	'fuchsia',
 	'blue',

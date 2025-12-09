@@ -12,7 +12,7 @@ export interface DsStatusBadgeProps {
 	/**
 	 * The icon of the status badge
 	 */
-	icon: IconType;
+	icon?: IconType;
 	/**
 	 * The value of the status badge
 	 */

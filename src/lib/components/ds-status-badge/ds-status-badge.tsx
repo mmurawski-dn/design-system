@@ -31,7 +31,7 @@ const DsStatusBadge: React.FC<DsStatusBadgeProps> = ({
 			role="status"
 			aria-label={ariaLabel}
 		>
-			<DsIcon icon={icon} size="tiny" filled aria-hidden="true" />
+			{icon && <DsIcon icon={icon} size="tiny" filled aria-hidden="true" />}
 			<DsTypography className={styles.label} variant={ghost ? 'body-xs-md' : 'body-xs-reg'}>
 				{label}
 			</DsTypography>
