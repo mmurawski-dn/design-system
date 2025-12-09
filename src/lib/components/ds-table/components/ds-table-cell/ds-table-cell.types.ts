@@ -13,7 +13,7 @@ export interface RowAction<TData> {
 	/**
 	 * Label text for the action
 	 */
-	label: string;
+	label: string | ((row: TData) => string);
 
 	/**
 	 * Optional tooltip text to show on hover

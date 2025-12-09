@@ -26,11 +26,12 @@ export const DsTableCell = <TData, TValue>({
 				<div className={styles.cellActions}>
 					{primaryRowActions.map((action, i) => {
 						const isDisabled = action.disabled?.(row.original);
+						const label = typeof action.label === 'function' ? action.label(row.original) : action.label;
 						return (
 							<button
-								key={action.label || i}
+								key={i}
 								className={classnames(styles.rowActionIcon, { [styles.disabled]: isDisabled })}
-								title={action.tooltip || action.label}
+								title={action.tooltip || label}
 								onClick={(e) => {
 									e.stopPropagation();
 
@@ -40,7 +41,7 @@ export const DsTableCell = <TData, TValue>({
 									action.onClick(row.original);
 								}}
 								tabIndex={isDisabled ? -1 : 0}
-								aria-label={action.label}
+								aria-label={label}
 								aria-disabled={isDisabled}
 							>
 								<DsIcon icon={action.icon} size="tiny" />
@@ -64,18 +65,19 @@ export const DsTableCell = <TData, TValue>({
 								</button>
 							</DsDropdownMenu.Trigger>
 							<DsDropdownMenu.Content>
-								{secondaryRowActions.map((action) => {
+								{secondaryRowActions.map((action, i) => {
+									const label = typeof action.label === 'function' ? action.label(row.original) : action.label;
 									const isDisabled = action.disabled?.(row.original);
 									return (
 										<DsDropdownMenu.Item
-											key={action.label}
-											value={action.label}
+											key={i}
+											value={label}
 											disabled={isDisabled}
 											onClick={(e) => e.stopPropagation()}
 											onSelect={() => action.onClick(row.original)}
 										>
 											{action.icon && <DsIcon icon={action.icon} />}
-											<span>{action.label}</span>
+											<span>{label}</span>
 										</DsDropdownMenu.Item>
 									);
 								})}
