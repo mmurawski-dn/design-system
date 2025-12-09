@@ -19,14 +19,16 @@
 }
 
 .tableRow {
-	&:not(.virtualizedRow):not(:last-child) {
-		.tableCell {
-			border-bottom: vars.$border-width solid var(--color-border-secondary);
-
-			&.cellCheckbox {
-				padding: 0;
-				width: vars.$select-column-width;
+	&:not(.virtualizedRow) {
+		&:not(:last-child) {
+			.tableCell {
+				border-bottom: vars.$border-width solid var(--color-border-secondary);
 			}
+		}
+
+		.cellCheckbox.tableCell {
+			padding: 0;
+			width: vars.$select-column-width;
 		}
 	}
 
