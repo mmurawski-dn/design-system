@@ -6,6 +6,7 @@ export * from './components/ds-chip';
 export * from './components/ds-chip-group';
 export * from './components/ds-confirmation';
 export * from './components/ds-dialog';
+export * from './components/ds-divider';
 export * from './components/ds-drawer';
 export * from './components/ds-dropdown-menu';
 export * from './components/ds-expandable-text-input';
