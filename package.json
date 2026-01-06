@@ -3,6 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"packageManager": "pnpm@10.0.0",
+	"type": "module",
 	"scripts": {
 		"start": "pnpm run --filter @drivenets/design-system storybook",
 		"format": "prettier --write .",
@@ -18,7 +19,9 @@
 		"build": "turbo run build",
 		"build:lint": "turbo run build:lint",
 		"changelog": "changeset",
-		"release": "pnpm build && changeset publish"
+		"release": "pnpm build && changeset publish",
+		"prepare": "test -n \"$CI\" || husky",
+		"pre-commit": "lint-staged"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.29.8",
@@ -35,7 +38,9 @@
 		"eslint-plugin-import-x": "^4.16.1",
 		"eslint-plugin-unicorn": "^62.0.0",
 		"globals": "^16.5.0",
+		"husky": "^9.1.7",
 		"knip": "^5.75.0",
+		"lint-staged": "^16.2.7",
 		"playwright": "^1.57.0",
 		"prettier": "^3.7.4",
 		"syncpack": "^13.0.4",
