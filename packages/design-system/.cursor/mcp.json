@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "ark-ui": {
+      "command": "/Users/mmurawski/.local/share/mise/installs/node/24.12.0/bin/npx",
+      "args": ["-y", "@ark-ui/mcp"],
+      "env": {
+        "PATH": "/Users/mmurawski/.local/share/mise/installs/node/24.12.0/bin:/usr/local/bin:/usr/bin:/bin"
+      }
+    }
+  }
+}

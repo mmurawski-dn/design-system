@@ -33,8 +33,8 @@
 	}
 
 	&.selected {
-		background: var(--color-background-selected-weak);
-		border-color: var(--color-border-action-primary);
+		background: var(--color-background-selected-weak) !important;
+		border-color: var(--color-border-action-primary) !important;
 
 		&:focus-visible {
 			outline-color: var(--color-border-action-primary);

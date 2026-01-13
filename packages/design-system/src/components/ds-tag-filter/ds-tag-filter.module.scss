@@ -1,0 +1,60 @@
+.container {
+	display: flex;
+	flex-direction: column;
+
+	padding: var(--spacing-xs) var(--spacing-standard);
+	background: var(--color-background-selected-weak);
+	border: 1px solid var(--color-outline-weak);
+	border-radius: var(--spacing-3xs);
+	max-height: 88px; // hardcoded value required in the design
+
+	&.expanded {
+		max-height: none;
+	}
+}
+
+.tagsWrapper {
+	flex: 1 1 auto; /* take remaining height */
+	min-height: 0; /* CRITICAL: allows shrinking */
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--spacing-xs);
+	overflow: hidden;
+
+	.hidden {
+		visibility: hidden;
+		position: absolute;
+		pointer-events: none;
+	}
+}
+
+.label {
+	color: var(--color-font-secondary);
+	white-space: nowrap;
+}
+
+.expandTag {
+	cursor: pointer;
+}
+
+.itemCheckbox {
+	display: flex;
+	align-items: center;
+}
+
+.clearContent {
+	background: transparent !important;
+}
+
+.clearButton {
+	margin-left: auto;
+	padding: 0;
+}
+
+.row {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: var(--spacing-xs);
+}
