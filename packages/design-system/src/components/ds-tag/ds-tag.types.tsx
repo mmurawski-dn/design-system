@@ -57,4 +57,11 @@ export interface DsTagProps {
 	 * @default false
 	 */
 	disabled?: boolean;
+
+	slots?: {
+		/**
+		 * Icon to display at the start of the input
+		 */
+		icon?: ReactNode;
+	};
 }

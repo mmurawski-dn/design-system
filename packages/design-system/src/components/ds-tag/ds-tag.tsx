@@ -20,6 +20,7 @@ const DsTag = ({
 	locale = {},
 	onClick,
 	onDelete,
+	slots,
 	...rest
 }: DsTagProps) => {
 	const tagClass = classNames(
@@ -43,6 +44,8 @@ const DsTag = ({
 		if (onClick && (event.key === 'Enter' || event.key === ' ')) {
 			event.preventDefault();
 			onClick(event as KeyboardEvent<HTMLDivElement>);
+
+			return;
 		}
 
 		if (onDelete && (event.key === 'Backspace' || event.key === 'Delete')) {
@@ -91,7 +94,14 @@ const DsTag = ({
 			aria-disabled={disabled}
 			{...rest}
 		>
-			{iconVariant && <DsIcon icon={iconVariant} size="tiny" className={styles.variantIcon} />}
+			{(slots?.icon || iconVariant) && (
+				<span className={classNames(styles.icon)}>
+					{slots?.icon ??
+						(iconVariant && (
+							<DsIcon icon={iconVariant} size="tiny" className={classNames(styles.variantIcon)} />
+						))}
+				</span>
+			)}
 			<DsTypography variant={size === 'small' ? 'body-xs-reg' : 'body-sm-reg'} className={styles.label}>
 				{label}
 			</DsTypography>

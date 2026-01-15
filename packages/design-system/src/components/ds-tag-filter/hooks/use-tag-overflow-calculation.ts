@@ -1,6 +1,6 @@
 import { type RefObject, useCallback, useLayoutEffect, useState } from 'react';
 
-interface UseTagOverflowCalculationProps {
+interface UseTagOverflowCalculationOptions {
 	containerRef: RefObject<HTMLDivElement | null>;
 	measurementRef: RefObject<HTMLDivElement | null>;
 	totalItems: number;
@@ -16,6 +16,32 @@ interface UseTagOverflowCalculationResult {
 // Extra space needed per row for animated delete button that appears on hover
 const TAG_HOVER_BUTTON_SPACE = 20;
 
+interface FitTagsResult {
+	count: number;
+	usedWidth: number;
+}
+
+/**
+ * Calculate how many tags fit within the available width.
+ * Pure function for easy testing.
+ */
+export function fitTagsInRow(tagWidths: number[], availableWidth: number, gap: number): FitTagsResult {
+	let usedWidth = 0;
+	let count = 0;
+
+	for (const tagWidth of tagWidths) {
+		const widthWithGap = tagWidth + (count > 0 ? gap : 0);
+		if (usedWidth + widthWithGap <= availableWidth) {
+			usedWidth += widthWithGap;
+			count++;
+		} else {
+			break;
+		}
+	}
+
+	return { count, usedWidth };
+}
+
 /**
  * Custom hook to calculate how many tags can fit in 2 rows.
  *
@@ -29,7 +55,7 @@ export const useTagOverflowCalculation = ({
 	measurementRef,
 	totalItems,
 	expanded,
-}: UseTagOverflowCalculationProps): UseTagOverflowCalculationResult => {
+}: UseTagOverflowCalculationOptions): UseTagOverflowCalculationResult => {
 	const [row1TagCount, setRow1TagCount] = useState(0);
 	const [row2TagCount, setRow2TagCount] = useState(0);
 	const [hasOverflow, setHasOverflow] = useState(false);
@@ -42,111 +68,83 @@ export const useTagOverflowCalculation = ({
 		const container = containerRef.current;
 		const measurementContainer = measurementRef.current;
 
-		// Get all measurable elements from the measurement container
-		const tags = Array.from(measurementContainer.querySelectorAll('[data-measure-tag]'));
-		const label = measurementContainer.querySelector('[data-measure-label]');
-		const clearButton = measurementContainer.querySelector('[data-measure-clear]');
-		const expandTag = measurementContainer.querySelector('[data-measure-expand]');
+		function getContainerAvailableWidth() {
+			const containerRect = container.getBoundingClientRect();
+			const containerStyle = getComputedStyle(container);
+			const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
+			const paddingRight = parseFloat(containerStyle.paddingRight) || 0;
+			return containerRect.width - paddingLeft - paddingRight;
+		}
 
-		if (tags.length === 0) {
+		function getElementMeasurements() {
+			const tags = Array.from(measurementContainer.querySelectorAll('[data-measure-tag]'));
+			const label = measurementContainer.querySelector('[data-measure-label]');
+			const clearButton = measurementContainer.querySelector('[data-measure-clear]');
+			const expandTag = measurementContainer.querySelector('[data-measure-expand]');
+
+			const computedStyle = getComputedStyle(measurementContainer);
+			const gap = parseFloat(computedStyle.gap) || 8;
+
+			const tagWidths = tags.map((tag) => tag.getBoundingClientRect().width);
+			const labelWidth = label ? label.getBoundingClientRect().width + gap : 0;
+			const clearButtonWidth = clearButton ? clearButton.getBoundingClientRect().width + gap : 0;
+			// Fallback width for expand tag (~100px for "+99 filters" text) if measurement fails
+			const expandTagWidth = expandTag ? expandTag.getBoundingClientRect().width + gap : 100;
+
+			return { tagWidths, labelWidth, clearButtonWidth, expandTagWidth, gap };
+		}
+
+		const { tagWidths, labelWidth, clearButtonWidth, expandTagWidth, gap } = getElementMeasurements();
+
+		if (tagWidths.length === 0) {
 			setRow1TagCount(0);
 			setRow2TagCount(0);
 			setHasOverflow(false);
 			return;
 		}
 
-		// Get container width and account for padding
-		const containerRect = container.getBoundingClientRect();
-		const containerStyle = getComputedStyle(container);
-		const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
-		const paddingRight = parseFloat(containerStyle.paddingRight) || 0;
-		const containerWidth = containerRect.width - paddingLeft - paddingRight;
-
-		const computedStyle = getComputedStyle(measurementContainer);
-		const gap = parseFloat(computedStyle.gap) || 8;
-
-		const labelWidth = label ? label.getBoundingClientRect().width + gap : 0;
-		const clearButtonWidth = clearButton ? clearButton.getBoundingClientRect().width + gap : 0;
-		// Fallback width for expand tag (~100px for "+99 filters" text) if measurement fails
-		const expandTagWidth = expandTag ? expandTag.getBoundingClientRect().width + gap : 100;
-
-		const tagWidths = tags.map((tag) => tag.getBoundingClientRect().width);
+		const containerWidth = getContainerAvailableWidth();
 
 		// Calculate Row 1 available space (Label + Tags + Clear Button)
 		const row1AvailableWidth = containerWidth - labelWidth - clearButtonWidth - TAG_HOVER_BUTTON_SPACE;
 
-		// First pass: Calculate how many tags fit in Row 1
-		let row1Width = 0;
-		let row1Count = 0;
-
-		for (let i = 0; i < tagWidths.length; i++) {
-			const tagWidth = tagWidths[i] + (row1Count > 0 ? gap : 0);
-			if (row1Width + tagWidth <= row1AvailableWidth) {
-				row1Width += tagWidth;
-				row1Count++;
-			} else {
-				break;
-			}
-		}
-
-		// Calculate remaining tags after Row 1
-		const remainingTags = tagWidths.slice(row1Count);
+		// Calculate how many tags fit in Row 1
+		const row1Result = fitTagsInRow(tagWidths, row1AvailableWidth, gap);
+		const remainingTags = tagWidths.slice(row1Result.count);
 
 		if (remainingTags.length === 0) {
 			// All tags fit in Row 1, no overflow
-			setRow1TagCount(row1Count);
+			setRow1TagCount(row1Result.count);
 			setRow2TagCount(0);
 			setHasOverflow(false);
 			return;
 		}
 
-		// First, calculate with expand tag reserved (pessimistic)
+		// Calculate with expand tag reserved (pessimistic)
 		const row2AvailableWithExpand = containerWidth - expandTagWidth - TAG_HOVER_BUTTON_SPACE;
-		let row2Width = 0;
-		let row2CountWithExpand = 0;
-
-		for (let i = 0; i < remainingTags.length; i++) {
-			const tagWidth = remainingTags[i] + (row2CountWithExpand > 0 ? gap : 0);
-			if (row2Width + tagWidth <= row2AvailableWithExpand) {
-				row2Width += tagWidth;
-				row2CountWithExpand++;
-			} else {
-				break;
-			}
-		}
+		const row2WithExpandResult = fitTagsInRow(remainingTags, row2AvailableWithExpand, gap);
 
 		// Check if there's overflow (more remaining tags than fit in Row 2 with expand)
-		const overflowExists = remainingTags.length > row2CountWithExpand;
+		const overflowExists = remainingTags.length > row2WithExpandResult.count;
 
 		if (overflowExists) {
 			// Use the count with expand tag space reserved
-			setRow1TagCount(row1Count);
-			setRow2TagCount(row2CountWithExpand);
+			setRow1TagCount(row1Result.count);
+			setRow2TagCount(row2WithExpandResult.count);
 			setHasOverflow(true);
 		} else {
 			// No overflow - recalculate Row 2 without reserving expand tag space
 			const row2AvailableWithoutExpand = containerWidth - TAG_HOVER_BUTTON_SPACE;
-			let row2WidthFull = 0;
-			let row2CountFull = 0;
-
-			for (let i = 0; i < remainingTags.length; i++) {
-				const tagWidth = remainingTags[i] + (row2CountFull > 0 ? gap : 0);
-				if (row2WidthFull + tagWidth <= row2AvailableWithoutExpand) {
-					row2WidthFull += tagWidth;
-					row2CountFull++;
-				} else {
-					break;
-				}
-			}
+			const row2FullResult = fitTagsInRow(remainingTags, row2AvailableWithoutExpand, gap);
 
 			// Double-check: if even without expand tag we can't fit all, we have overflow
-			if (row2CountFull < remainingTags.length) {
-				setRow1TagCount(row1Count);
-				setRow2TagCount(row2CountWithExpand);
+			if (row2FullResult.count < remainingTags.length) {
+				setRow1TagCount(row1Result.count);
+				setRow2TagCount(row2WithExpandResult.count);
 				setHasOverflow(true);
 			} else {
-				setRow1TagCount(row1Count);
-				setRow2TagCount(row2CountFull);
+				setRow1TagCount(row1Result.count);
+				setRow2TagCount(row2FullResult.count);
 				setHasOverflow(false);
 			}
 		}

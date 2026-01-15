@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 import DsTag from './ds-tag';
 import { tagSizes, tagVariants } from './ds-tag.types';
+import { DsIcon } from '../ds-icon';
 
 const meta: Meta<typeof DsTag> = {
 	title: 'Design System/Tag',
@@ -193,5 +194,24 @@ export const Disabled: Story = {
 		// Click should not trigger callbacks when disabled
 		await userEvent.click(tag, { pointerEventsCheck: 0 });
 		await expect(args.onClick).not.toHaveBeenCalled();
+	},
+};
+
+export const CustomIcon: Story = {
+	args: {
+		label: 'Custom Icon Tag',
+		variant: 'include',
+		slots: {
+			icon: <DsIcon icon="star" size="tiny" />,
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByText('Custom Icon Tag')).toBeInTheDocument();
+
+		// Custom icon should be rendered instead of the variant icon
+		await expect(canvas.getByText('star')).toBeInTheDocument();
+		await expect(canvas.queryByText('check_circle')).not.toBeInTheDocument();
 	},
 };

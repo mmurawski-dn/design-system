@@ -57,7 +57,7 @@ const DsTagFilter = ({
 	const hasRow2Content = row2Tags.length > 0 || hasOverflow;
 
 	const renderTag = (item: TagFilterItem) => {
-		const tagProps = item.tagProps || {};
+		const tagProps = item.slotProps?.tag || {};
 
 		return (
 			<DsTag
@@ -120,7 +120,7 @@ const DsTagFilter = ({
 	/**
 	 * IMPORTANT!
 	 * If you make any changes to this layout (styling, JSX, anything that affects it.)
-	 * Please, apply the exact same changes to the "measurementContainer"
+	 * please, apply the exact same changes to the "measurementContainer"
 	 */
 	return (
 		<>

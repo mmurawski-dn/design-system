@@ -105,7 +105,8 @@
 	@include typography.ellipsis;
 }
 
-.variantIcon {
+.icon {
 	flex-shrink: 0;
+	display: flex;
 	margin-right: var(--spacing-3xs);
 }

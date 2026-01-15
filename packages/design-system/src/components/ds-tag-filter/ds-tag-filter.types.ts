@@ -19,9 +19,11 @@ export interface TagFilterItem {
 	 */
 	selected?: boolean;
 	/**
-	 * Additional props to pass to the tag component
+	 * Additional props to pass to the components
 	 */
-	tagProps?: Partial<DsTagProps>;
+	slotProps?: {
+		tag?: Partial<DsTagProps>;
+	};
 }
 
 export interface DsTagFilterProps {
