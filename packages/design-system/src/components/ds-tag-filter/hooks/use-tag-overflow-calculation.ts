@@ -31,9 +31,11 @@ export const useTagOverflowCalculation = ({
 	totalItems,
 	expanded,
 }: UseTagOverflowCalculationOptions): UseTagOverflowCalculationResult => {
-	const [row1TagCount, setRow1TagCount] = useState(0);
-	const [row2TagCount, setRow2TagCount] = useState(0);
-	const [hasOverflow, setHasOverflow] = useState(false);
+	const [state, setState] = useState<UseTagOverflowCalculationResult>({
+		row1TagCount: 0,
+		row2TagCount: 0,
+		hasOverflow: false,
+	});
 
 	const calculateLayout = useCallback(() => {
 		if (!containerRef.current || !measurementRef.current) {
@@ -47,9 +49,7 @@ export const useTagOverflowCalculation = ({
 			getElementMeasurements(measurementContainer);
 
 		if (tagWidths.length === 0) {
-			setRow1TagCount(0);
-			setRow2TagCount(0);
-			setHasOverflow(false);
+			setState({ row1TagCount: 0, row2TagCount: 0, hasOverflow: false });
 			return;
 		}
 
@@ -64,9 +64,7 @@ export const useTagOverflowCalculation = ({
 
 		if (remainingTags.length === 0) {
 			// All tags fit in Row 1, no overflow
-			setRow1TagCount(row1Result.count);
-			setRow2TagCount(0);
-			setHasOverflow(false);
+			setState({ row1TagCount: row1Result.count, row2TagCount: 0, hasOverflow: false });
 			return;
 		}
 
@@ -79,9 +77,11 @@ export const useTagOverflowCalculation = ({
 
 		if (overflowExists) {
 			// Use the count with expand tag space reserved
-			setRow1TagCount(row1Result.count);
-			setRow2TagCount(row2WithExpandResult.count);
-			setHasOverflow(true);
+			setState({
+				row1TagCount: row1Result.count,
+				row2TagCount: row2WithExpandResult.count,
+				hasOverflow: true,
+			});
 		} else {
 			// No overflow - recalculate Row 2 without reserving expand tag space
 			const row2AvailableWithoutExpand = containerWidth - TAG_HOVER_BUTTON_SPACE;
@@ -89,13 +89,13 @@ export const useTagOverflowCalculation = ({
 
 			// Double-check: if even without expand tag we can't fit all, we have overflow
 			if (row2FullResult.count < remainingTags.length) {
-				setRow1TagCount(row1Result.count);
-				setRow2TagCount(row2WithExpandResult.count);
-				setHasOverflow(true);
+				setState({
+					row1TagCount: row1Result.count,
+					row2TagCount: row2WithExpandResult.count,
+					hasOverflow: true,
+				});
 			} else {
-				setRow1TagCount(row1Result.count);
-				setRow2TagCount(row2FullResult.count);
-				setHasOverflow(false);
+				setState({ row1TagCount: row1Result.count, row2TagCount: row2FullResult.count, hasOverflow: false });
 			}
 		}
 	}, [containerRef, measurementRef]);
@@ -125,15 +125,11 @@ export const useTagOverflowCalculation = ({
 	// When expanded, show all tags
 	if (expanded) {
 		return {
-			row1TagCount,
-			row2TagCount: totalItems - row1TagCount,
+			row1TagCount: state.row1TagCount,
+			row2TagCount: totalItems - state.row1TagCount,
 			hasOverflow: true, // Keep expand button visible to allow collapse
 		};
 	}
 
-	return {
-		row1TagCount,
-		row2TagCount,
-		hasOverflow,
-	};
+	return state;
 };
