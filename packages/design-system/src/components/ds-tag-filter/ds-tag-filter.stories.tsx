@@ -411,8 +411,10 @@ export const CustomLocale: Story = {
 		});
 
 		// Verify custom label is rendered
+		// cspell:disable-next-line
 		await expect(canvas.getByText('Aktywne filtry:')).toBeInTheDocument();
 
+		// cspell:disable-next-line
 		await expect(canvas.getByRole('button', { name: /Zresetuj/ })).toBeInTheDocument();
 
 		await expect(canvas.queryByText('Filtered by:')).not.toBeInTheDocument();
