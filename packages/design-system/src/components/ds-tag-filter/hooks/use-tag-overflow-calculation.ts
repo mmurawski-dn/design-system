@@ -1,4 +1,5 @@
 import { type RefObject, useCallback, useLayoutEffect, useState } from 'react';
+import { fitTagsInRow, getContainerAvailableWidth, getElementMeasurements } from '../utils';
 
 interface UseTagOverflowCalculationOptions {
 	containerRef: RefObject<HTMLDivElement | null>;
@@ -15,32 +16,6 @@ interface UseTagOverflowCalculationResult {
 
 // Extra space needed per row for animated delete button that appears on hover
 const TAG_HOVER_BUTTON_SPACE = 20;
-
-interface FitTagsResult {
-	count: number;
-	usedWidth: number;
-}
-
-/**
- * Calculate how many tags fit within the available width.
- * Pure function for easy testing.
- */
-export function fitTagsInRow(tagWidths: number[], availableWidth: number, gap: number): FitTagsResult {
-	let usedWidth = 0;
-	let count = 0;
-
-	for (const tagWidth of tagWidths) {
-		const widthWithGap = tagWidth + (count > 0 ? gap : 0);
-		if (usedWidth + widthWithGap <= availableWidth) {
-			usedWidth += widthWithGap;
-			count++;
-		} else {
-			break;
-		}
-	}
-
-	return { count, usedWidth };
-}
 
 /**
  * Custom hook to calculate how many tags can fit in 2 rows.
@@ -68,33 +43,8 @@ export const useTagOverflowCalculation = ({
 		const container = containerRef.current;
 		const measurementContainer = measurementRef.current;
 
-		function getContainerAvailableWidth() {
-			const containerRect = container.getBoundingClientRect();
-			const containerStyle = getComputedStyle(container);
-			const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
-			const paddingRight = parseFloat(containerStyle.paddingRight) || 0;
-			return containerRect.width - paddingLeft - paddingRight;
-		}
-
-		function getElementMeasurements() {
-			const tags = Array.from(measurementContainer.querySelectorAll('[data-measure-tag]'));
-			const label = measurementContainer.querySelector('[data-measure-label]');
-			const clearButton = measurementContainer.querySelector('[data-measure-clear]');
-			const expandTag = measurementContainer.querySelector('[data-measure-expand]');
-
-			const computedStyle = getComputedStyle(measurementContainer);
-			const gap = parseFloat(computedStyle.gap) || 8;
-
-			const tagWidths = tags.map((tag) => tag.getBoundingClientRect().width);
-			const labelWidth = label ? label.getBoundingClientRect().width + gap : 0;
-			const clearButtonWidth = clearButton ? clearButton.getBoundingClientRect().width + gap : 0;
-			// Fallback width for expand tag (~100px for "+99 filters" text) if measurement fails
-			const expandTagWidth = expandTag ? expandTag.getBoundingClientRect().width + gap : 100;
-
-			return { tagWidths, labelWidth, clearButtonWidth, expandTagWidth, gap };
-		}
-
-		const { tagWidths, labelWidth, clearButtonWidth, expandTagWidth, gap } = getElementMeasurements();
+		const { tagWidths, labelWidth, clearButtonWidth, expandTagWidth, gap } =
+			getElementMeasurements(measurementContainer);
 
 		if (tagWidths.length === 0) {
 			setRow1TagCount(0);
@@ -103,7 +53,7 @@ export const useTagOverflowCalculation = ({
 			return;
 		}
 
-		const containerWidth = getContainerAvailableWidth();
+		const containerWidth = getContainerAvailableWidth(container);
 
 		// Calculate Row 1 available space (Label + Tags + Clear Button)
 		const row1AvailableWidth = containerWidth - labelWidth - clearButtonWidth - TAG_HOVER_BUTTON_SPACE;
