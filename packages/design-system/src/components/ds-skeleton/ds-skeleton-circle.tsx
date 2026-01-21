@@ -1,7 +1,7 @@
 import type React from 'react';
 import classNames from 'classnames';
 import type { DsSkeletonCircleProps } from './ds-skeleton.types';
-import { circleSizeMap } from './config';
+import { circleSizeMap } from './ds-skeleton.config';
 import styles from './ds-skeleton.module.scss';
 
 /**

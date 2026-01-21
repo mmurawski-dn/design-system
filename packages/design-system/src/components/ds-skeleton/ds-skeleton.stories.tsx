@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 import { DsSkeleton } from './index';
+import styles from './ds-skeleton.stories.module.scss';
 
 const meta: Meta<typeof DsSkeleton> = {
 	title: 'Design System/Skeleton',
@@ -18,6 +20,11 @@ type Story = StoryObj<typeof DsSkeleton>;
  */
 export const Default: Story = {
 	args: {},
+	play: async ({ canvasElement }) => {
+		// Skeleton renders span elements with aria-hidden
+		const spans = canvasElement.querySelectorAll('span[aria-hidden="true"]');
+		await expect(spans.length).toBeGreaterThanOrEqual(1);
+	},
 };
 
 /**
@@ -27,13 +34,45 @@ export const LoadingWrapper: Story = {
 	args: {
 		loading: true,
 		children: (
-			<div style={{ padding: '16px', border: '1px solid #ccc', borderRadius: '8px' }}>
+			<div className={styles.loadingContent}>
 				<h2>User Profile</h2>
 				<p>This is the actual content that appears when loading is complete.</p>
 			</div>
 		),
 	},
 	render: (args) => <DsSkeleton {...args} />,
+	play: async ({ canvasElement }) => {
+		// When loading=true, skeleton should show, not children
+		const skeleton = canvasElement.querySelector('span[aria-hidden="true"]');
+
+		await expect(skeleton).toBeInTheDocument();
+		await expect(within(canvasElement).queryByText('User Profile')).not.toBeInTheDocument();
+	},
+};
+
+/**
+ * Loaded content - when loading=false, children are rendered instead of skeleton
+ */
+export const LoadedContent: Story = {
+	args: {
+		loading: false,
+		children: (
+			<div className={styles.loadingContent} data-testid="loaded-content">
+				<h2>User Profile</h2>
+				<p>Content is now visible because loading is false.</p>
+			</div>
+		),
+	},
+	render: (args) => <DsSkeleton {...args} />,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.getByTestId('loaded-content')).toBeInTheDocument();
+		await expect(canvas.getByText('User Profile')).toBeInTheDocument();
+
+		const skeleton = canvasElement.querySelector('span[aria-hidden="true"]');
+		await expect(skeleton).not.toBeInTheDocument();
+	},
 };
 
 /**
@@ -41,13 +80,13 @@ export const LoadingWrapper: Story = {
  */
 export const ColorVariants: Story = {
 	render: () => (
-		<div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+		<div className={styles.verticalStack}>
 			<div>
-				<h4 style={{ marginBottom: '8px' }}>Grey (default)</h4>
+				<h4 className={styles.sectionLabel}>Grey (default)</h4>
 				<DsSkeleton variant="grey" />
 			</div>
 			<div>
-				<h4 style={{ marginBottom: '8px' }}>Blue</h4>
+				<h4 className={styles.sectionLabel}>Blue</h4>
 				<DsSkeleton variant="blue" />
 			</div>
 		</div>
@@ -59,10 +98,10 @@ export const ColorVariants: Story = {
  */
 export const TextVariants: Story = {
 	render: () => (
-		<div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+		<div className={styles.verticalStack}>
 			<div>
-				<h4 style={{ marginBottom: '8px' }}>Typography Variants</h4>
-				<div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+				<h4 className={styles.sectionLabel}>Typography Variants</h4>
+				<div className={styles.section}>
 					<DsSkeleton.Text typographyVariant="heading1" />
 					<DsSkeleton.Text typographyVariant="heading3" />
 					<DsSkeleton.Text typographyVariant="body-md-reg" />
@@ -70,19 +109,19 @@ export const TextVariants: Story = {
 				</div>
 			</div>
 			<div>
-				<h4 style={{ marginBottom: '8px' }}>Multiple Lines</h4>
+				<h4 className={styles.sectionLabel}>Multiple Lines</h4>
 				<DsSkeleton.Text typographyVariant="body-md-reg" lines={3} />
 			</div>
 			<div>
-				<h4 style={{ marginBottom: '8px' }}>Custom Width</h4>
-				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+				<h4 className={styles.sectionLabel}>Custom Width</h4>
+				<div className={styles.sectionSmall}>
 					<DsSkeleton.Text typographyVariant="body-md-reg" width="80%" />
 					<DsSkeleton.Text typographyVariant="body-md-reg" width={200} />
 				</div>
 			</div>
 			<div>
-				<h4 style={{ marginBottom: '8px' }}>Border Radius</h4>
-				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+				<h4 className={styles.sectionLabel}>Border Radius</h4>
+				<div className={styles.sectionSmall}>
 					<DsSkeleton.Text typographyVariant="body-md-reg" radius="round" />
 					<DsSkeleton.Text typographyVariant="body-md-reg" radius="default" />
 					<DsSkeleton.Text typographyVariant="body-md-reg" radius={12} />
@@ -97,34 +136,34 @@ export const TextVariants: Story = {
  */
 export const CircleSizes: Story = {
 	render: () => (
-		<div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-			<div style={{ textAlign: 'center' }}>
+		<div className={styles.sizesRow}>
+			<div className={styles.sizeItem}>
 				<DsSkeleton.Circle size="xsm" />
-				<p style={{ marginTop: '8px', fontSize: '12px' }}>xsm (24px)</p>
+				<p className={styles.label}>xsm (24px)</p>
 			</div>
-			<div style={{ textAlign: 'center' }}>
+			<div className={styles.sizeItem}>
 				<DsSkeleton.Circle size="sm" />
-				<p style={{ marginTop: '8px', fontSize: '12px' }}>sm (32px)</p>
+				<p className={styles.label}>sm (32px)</p>
 			</div>
-			<div style={{ textAlign: 'center' }}>
+			<div className={styles.sizeItem}>
 				<DsSkeleton.Circle size="regular" />
-				<p style={{ marginTop: '8px', fontSize: '12px' }}>regular (40px)</p>
+				<p className={styles.label}>regular (40px)</p>
 			</div>
-			<div style={{ textAlign: 'center' }}>
+			<div className={styles.sizeItem}>
 				<DsSkeleton.Circle size="md" />
-				<p style={{ marginTop: '8px', fontSize: '12px' }}>md (48px)</p>
+				<p className={styles.label}>md (48px)</p>
 			</div>
-			<div style={{ textAlign: 'center' }}>
+			<div className={styles.sizeItem}>
 				<DsSkeleton.Circle size="lg" />
-				<p style={{ marginTop: '8px', fontSize: '12px' }}>lg (64px)</p>
+				<p className={styles.label}>lg (64px)</p>
 			</div>
-			<div style={{ textAlign: 'center' }}>
+			<div className={styles.sizeItem}>
 				<DsSkeleton.Circle size="xl" />
-				<p style={{ marginTop: '8px', fontSize: '12px' }}>xl (80px)</p>
+				<p className={styles.label}>xl (80px)</p>
 			</div>
-			<div style={{ textAlign: 'center' }}>
+			<div className={styles.sizeItem}>
 				<DsSkeleton.Circle size={100} />
-				<p style={{ marginTop: '8px', fontSize: '12px' }}>custom (100px)</p>
+				<p className={styles.label}>custom (100px)</p>
 			</div>
 		</div>
 	),
@@ -135,18 +174,18 @@ export const CircleSizes: Story = {
  */
 export const RectangleShapes: Story = {
 	render: () => (
-		<div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-			<div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+		<div className={styles.section}>
+			<div className={styles.shapeRow}>
 				<DsSkeleton.Rect width={120} height={40} />
-				<span style={{ fontSize: '12px', color: '#666' }}>Button</span>
+				<span className={styles.label}>Button</span>
 			</div>
-			<div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+			<div className={styles.shapeRow}>
 				<DsSkeleton.Rect width={80} height={24} radius="round" />
-				<span style={{ fontSize: '12px', color: '#666' }}>Badge</span>
+				<span className={styles.label}>Badge</span>
 			</div>
-			<div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+			<div className={styles.shapeRow}>
 				<DsSkeleton.Rect width={200} height={150} radius={8} />
-				<span style={{ fontSize: '12px', color: '#666' }}>Image</span>
+				<span className={styles.label}>Image</span>
 			</div>
 		</div>
 	),
@@ -157,25 +196,18 @@ export const RectangleShapes: Story = {
  */
 export const CardSkeleton: Story = {
 	render: () => (
-		<div
-			style={{
-				border: '1px solid #e5e8ed',
-				borderRadius: '8px',
-				padding: '24px',
-				maxWidth: '400px',
-			}}
-		>
-			<div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+		<div className={styles.cardContainer}>
+			<div className={styles.cardHeader}>
 				<DsSkeleton.Circle size="lg" />
-				<div style={{ flex: 1 }}>
+				<div className={styles.cardHeaderContent}>
 					<DsSkeleton.Text typographyVariant="heading4" width="60%" />
-					<div style={{ marginTop: '8px' }}>
+					<div className={styles.cardHeaderSubtitle}>
 						<DsSkeleton.Text typographyVariant="body-sm-reg" width="80%" />
 					</div>
 				</div>
 			</div>
 			<DsSkeleton.Text typographyVariant="body-md-reg" lines={3} />
-			<div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+			<div className={styles.cardActions}>
 				<DsSkeleton.Rect width={100} height={36} radius={4} />
 				<DsSkeleton.Rect width={100} height={36} radius={4} />
 			</div>

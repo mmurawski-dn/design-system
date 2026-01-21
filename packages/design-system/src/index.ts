@@ -17,6 +17,7 @@ export * from './components/ds-file-upload';
 export * from './components/ds-form-control';
 export * from './components/ds-grid';
 export * from './components/ds-icon';
+export * from './components/ds-loader';
 export * from './components/ds-modal';
 export * from './components/ds-number-input';
 export * from './components/ds-panel';
