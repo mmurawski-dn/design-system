@@ -25,6 +25,7 @@ export * from './components/ds-popover';
 export * from './components/ds-radio-group';
 export * from './components/ds-segment-group';
 export * from './components/ds-select';
+export * from './components/ds-skeleton';
 export * from './components/ds-smart-tabs';
 export * from './components/ds-spinner';
 export * from './components/ds-status-badge';

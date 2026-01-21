@@ -1,0 +1,95 @@
+@use '../../styles/root';
+
+/**
+ * Base skeleton element with shimmer animation
+ */
+
+// css vars
+:root {
+	--blue-base: #dfe9ff;
+	--blue-accent: #759cec;
+	--grey-base: #f3f5fa;
+	--grey-accent: #e3e3e3;
+}
+
+.skeleton {
+	animation: shimmer 2s linear infinite;
+}
+
+.grey {
+	background: linear-gradient(
+		90deg,
+		var(--grey-base) 0%,
+		var(--grey-base) 33%,
+		var(--grey-accent) 50%,
+		var(--grey-base) 66%,
+		var(--grey-base) 100%
+	);
+	background-size: 300% 100%;
+}
+
+.blue {
+	background: linear-gradient(
+		90deg,
+		var(--blue-base) 0%,
+		var(--blue-base) 33%,
+		var(--blue-accent) 50%,
+		var(--blue-base) 66%,
+		var(--blue-base) 100%
+	);
+	background-size: 300% 100%;
+}
+
+/**
+ * Text skeleton - pill-shaped lines matching typography
+ */
+.text {
+	display: block;
+	margin-bottom: 8px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+/**
+ * Circle skeleton - for avatars and icons
+ */
+.circle {
+	display: inline-block;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+/**
+ * Rectangle skeleton - generic shape
+ */
+.rectangle {
+	display: inline-block;
+	flex-shrink: 0;
+}
+
+/**
+ * Container for multiple skeleton lines
+ */
+.container {
+	display: flex;
+	flex-direction: column;
+}
+
+/**
+ * Shimmer animation - gradient wave moving across skeleton
+ */
+@keyframes shimmer {
+	0% {
+		background-position: 100% 0;
+	}
+
+	60% {
+		background-position: 0 0;
+	}
+
+	100% {
+		background-position: 0 0;
+	}
+}
