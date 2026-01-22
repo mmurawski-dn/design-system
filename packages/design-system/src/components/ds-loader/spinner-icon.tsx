@@ -15,15 +15,7 @@ const SpinnerIcon = () => (
 		<g clipPath="url(#paint0_angular_14836_15182_clip_path)" mask="url(#path-2-inside-1_14836_15182)">
 			<g transform="matrix(-0.008 0 0 0.008 12 12)">
 				<foreignObject x="-1375" y="-1375" width="2750" height="2750">
-					<div
-						style={{
-							background:
-								'conic-gradient(from 90deg, rgba(65, 146, 246, 1) 0deg, rgba(65, 146, 246, 0) 360deg)',
-							height: '100%',
-							width: '100%',
-							opacity: 1,
-						}}
-					/>
+					<div className={styles.spinnerGradient} />
 				</foreignObject>
 			</g>
 		</g>

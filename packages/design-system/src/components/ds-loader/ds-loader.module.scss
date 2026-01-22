@@ -18,10 +18,19 @@
 	}
 }
 
+.pulsingIcon {
+	color: var(--loader-pulsing-color);
+}
+
 .pulsingOuter {
+	fill: currentcolor;
 	opacity: 0.3;
 	transform-origin: center;
 	animation: pulse 1.4s ease-in-out infinite;
+}
+
+.pulsingInner {
+	fill: currentcolor;
 }
 
 @keyframes pulse {
@@ -35,4 +44,10 @@
 		transform: scale(1.1);
 		opacity: 0.15;
 	}
+}
+
+.spinnerGradient {
+	background: conic-gradient(from 90deg, var(--loader-spinner-color) 0deg, transparent 360deg);
+	height: 100%;
+	width: 100%;
 }

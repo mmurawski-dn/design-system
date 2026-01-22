@@ -14,4 +14,8 @@ export interface DsLoaderProps {
 	 * Additional styles to apply to the component
 	 */
 	style?: React.CSSProperties;
+	/**
+	 * Ref to the loader container element
+	 */
+	ref?: React.Ref<HTMLDivElement>;
 }

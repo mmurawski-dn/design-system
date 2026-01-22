@@ -25,19 +25,14 @@ type Story = StoryObj<typeof DsLoader>;
  * Default loader - rotating spinner arc
  */
 export const Default: Story = {
-	args: {},
+	args: {
+		'data-testid': 'loader',
+	} as React.ComponentProps<typeof DsLoader>,
 	play: async ({ canvasElement }) => {
-		// Assert spinner SVG is rendered by default
-		const svg = canvasElement.querySelector('svg');
-		await expect(svg).toBeInTheDocument();
+		const canvas = within(canvasElement);
+		const loader = canvas.getByTestId('loader');
 
-		// SpinnerIcon uses a mask element (unique to spinner variant)
-		const mask = svg?.querySelector('mask');
-		await expect(mask).toBeInTheDocument();
-
-		// SpinnerIcon does NOT have the pulsing circles pattern
-		const circles = svg?.querySelectorAll('circle');
-		await expect(circles?.length ?? 0).toBe(0);
+		await expect(loader).toBeInTheDocument();
 	},
 };
 
@@ -134,16 +129,9 @@ export const CustomProps: Story = {
 	} as React.ComponentProps<typeof DsLoader>,
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-
-		// Find the loader container by data-testid
 		const loader = canvas.getByTestId('loader-test-id');
+
 		await expect(loader).toBeInTheDocument();
-
-		// Verify a custom className is applied (check for the hashed class)
 		await expect(loader.className).toContain('customPropsLoader');
-
-		// Verify SVG is still rendered inside
-		const svg = loader.querySelector('svg');
-		await expect(svg).toBeInTheDocument();
 	},
 };

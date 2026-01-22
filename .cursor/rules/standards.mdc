@@ -81,7 +81,7 @@ expect(el).toHaveAttribute('data-state', 'checked');
 | Requirement                    | Details                                         |
 | ------------------------------ | ----------------------------------------------- |
 | **Own props layer**            | Don't expose all underlying library props       |
-| **Generic ref types**          | Use `Ref<HTMLElement>` to allow library changes |
+| **Generic ref types**          | Use, IF MAKES SENSE, `Ref<HTMLElement>` to allow library changes |
 | **Standard props**             | Always support `className`, `style`, `ref`      |
 | **slotProps pattern**          | Use for sub-component customization (MUI-style) |
 | **Consistent callback naming** | Prefer `onXChange` pattern                      |

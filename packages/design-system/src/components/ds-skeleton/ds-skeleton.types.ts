@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode, Ref } from 'react';
 import type { DsAvatarSize } from '../ds-avatar';
 import type { SemanticVariant } from '../ds-typography';
 
@@ -25,13 +25,17 @@ export interface DsSkeletonBaseProps {
 	 * Additional inline styles
 	 */
 	style?: CSSProperties;
+	/**
+	 * Ref to the skeleton element
+	 */
+	ref?: Ref<HTMLSpanElement>;
 }
 
 /**
  * Props for the base DsSkeleton component
  * Renders a paragraph skeleton by default and supports a loading wrapper pattern
  */
-export interface DsSkeletonProps extends DsSkeletonBaseProps {
+export interface DsSkeletonProps extends Omit<DsSkeletonBaseProps, 'ref'> {
 	/**
 	 * When false, renders children. When true or undefined, renders skeleton.
 	 * Enables conditional rendering without ternary operators.
