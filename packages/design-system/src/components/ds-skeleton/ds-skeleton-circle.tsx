@@ -8,7 +8,7 @@ import styles from './ds-skeleton.module.scss';
  * Circle skeleton component - for avatars and icons
  * Matches DsAvatar sizes
  */
-const DsSkeletonCircle = ({ size, color = 'grey', className, style }: DsSkeletonCircleProps) => {
+const DsSkeletonCircle = ({ size = 'regular', color = 'gray', className, style }: DsSkeletonCircleProps) => {
 	const pixelSize = typeof size === 'number' ? size : circleSizeMap[size];
 
 	const circleStyle: CSSProperties = {

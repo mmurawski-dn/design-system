@@ -10,10 +10,10 @@ import {
 	TableRow,
 } from '../ds-table/components/core-table';
 import styles from './ds-skeleton.stories.module.scss';
+import skeletonStyles from './ds-skeleton.module.scss';
 
 const meta: Meta<typeof DsSkeleton> = {
 	title: 'Design System/Skeleton',
-	component: DsSkeleton,
 	tags: ['autodocs'],
 	parameters: {
 		layout: 'padded',
@@ -21,84 +21,39 @@ const meta: Meta<typeof DsSkeleton> = {
 };
 
 export default meta;
+
 type Story = StoryObj<typeof DsSkeleton>;
 
 /**
- * Default skeleton - renders a 3-line paragraph skeleton
- */
-export const Default: Story = {
-	args: {},
-	play: async ({ canvasElement }) => {
-		// Skeleton renders span elements with aria-hidden
-		const spans = canvasElement.querySelectorAll('span[aria-hidden="true"]');
-		await expect(spans.length).toBeGreaterThanOrEqual(1);
-	},
-};
-
-/**
- * Loading wrapper pattern - shows skeleton when loading, content when loaded
- */
-export const LoadingWrapper: Story = {
-	args: {
-		loading: true,
-		children: (
-			<div className={styles.loadingContent}>
-				<h2>User Profile</h2>
-				<p>This is the actual content that appears when loading is complete.</p>
-			</div>
-		),
-	},
-	render: (args) => <DsSkeleton {...args} />,
-	play: async ({ canvasElement }) => {
-		// When loading=true, skeleton should show, not children
-		const skeleton = canvasElement.querySelector('span[aria-hidden="true"]');
-
-		await expect(skeleton).toBeInTheDocument();
-		await expect(within(canvasElement).queryByText('User Profile')).not.toBeInTheDocument();
-	},
-};
-
-/**
- * Loaded content - when loading=false, children are rendered instead of skeleton
- */
-export const LoadedContent: Story = {
-	args: {
-		loading: false,
-		children: (
-			<div className={styles.loadingContent} data-testid="loaded-content">
-				<h2>User Profile</h2>
-				<p>Content is now visible because loading is false.</p>
-			</div>
-		),
-	},
-	render: (args) => <DsSkeleton {...args} />,
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		await expect(canvas.getByTestId('loaded-content')).toBeInTheDocument();
-		await expect(canvas.getByText('User Profile')).toBeInTheDocument();
-
-		const skeleton = canvasElement.querySelector('span[aria-hidden="true"]');
-		await expect(skeleton).not.toBeInTheDocument();
-	},
-};
-
-/**
- * Color variants - grey (default) and blue
+ * Color variants - gray (default) and blue
  */
 export const ColorVariants: Story = {
 	render: () => (
-		<div className={styles.verticalStack}>
+		<div className={styles.verticalStack} data-testid="color-variants">
 			<div>
-				<h4 className={styles.sectionLabel}>Grey (default)</h4>
-				<DsSkeleton color="grey" />
+				<h4 className={styles.sectionLabel}>gray (default)</h4>
+				<DsSkeleton.Text color="gray" />
+				<DsSkeleton.Circle color="gray" />
+				<DsSkeleton.Rect width={40} height={40} color="gray" />
 			</div>
 			<div>
 				<h4 className={styles.sectionLabel}>Blue</h4>
-				<DsSkeleton color="blue" />
+				<DsSkeleton.Text color="blue" />
+				<DsSkeleton.Circle color="blue" />
+				<DsSkeleton.Rect width={40} height={40} color="blue" />
 			</div>
 		</div>
 	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const container = canvas.getByTestId('color-variants');
+
+		const graySkeletons = container.querySelectorAll(`.${skeletonStyles.gray}`);
+		const blueSkeletons = container.querySelectorAll(`.${skeletonStyles.blue}`);
+
+		await expect(graySkeletons).toHaveLength(3);
+		await expect(blueSkeletons).toHaveLength(3);
+	},
 };
 
 /**
@@ -144,7 +99,7 @@ export const TextVariants: Story = {
  */
 export const CircleSizes: Story = {
 	render: () => (
-		<div className={styles.sizesRow}>
+		<div className={styles.sizesRow} data-testid="circle-sizes">
 			<div className={styles.sizeItem}>
 				<DsSkeleton.Circle size="xsm" />
 				<p className={styles.label}>xsm (24px)</p>
@@ -175,6 +130,20 @@ export const CircleSizes: Story = {
 			</div>
 		</div>
 	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const container = canvas.getByTestId('circle-sizes');
+
+		const circles = container.querySelectorAll(`.${skeletonStyles.circle}`);
+		await expect(circles).toHaveLength(7);
+
+		// Verify sizes match avatar size mapping
+		const expectedSizes = ['24px', '32px', '40px', '48px', '64px', '80px', '100px'];
+
+		circles.forEach((circle, index) => {
+			void expect(circle).toHaveStyle({ width: expectedSizes[index], height: expectedSizes[index] });
+		});
+	},
 };
 
 /**
@@ -182,7 +151,7 @@ export const CircleSizes: Story = {
  */
 export const RectangleShapes: Story = {
 	render: () => (
-		<div className={styles.section}>
+		<div className={styles.section} data-testid="rectangle-shapes">
 			<div className={styles.shapeRow}>
 				<DsSkeleton.Rect width={120} height={40} />
 				<span className={styles.label}>Button</span>
@@ -197,6 +166,22 @@ export const RectangleShapes: Story = {
 			</div>
 		</div>
 	),
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const container = canvas.getByTestId('rectangle-shapes');
+
+		const rectangles = container.querySelectorAll(`.${skeletonStyles.rectangle}`);
+		await expect(rectangles).toHaveLength(3);
+
+		// Button skeleton
+		await expect(rectangles[0]).toHaveStyle({ width: '120px', height: '40px', borderRadius: '4px' });
+
+		// Badge skeleton (round radius)
+		await expect(rectangles[1]).toHaveStyle({ width: '80px', height: '24px', borderRadius: '999px' });
+
+		// Image skeleton (custom radius)
+		await expect(rectangles[2]).toHaveStyle({ width: '200px', height: '150px', borderRadius: '8px' });
+	},
 };
 
 /**

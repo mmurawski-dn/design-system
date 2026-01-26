@@ -10,7 +10,7 @@ import styles from './ds-skeleton.module.scss';
  */
 const DsSkeletonText = ({
 	typographyVariant = 'body-sm-reg',
-	color = 'grey',
+	color = 'gray',
 	lines = 1,
 	width,
 	radius = 'default',
@@ -38,14 +38,9 @@ const DsSkeletonText = ({
 	});
 
 	return (
-		<div className={styles.container} style={{ gap: DEFAULT_LINE_GAP }}>
+		<div aria-hidden="true" className={styles.container} style={{ gap: DEFAULT_LINE_GAP }}>
 			{Array.from({ length: lines }, (_, index) => (
-				<span
-					key={index}
-					className={lineClassName}
-					style={createLineStyle(getLineWidth())}
-					aria-hidden="true"
-				/>
+				<span key={index} className={lineClassName} style={createLineStyle(getLineWidth())} />
 			))}
 		</div>
 	);

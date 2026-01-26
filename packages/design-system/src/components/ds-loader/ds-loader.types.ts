@@ -1,7 +1,7 @@
 import type React from 'react';
 
-export const variants = ['spinner', 'pulsing'] as const;
-export type LoaderVariant = (typeof variants)[number];
+export const loaderVariants = ['spinner', 'pulsing'] as const;
+export type LoaderVariant = (typeof loaderVariants)[number];
 
 export interface DsLoaderProps {
 	/**

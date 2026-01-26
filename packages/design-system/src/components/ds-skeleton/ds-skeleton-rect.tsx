@@ -11,7 +11,7 @@ const DsSkeletonRect = ({
 	width,
 	height,
 	radius = 'default',
-	color = 'grey',
+	color = 'gray',
 	className,
 	style,
 }: DsSkeletonRectProps) => {

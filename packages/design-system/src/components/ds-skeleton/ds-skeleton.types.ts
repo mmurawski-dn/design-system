@@ -1,8 +1,8 @@
-import type { CSSProperties, ReactNode, Ref } from 'react';
+import type { CSSProperties, Ref } from 'react';
 import type { DsAvatarSize } from '../ds-avatar';
 import type { SemanticVariant } from '../ds-typography';
 
-export const skeletonColorVariants = ['grey', 'blue'] as const;
+export const skeletonColorVariants = ['gray', 'blue'] as const;
 export type SkeletonColorVariant = (typeof skeletonColorVariants)[number];
 
 export const skeletonRadiusVariants = ['default', 'round'] as const;
@@ -14,7 +14,7 @@ export type SkeletonRadiusVariant = (typeof skeletonRadiusVariants)[number];
 export interface DsSkeletonBaseProps {
 	/**
 	 * Color variant of the skeleton
-	 * @default 'grey'
+	 * @default 'gray'
 	 */
 	color?: SkeletonColorVariant;
 	/**
@@ -29,32 +29,6 @@ export interface DsSkeletonBaseProps {
 	 * Ref to the skeleton element
 	 */
 	ref?: Ref<HTMLSpanElement>;
-}
-
-/**
- * Props for the base DsSkeleton component
- * Renders a paragraph skeleton by default and supports a loading wrapper pattern
- */
-export interface DsSkeletonProps extends Omit<DsSkeletonBaseProps, 'ref'> {
-	/**
-	 * When false, renders children. When true or undefined, renders skeleton.
-	 * Enables conditional rendering without ternary operators.
-	 */
-	loading?: boolean;
-	/**
-	 * Content to render when loading is false
-	 */
-	children?: ReactNode;
-	/**
-	 * Number of lines for default paragraph skeleton
-	 * @default 3
-	 */
-	lines?: number;
-	/**
-	 * Border radius: 'default' (4px), 'round' (pill-shaped), or custom px value
-	 * @default 'default'
-	 */
-	radius?: SkeletonRadiusVariant | number;
 }
 
 /**
@@ -92,8 +66,9 @@ export interface DsSkeletonTextProps extends DsSkeletonBaseProps {
 export interface DsSkeletonCircleProps extends DsSkeletonBaseProps {
 	/**
 	 * Size of the circle - matches DsAvatar sizes or custom pixel value
+	 * @default 'regular'
 	 */
-	size: DsAvatarSize | number;
+	size?: DsAvatarSize | number;
 }
 
 /**
