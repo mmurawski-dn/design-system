@@ -5,8 +5,12 @@ import DsButton from '../ds-button/ds-button';
 import { DsIcon } from '../ds-icon';
 import styles from './ds-confirmation.stories.module.scss';
 
+/**
+ * @deprecated This component is deprecated. Use DsModal instead.
+ * @see {@link ../ds-modal/ds-modal.stories} for examples of the replacement component.
+ */
 const meta: Meta<typeof DsConfirmation> = {
-	title: 'Design System/Confirmation',
+	title: 'Design System/Confirmation (Deprecated)',
 	component: DsConfirmation,
 	parameters: {
 		layout: 'centered',
