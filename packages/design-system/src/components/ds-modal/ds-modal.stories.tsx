@@ -428,18 +428,15 @@ export const Form: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		// Helper function to wait for validation messages
 		const waitForMessage = async (text: string) => {
 			await waitFor(() => {
 				return expect(screen.getByText(text)).toBeInTheDocument();
 			});
 		};
 
-		// 1. Open the modal
 		const openModalButton = canvas.getByRole('button', { name: /open form modal/i });
 		await userEvent.click(openModalButton);
 
-		// Wait for modal to be visible
 		await waitFor(() => {
 			return expect(screen.getByText('User Profile Form')).toBeVisible();
 		});
@@ -548,7 +545,6 @@ export const Form: Story = {
 			return expect(screen.queryByText('User Profile Form')).not.toBeVisible();
 		});
 
-		// Helper function to wait for validation messages
 		const checkResult = (text: string) => {
 			return expect(
 				canvas.getByText((content, element) => {
@@ -823,7 +819,6 @@ export const Info: Story = {
 		await expect(screen.getByRole('heading', { name: /session timeout/i })).toBeVisible();
 		await expect(screen.getByText(/session will expire/i)).toBeVisible();
 
-		// Verify info icon is rendered in the header (Material Symbols renders icon name as text)
 		const dialog = screen.getByRole('dialog');
 		await expect(within(dialog).getByText('info')).toBeInTheDocument();
 
