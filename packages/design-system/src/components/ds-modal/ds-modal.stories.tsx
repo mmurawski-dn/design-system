@@ -12,7 +12,7 @@ import { DsButton } from '../ds-button';
 import { DsFormControl } from '../ds-form-control';
 import { DsRadioGroup } from '../ds-radio-group';
 import { DsCheckbox } from '../ds-checkbox';
-import { modalLayouts, modalVariants } from './ds-modal.types';
+import { modalVariants } from './ds-modal.types';
 
 const meta: Meta<typeof DsModal> = {
 	title: 'Design System/Modal',
@@ -34,10 +34,9 @@ const meta: Meta<typeof DsModal> = {
 			options: modalVariants,
 			description: 'Modal variant for semantic meaning (determines icon and color)',
 		},
-		layout: {
-			control: 'select',
-			options: modalLayouts,
-			description: 'Modal layout for structural styling',
+		dividers: {
+			control: 'boolean',
+			description: 'Show full-width dividers between header, body, and footer sections',
 		},
 		columns: {
 			control: 'select',
@@ -236,7 +235,7 @@ export const Divided: Story = {
 					</div>
 				)}
 
-				<DsModal open={isOpen} columns={8} layout="divided" onOpenChange={setIsOpen}>
+				<DsModal open={isOpen} columns={8} dividers onOpenChange={setIsOpen}>
 					<DsModal.Header>
 						<DsModal.Title>User Profile Form</DsModal.Title>
 						<DsModal.CloseTrigger />
@@ -632,7 +631,7 @@ export const Custom: Story = {
 					</DsButton>
 				</div>
 
-				<DsModal open={isOpen} columns={4} layout="divided" onOpenChange={setIsOpen}>
+				<DsModal open={isOpen} columns={4} dividers onOpenChange={setIsOpen}>
 					<DsModal.Header>
 						<div className={styles.customHeader}>
 							<button className={styles.headerButton}>⋯</button>

@@ -2,17 +2,16 @@ import { createContext, useContext, type CSSProperties, type ReactNode } from 'r
 import { Dialog } from '@ark-ui/react/dialog';
 import { Portal } from '@ark-ui/react/portal';
 import classNames from 'classnames';
-import type { DsModalLayout, DsModalProps, DsModalVariant } from './ds-modal.types';
+import type { DsModalProps, DsModalVariant } from './ds-modal.types';
 import styles from './ds-modal.module.scss';
 import { DsIcon } from '../ds-icon';
 import { DsTypography } from '../ds-typography';
 
 /**
- * Context for passing variant and layout to sub-components
+ * Context for passing variant to sub-components
  */
-const DsModalContext = createContext<{ variant: DsModalVariant; layout: DsModalLayout }>({
+const DsModalContext = createContext<{ variant: DsModalVariant }>({
 	variant: 'default',
-	layout: 'default',
 });
 
 const getVariantIcon = (variant: DsModalVariant) => {
@@ -33,7 +32,7 @@ const DsModal = ({
 	open,
 	columns = 6,
 	variant = 'default',
-	layout = 'default',
+	dividers = false,
 	style,
 	className,
 	modal = true,
@@ -47,7 +46,7 @@ const DsModal = ({
 	};
 
 	return (
-		<DsModalContext.Provider value={{ variant, layout }}>
+		<DsModalContext.Provider value={{ variant }}>
 			<Dialog.Root
 				open={open}
 				onOpenChange={handleOpenChange}
@@ -68,11 +67,7 @@ const DsModal = ({
 								styles[`cols-${columns}`],
 							)}
 						>
-							<div
-								className={classNames(styles.content, {
-									[styles.divided]: layout === 'divided',
-								})}
-							>
+							<div className={styles.content} data-dividers={dividers || undefined}>
 								{children}
 							</div>
 						</Dialog.Content>

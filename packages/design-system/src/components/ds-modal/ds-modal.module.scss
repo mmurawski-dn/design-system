@@ -1,13 +1,10 @@
-@use '../../styles/typography' as typography;
-
 $pad-x: var(--spacing-lg);
 $pad-y: var(--spacing-standard);
 $max-width: 90vw;
-$max-height: 90vh;
 $border-size: 1px;
 $border: $border-size solid var(--color-border-secondary);
 
-@mixin overlay-base {
+.overlay {
 	position: fixed;
 	inset: 0;
 	background: var(--color-background-brand);
@@ -43,7 +40,7 @@ $border: $border-size solid var(--color-border-secondary);
 	}
 }
 
-@mixin modal-base {
+.modal {
 	position: fixed;
 	inset: 50% auto auto 50%;
 	background: var(--color-background);
@@ -51,6 +48,7 @@ $border: $border-size solid var(--color-border-secondary);
 	box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.15);
 	z-index: 1200;
 	overflow: hidden;
+	inline-size: min(var(--col-span-6), $max-width);
 
 	&[data-state='open'] {
 		animation: scale-in-modal 0.2s 0.1s ease-in-out both;
@@ -85,60 +83,9 @@ $border: $border-size solid var(--color-border-secondary);
 	}
 }
 
-@mixin content-base {
+.content {
 	display: flex;
 	flex-direction: column;
-}
-
-@mixin header-footer-base {
-	background: inherit;
-	flex-shrink: 0;
-}
-
-@mixin header-base {
-	@include header-footer-base;
-	display: flex;
-	align-items: center;
-	border-bottom: 1px solid var(--color-border-subtle);
-}
-
-@mixin footer-base($has-border: true) {
-	@include header-footer-base;
-
-	@if $has-border {
-		border-top: 1px solid var(--color-border-subtle);
-	}
-}
-
-@mixin title-base {
-	color: var(--color-font-main);
-	margin: 0;
-	flex: 1;
-}
-
-@mixin body-base {
-	flex: 1;
-	overflow-y: auto;
-	overflow-x: hidden;
-	min-height: 0;
-}
-
-@mixin actions-base {
-	display: flex;
-	gap: 8px;
-	justify-content: flex-end;
-}
-
-.overlay {
-	@include overlay-base;
-}
-
-.modal {
-	@include modal-base;
-}
-
-.content {
-	@include content-base;
 	height: 100%;
 }
 
@@ -149,10 +96,12 @@ $border: $border-size solid var(--color-border-secondary);
 }
 
 .header {
-	@include header-base;
+	display: flex;
+	align-items: center;
 	gap: var(--spacing-xs);
 	position: relative;
-	border-bottom: none;
+	background: inherit;
+	flex-shrink: 0;
 
 	&::after {
 		content: '';
@@ -171,24 +120,33 @@ $border: $border-size solid var(--color-border-secondary);
 }
 
 .footer {
-	@include footer-base(false);
 	display: flex;
+	background: inherit;
+	flex-shrink: 0;
 }
 
 .title {
-	@include title-base;
+	color: var(--color-font-main);
+	margin: 0;
+	flex: 1;
 }
 
 .body {
-	@include body-base;
+	flex: 1;
+	overflow-y: auto;
+	overflow-x: hidden;
+	min-height: 0;
 }
 
 .actions {
-	@include actions-base;
+	display: flex;
+	gap: var(--spacing-xs);
+	justify-content: flex-end;
 	margin-left: auto;
 }
 
-.content.divided {
+// Dividers mode: full-width borders on header and footer
+.content[data-dividers] {
 	.header {
 		border-bottom: $border;
 
@@ -202,55 +160,9 @@ $border: $border-size solid var(--color-border-secondary);
 	}
 }
 
-// width classes derived from DS grid
-.modal {
-	inline-size: min(var(--col-span-6), $max-width);
-}
-
-.modal.cols-1 {
-	inline-size: min(var(--col-span-1), $max-width);
-}
-
-.modal.cols-2 {
-	inline-size: min(var(--col-span-2), $max-width);
-}
-
-.modal.cols-3 {
-	inline-size: min(var(--col-span-3), $max-width);
-}
-
-.modal.cols-4 {
-	inline-size: min(var(--col-span-4), $max-width);
-}
-
-.modal.cols-5 {
-	inline-size: min(var(--col-span-5), $max-width);
-}
-
-.modal.cols-6 {
-	inline-size: min(var(--col-span-6), $max-width);
-}
-
-.modal.cols-7 {
-	inline-size: min(var(--col-span-7), $max-width);
-}
-
-.modal.cols-8 {
-	inline-size: min(var(--col-span-8), $max-width);
-}
-
-.modal.cols-9 {
-	inline-size: min(var(--col-span-9), $max-width);
-}
-
-.modal.cols-10 {
-	inline-size: min(var(--col-span-10), $max-width);
-}
-
-.modal.cols-11 {
-	inline-size: min(var(--col-span-11), $max-width);
-}
-
-.modal.cols-12 {
-	inline-size: min(var(--col-span-12), $max-width);
+// Width classes derived from DS grid
+@for $i from 1 through 12 {
+	.modal.cols-#{$i} {
+		inline-size: min(var(--col-span-#{$i}), $max-width);
+	}
 }

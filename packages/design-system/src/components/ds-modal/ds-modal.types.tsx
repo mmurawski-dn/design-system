@@ -13,15 +13,6 @@ export const modalVariants = ['default', 'info'] as const;
  */
 export type DsModalVariant = (typeof modalVariants)[number];
 
-export const modalLayouts = ['default', 'divided'] as const;
-
-/**
- * Available modal layouts for structural styling.
- * - 'default': Inset header underline, no footer border
- * - 'divided': Full-width borders on header and footer for visual separation
- */
-export type DsModalLayout = (typeof modalLayouts)[number];
-
 /**
  * Props for the DsModal component
  */
@@ -47,10 +38,10 @@ export interface DsModalProps extends Pick<
 	variant?: DsModalVariant;
 
 	/**
-	 * Modal layout for structural styling
-	 * @default 'default'
+	 * Show full-width dividers between header, body, and footer sections
+	 * @default false
 	 */
-	layout?: DsModalLayout;
+	dividers?: boolean;
 
 	/**
 	 * Optional inline styles to apply to the component
