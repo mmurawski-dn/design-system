@@ -40,17 +40,12 @@ export interface DsCardRootProps extends HTMLAttributes<HTMLDivElement> {
 	 * Disabled state - prevents interaction
 	 */
 	disabled?: boolean;
-
-	/**
-	 * ReadOnly state - focusable but selection cannot change
-	 */
-	readOnly?: boolean;
 }
 
 /**
  * Common props for card slot components
  */
-export interface DsCardSlotProps {
+export interface DsCardSlotProps extends HTMLAttributes<HTMLDivElement> {
 	/**
 	 * Additional CSS class names
 	 */

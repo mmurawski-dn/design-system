@@ -6,6 +6,7 @@ import { DsCard } from './index';
 import { cardSizes } from './ds-card.types';
 import DsStatusBadge from '../ds-status-badge/ds-status-badge';
 import DsTypography from '../ds-typography/ds-typography';
+import { DsIcon } from '../ds-icon';
 import styles from './ds-card.stories.module.scss';
 
 const meta: Meta<typeof DsCard.Root> = {
@@ -316,5 +317,65 @@ export const Disabled: Story = {
 
 		await userEvent.click(card, { pointerEventsCheck: 0 });
 		await expect(args.onClick).not.toHaveBeenCalled();
+	},
+};
+
+export const Collapsible: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Collapsible card pattern using composition. Click the header to toggle body visibility. This is not built-in functionality - use local state to implement.',
+			},
+		},
+	},
+	render: function Render() {
+		const [expanded, setExpanded] = useState(true);
+
+		return (
+			<DsCard.Root size="large">
+				<DsCard.Header className={styles.collapseHeader}>
+					<button
+						type="button"
+						className={styles.collapsibleButton}
+						onClick={() => setExpanded(!expanded)}
+						aria-expanded={expanded}
+					>
+						<DsIcon
+							icon="expand_more"
+							style={{
+								transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+								transition: 'transform 150ms ease-in-out',
+							}}
+						/>
+					</button>
+					<DsTypography variant="heading3">Collapsible Card</DsTypography>
+				</DsCard.Header>
+				<DsCard.Body className={styles.collapsibleContent} data-collapsed={!expanded}>
+					<div className={styles.collapsibleContentInner}>
+						<DsTypography variant="body-md-reg">
+							This content can be collapsed by clicking the header. The height animates smoothly using CSS
+							Grid.
+						</DsTypography>
+					</div>
+				</DsCard.Body>
+			</DsCard.Root>
+		);
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const toggleButton = canvas.getByRole('button');
+
+		// Initially expanded
+		await expect(toggleButton).toHaveAttribute('aria-expanded', 'true');
+
+		// Click to collapse
+		await userEvent.click(toggleButton);
+		await expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
+
+		// Click to expand again
+		await userEvent.click(toggleButton);
+		await expect(toggleButton).toHaveAttribute('aria-expanded', 'true');
 	},
 };

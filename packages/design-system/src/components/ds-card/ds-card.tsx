@@ -51,8 +51,8 @@ const Root = ({
  * Use with DsCard.Title and DsCard.Extra for standard layout,
  * or provide custom children for full flexibility.
  */
-const Header = ({ className, style, children, ref }: DsCardHeaderProps) => (
-	<div ref={ref} className={classNames(styles.header, className)} style={style}>
+const Header = ({ className, children, ref, ...rest }: DsCardHeaderProps) => (
+	<div ref={ref} className={classNames(styles.header, className)} {...rest}>
 		{children}
 	</div>
 );
@@ -60,8 +60,8 @@ const Header = ({ className, style, children, ref }: DsCardHeaderProps) => (
 /**
  * Card body - main content area.
  */
-const Body = ({ className, style, children, ref }: DsCardBodyProps) => (
-	<div ref={ref} className={classNames(styles.body, className)} style={style}>
+const Body = ({ className, children, ref, ...rest }: DsCardBodyProps) => (
+	<div ref={ref} className={classNames(styles.body, className)} {...rest}>
 		{children}
 	</div>
 );
@@ -69,8 +69,8 @@ const Body = ({ className, style, children, ref }: DsCardBodyProps) => (
 /**
  * Card footer - bottom section for actions or additional info.
  */
-const Footer = ({ className, style, children, ref }: DsCardFooterProps) => (
-	<div ref={ref} className={classNames(styles.footer, className)} style={style}>
+const Footer = ({ className, children, ref, ...rest }: DsCardFooterProps) => (
+	<div ref={ref} className={classNames(styles.footer, className)} {...rest}>
 		{children}
 	</div>
 );
