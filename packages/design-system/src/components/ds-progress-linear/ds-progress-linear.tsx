@@ -58,17 +58,15 @@ const DsProgressLinear = ({
 	ref,
 }: DsProgressLinearProps) => {
 	const hasHeader = label !== undefined || showValue;
-	const isStringCaption = typeof caption === 'string';
 	const icon = captionIcon[variant];
-
 	const percentage = calculatePercentage(value, min, max);
 
-	const renderCaption = () => {
+	const renderCaption = (caption?: DsProgressLinearProps['caption']) => {
 		if (caption === undefined) {
 			return null;
 		}
 
-		if (!isStringCaption) {
+		if (typeof caption !== 'string') {
 			return caption;
 		}
 
@@ -101,7 +99,7 @@ const DsProgressLinear = ({
 				<Progress.Range className={classNames(styles.range, rangeVariantClass[variant])} />
 			</Progress.Track>
 
-			{renderCaption()}
+			{renderCaption(caption)}
 		</Progress.Root>
 	);
 };

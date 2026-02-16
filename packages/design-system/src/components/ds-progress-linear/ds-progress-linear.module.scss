@@ -84,7 +84,7 @@ $border-radius: 4px;
 	display: flex;
 	align-items: center;
 	gap: var(--spacing-3xs);
-	padding-top: 2px;
+	padding-top: var(--spacing-4xs);
 }
 
 .captionDefault {
