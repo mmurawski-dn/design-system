@@ -10,6 +10,16 @@ $transition-duration: 0.2s;
 	justify-content: center;
 }
 
+.small {
+	--size: 80px;
+	--thickness: 4px;
+}
+
+.medium {
+	--size: 120px;
+	--thickness: 6px;
+}
+
 .circle {
 	display: block;
 }

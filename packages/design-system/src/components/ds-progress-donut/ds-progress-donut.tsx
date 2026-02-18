@@ -1,11 +1,19 @@
 import { Progress } from '@ark-ui/react';
 import classNames from 'classnames';
-import type { CSSProperties } from 'react';
 
 import { DsIcon } from '../ds-icon';
 import styles from './ds-progress-donut.module.scss';
-import type { DsProgressDonutProps, ProgressDonutVariant } from './ds-progress-donut.types';
-import { containerSizeMap, getEffectiveValue, strokeWidthMap } from './utils';
+import type {
+	DsProgressDonutProps,
+	ProgressDonutSize,
+	ProgressDonutVariant,
+} from './ds-progress-donut.types';
+import { getEffectiveValue } from './utils';
+
+const sizeStyleMap: Record<ProgressDonutSize, string> = Object.freeze({
+	small: styles.small,
+	medium: styles.medium,
+});
 
 const variantStyleMap: Record<ProgressDonutVariant, string> = Object.freeze({
 	default: styles.default,
@@ -22,8 +30,6 @@ const DsProgressDonut = ({
 	style,
 	ref,
 }: DsProgressDonutProps) => {
-	const containerSize = containerSizeMap[size];
-	const strokeWidth = strokeWidthMap[size];
 	const effectiveValue = getEffectiveValue(variant, value);
 
 	const renderIcon = (iconName: 'check' | 'close', colorClass: string) => (
@@ -53,17 +59,12 @@ const DsProgressDonut = ({
 		);
 	};
 
-	const cssVars = {
-		'--size': `${String(containerSize)}px`,
-		'--thickness': `${String(strokeWidth)}px`,
-	} as CSSProperties;
-
 	return (
 		<Progress.Root
 			ref={ref}
 			value={effectiveValue}
-			className={classNames(styles.root, variantStyleMap[variant], className)}
-			style={{ ...cssVars, ...style }}
+			className={classNames(styles.root, sizeStyleMap[size], variantStyleMap[variant], className)}
+			style={style}
 		>
 			<Progress.Circle className={styles.circle}>
 				<Progress.CircleTrack className={styles.track} />
