@@ -2,4 +2,4 @@
 '@drivenets/design-system': minor
 ---
 
-Add DsArcProgress component
+Add `DsProgressDonut` component and rename `DsArcProgress` to `DsProgressArc`

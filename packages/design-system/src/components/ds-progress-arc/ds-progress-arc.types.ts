@@ -1,12 +1,12 @@
 import type { ComponentPropsWithoutRef, ReactNode, Ref } from 'react';
 
-export const arcProgressSizes = ['small', 'medium'] as const;
-export type ArcProgressSize = (typeof arcProgressSizes)[number];
+export const progressArcSizes = ['small', 'medium'] as const;
+export type ProgressArcSize = (typeof progressArcSizes)[number];
 
-export const arcProgressVariants = ['default', 'success', 'failed'] as const;
-export type ArcProgressVariant = (typeof arcProgressVariants)[number];
+export const progressArcVariants = ['default', 'success', 'failed'] as const;
+export type ProgressArcVariant = (typeof progressArcVariants)[number];
 
-export interface DsArcProgressProps extends ComponentPropsWithoutRef<'div'> {
+export interface DsProgressArcProps extends ComponentPropsWithoutRef<'div'> {
 	/**
 	 * Progress value between 0 and 100
 	 * @default 0
@@ -17,13 +17,13 @@ export interface DsArcProgressProps extends ComponentPropsWithoutRef<'div'> {
 	 * Size of the arc progress indicator
 	 * @default 'medium'
 	 */
-	size?: ArcProgressSize;
+	size?: ProgressArcSize;
 
 	/**
 	 * Visual variant of the arc progress indicator
 	 * @default 'default'
 	 */
-	variant?: ArcProgressVariant;
+	variant?: ProgressArcVariant;
 
 	/**
 	 * Custom content to display in the center of the arc, overriding the default text or icon
