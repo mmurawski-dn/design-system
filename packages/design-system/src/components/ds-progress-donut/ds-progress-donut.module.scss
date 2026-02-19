@@ -2,7 +2,6 @@ $transition-duration: 0.2s;
 
 .root {
 	display: inline-grid;
-	place-items: center;
 }
 
 .small {
@@ -45,6 +44,9 @@ $transition-duration: 0.2s;
 
 .center {
 	grid-area: 1 / 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	color: var(--color-font-main);
 }
 
