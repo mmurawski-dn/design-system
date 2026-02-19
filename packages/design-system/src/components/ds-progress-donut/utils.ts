@@ -1,1 +1,1 @@
-export { clampValue } from '../../utils/progress-utils';
+export { clampValue } from '../../utils/numbers';

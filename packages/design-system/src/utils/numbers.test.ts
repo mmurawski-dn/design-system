@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { clampValue } from './progress-utils';
+import { clampValue } from './numbers';
 
 describe('progress-utils', () => {
 	describe('clampValue', () => {
