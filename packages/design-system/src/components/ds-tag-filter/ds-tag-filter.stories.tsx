@@ -266,7 +266,7 @@ export const WithoutClearAll: Story = {
 			setFilters((prev) => prev.filter((f) => f.id !== filter.id));
 		};
 
-		return <DsTagFilter {...args} items={filters} onItemDelete={handleFilterDelete} />;
+		return <DsTagFilter {...args} items={filters} onClearAll={undefined} onItemDelete={handleFilterDelete} />;
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -304,7 +304,16 @@ export const ReadOnly: Story = {
 	render: function Render(args) {
 		const filters: TagFilterItem[] = sampleFilters.slice(0, 5);
 
-		return <DsTagFilter {...args} items={filters} locale={{ label: 'Applied filters:' }} />;
+		return (
+			<DsTagFilter
+				{...args}
+				items={filters}
+				onClearAll={undefined}
+				onItemDelete={undefined}
+				onItemSelect={undefined}
+				locale={{ label: 'Applied filters:' }}
+			/>
+		);
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -469,10 +478,10 @@ export const ExpandCollapse: Story = {
 
 		// Verify the button now shows "Show less"
 		await waitFor(async () => {
-			await expect(canvas.getByRole('button', { name: 'Show less' })).toBeInTheDocument();
+			await expect(canvas.getByRole('button', { name: /Show less/ })).toBeInTheDocument();
 		});
 
-		const collapseButton = canvas.getByRole('button', { name: 'Show less' });
+		const collapseButton = canvas.getByRole('button', { name: /Show less/ });
 
 		// Click collapse button
 		await userEvent.click(collapseButton);
@@ -595,5 +604,19 @@ export const WithPreSelectedItems: Story = {
 		await waitFor(async () => {
 			await expect(runningTag).toHaveAttribute('aria-pressed', 'true');
 		});
+	},
+};
+
+/**
+ * Story verifying the component renders nothing when items is empty.
+ */
+export const EmptyState: Story = {
+	args: {
+		items: [],
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		await expect(canvas.queryByText('Filtered by:')).not.toBeInTheDocument();
 	},
 };
