@@ -35,6 +35,7 @@ export function DsStepper({
 					styles.root,
 					{
 						[styles.variantSingle]: variant === 'single',
+						[styles.floating]: floating,
 					},
 					className,
 				)}

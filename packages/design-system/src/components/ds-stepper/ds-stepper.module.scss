@@ -1,4 +1,5 @@
 @use '../../styles/mixin' as mixins;
+@use '../../styles/scrollbars' as scrollbars;
 
 $step-padding: var(--spacing-sm);
 $step-gap: var(--spacing-standard);
@@ -45,7 +46,30 @@ $horizontal-description-line-clamp: 2;
 }
 .root {
 	background: var(--color-background);
-	overflow-y: auto;
+	overflow-y: scroll;
+
+	@include scrollbars.scrollbar-base(scrollbars.$scrollbar-thin-size);
+	@include scrollbars.firefox-scrollbar(scrollbars.$scrollbar-thin-size);
+
+	scrollbar-color: transparent transparent;
+
+	&::-webkit-scrollbar-thumb {
+		visibility: hidden;
+	}
+
+	&:hover,
+	&:focus-within {
+		scrollbar-color: var(--color-background-deselected-hover) var(--color-background-secondary);
+
+		&::-webkit-scrollbar-thumb {
+			visibility: visible;
+		}
+	}
+
+	&.floating {
+		overflow-y: hidden;
+		border-radius: inherit;
+	}
 }
 
 .verticalActions {
@@ -213,9 +237,27 @@ $horizontal-description-line-clamp: 2;
 	.stepsContainer {
 		display: flex;
 		flex: 1 1 0;
-		align-items: flex-start;
+		align-items: stretch;
 		min-width: 0;
-		overflow-x: auto;
+		overflow-x: scroll;
+
+		@include scrollbars.scrollbar-base(scrollbars.$scrollbar-thin-size);
+		@include scrollbars.firefox-scrollbar(scrollbars.$scrollbar-thin-size);
+
+		scrollbar-color: transparent transparent;
+
+		&::-webkit-scrollbar-thumb {
+			visibility: hidden;
+		}
+
+		&:hover,
+		&:focus-within {
+			scrollbar-color: var(--color-background-deselected-hover) var(--color-background-secondary);
+
+			&::-webkit-scrollbar-thumb {
+				visibility: visible;
+			}
+		}
 	}
 
 	.horizontalActions {
@@ -227,6 +269,8 @@ $horizontal-description-line-clamp: 2;
 
 	.step {
 		flex: 1 1 0;
+		align-self: stretch;
+		align-items: center;
 		padding: var(--spacing-3xs) var(--spacing-xs);
 		gap: var(--spacing-sm);
 		border-radius: var(--spacing-2xs);
