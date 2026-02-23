@@ -18,7 +18,6 @@ import { DsIcon } from '../ds-icon';
  */
 const DsTagFilter = ({
 	items,
-	size,
 	locale = {},
 	className,
 	style,
@@ -60,7 +59,6 @@ const DsTagFilter = ({
 				{...tagProps}
 				key={item.id}
 				label={item.label}
-				size={size}
 				selected={item.selected}
 				onClick={onItemSelect ? () => onItemSelect(item) : undefined}
 				onDelete={onItemDelete ? () => onItemDelete(item) : undefined}
@@ -81,7 +79,6 @@ const DsTagFilter = ({
 					key={item.id}
 					data-measure-tag=""
 					label={item.label}
-					size={size}
 					selected={item.selected}
 					onClick={onItemSelect ? () => onItemSelect(item) : undefined}
 					onDelete={onItemDelete ? () => onItemDelete(item) : undefined}

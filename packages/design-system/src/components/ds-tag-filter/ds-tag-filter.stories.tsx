@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 import DsTagFilter from './ds-tag-filter';
 import type { TagFilterItem } from './ds-tag-filter.types';
-import { tagSizes } from '../ds-tag';
 import styles from './ds-tag-filter.stories.module.scss';
 
 const meta: Meta<typeof DsTagFilter> = {
@@ -23,11 +22,6 @@ const meta: Meta<typeof DsTagFilter> = {
 		items: {
 			control: 'object',
 			description: 'Array of tag items to display',
-		},
-		size: {
-			options: tagSizes,
-			control: 'radio',
-			description: 'Size of the tags',
 		},
 		locale: {
 			description: 'Locale-specific options for customizing text content',
@@ -499,14 +493,16 @@ export const ExpandCollapse: Story = {
 };
 
 /**
- * Story showing TagFilter with small tags.
+ * Story showing TagFilter with small tags via slotProps.tag on each item.
  */
 export const SmallSize: Story = {
-	args: {
-		size: 'small',
-	},
 	render: function Render(args) {
-		const [filters, setFilters] = useState<TagFilterItem[]>(sampleFilters.slice(0, 6));
+		const smallFilters: TagFilterItem[] = sampleFilters.slice(0, 6).map((item) => ({
+			...item,
+			slotProps: { tag: { size: 'small' } },
+		}));
+
+		const [filters, setFilters] = useState<TagFilterItem[]>(smallFilters);
 
 		const handleClearAll = () => {
 			setFilters([]);

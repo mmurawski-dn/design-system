@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { DsTagProps, TagSize } from '../ds-tag';
+import type { DsTagProps } from '../ds-tag';
 
 export interface TagFilterItem {
 	/**
@@ -31,11 +31,6 @@ export interface DsTagFilterProps {
 	 * Array of tag items to display
 	 */
 	items: TagFilterItem[];
-	/**
-	 * Size of the tags
-	 * @default 'medium'
-	 */
-	size?: TagSize;
 	/**
 	 * Locale object (you can pass custom strings for localization)
 	 */
