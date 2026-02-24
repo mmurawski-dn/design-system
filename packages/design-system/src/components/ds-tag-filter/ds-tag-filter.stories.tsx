@@ -260,6 +260,8 @@ export const WithoutClearAll: Story = {
 			setFilters((prev) => prev.filter((f) => f.id !== filter.id));
 		};
 
+		// Storybook injects `onClearAll` via args by default — pass `undefined` explicitly
+		// so the component hides the "Clear all" button.
 		return <DsTagFilter {...args} items={filters} onClearAll={undefined} onItemDelete={handleFilterDelete} />;
 	},
 	play: async ({ canvasElement }) => {
@@ -298,6 +300,8 @@ export const ReadOnly: Story = {
 	render: function Render(args) {
 		const filters: TagFilterItem[] = sampleFilters.slice(0, 5);
 
+		// Storybook injects callbacks via args by default — pass `undefined` explicitly
+		// so the component renders in read-only mode (no clear, delete, or select).
 		return (
 			<DsTagFilter
 				{...args}
