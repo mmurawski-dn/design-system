@@ -46,6 +46,10 @@ $horizontal-description-line-clamp: 2;
 .root {
 	background: var(--color-background);
 	overflow-y: auto;
+
+	&.floating {
+		border-radius: inherit;
+	}
 }
 
 .verticalActions {

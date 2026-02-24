@@ -36,6 +36,7 @@ export function DsStepper({
 					'scrollbar-thin',
 					{
 						[styles.variantSingle]: variant === 'single',
+						[styles.floating]: floating,
 					},
 					className,
 				)}
