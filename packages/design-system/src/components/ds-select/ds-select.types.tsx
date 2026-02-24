@@ -1,13 +1,10 @@
 import type React from 'react';
+import type { ReactNode } from 'react';
 import type { IconName } from '../ds-icon';
 
 export type SelectSize = 'default' | 'small';
 
-export interface DsSelectOption {
-	/**
-	 * Label to display in the select
-	 */
-	label: string;
+export type DsSelectOption = {
 	/**
 	 * Value to return when the option is selected
 	 */
@@ -16,7 +13,26 @@ export interface DsSelectOption {
 	 * Optional icon to display next to the label
 	 */
 	icon?: IconName;
-}
+} & (
+	| {
+			/**
+			 * String label to display in the select dropdown, trigger, chips, and search
+			 */
+			label: string;
+			textValue?: string;
+	  }
+	| {
+			/**
+			 * Custom JSX to render in the dropdown item
+			 */
+			label: ReactNode;
+			/**
+			 * Plain text representation used for search, trigger text, chips, and accessibility.
+			 * Required when `label` is not a string.
+			 */
+			textValue: string;
+	  }
+);
 
 export type SelectOptionValue = string;
 

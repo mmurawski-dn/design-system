@@ -13,6 +13,10 @@ import { DsTextInput } from '../ds-text-input';
 const SEARCH_THRESHOLD = 13;
 const SELECT_ALL_VALUE = '__INTERNAL_SELECT_ALL_VALUE__';
 
+export function getTextValue(item: DsSelectOption): string {
+	return item.textValue ?? (typeof item.label === 'string' ? item.label : '');
+}
+
 const SELECT_ALL: DsSelectOption = {
 	label: 'All',
 	value: SELECT_ALL_VALUE,
@@ -40,10 +44,11 @@ const DsSelect = ({
 	const collection = createListCollection({
 		items: internalOptions,
 		itemToValue: (item) => item.value,
+		itemToString: getTextValue,
 	});
 
 	const filteredOptions = internalOptions.filter((option) =>
-		option.label.toLowerCase().includes(searchTerm.toLowerCase()),
+		getTextValue(option).toLowerCase().includes(searchTerm.toLowerCase()),
 	);
 
 	const normalizedValue = Array.isArray(value) ? value : [value].filter((value) => !!value);

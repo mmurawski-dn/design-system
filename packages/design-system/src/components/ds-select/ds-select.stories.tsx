@@ -3,6 +3,8 @@ import { expect, screen, userEvent, within } from 'storybook/test';
 import { useState } from 'react';
 import DsSelect from './ds-select';
 import type { DsSelectOption, DsSelectProps } from './ds-select.types';
+import { DsTag } from '../ds-tag';
+import { DsIcon } from '../ds-icon';
 import styles from './ds-select.stories.module.scss';
 
 const meta: Meta<typeof DsSelect> = {
@@ -268,8 +270,7 @@ export const MultiSelect: Story = {
 		await userEvent.click(trigger);
 
 		// Delete the first option by clicking its delete button
-		const firstOption = mockOptions[0] as DsSelectOption;
-		const firstOptionChip = screen.getByRole('button', { name: firstOption.label });
+		const firstOptionChip = screen.getByRole('button', { name: 'Apple' });
 		const deleteButton = within(firstOptionChip).getByRole('button', { name: 'Delete chip' });
 		await userEvent.click(deleteButton);
 
@@ -354,6 +355,149 @@ export const MultiSelectWithSearch: Story = {
 			await expect(trigger).not.toHaveTextContent('Apple');
 			await expect(trigger).not.toHaveTextContent('Banana');
 			await expect(trigger).not.toHaveTextContent('Cherry');
+		});
+	},
+};
+
+const customLabelOptions: DsSelectOption[] = [
+	{
+		value: 'us',
+		textValue: 'United States',
+		label: (
+			<span className={styles.customLabelOption}>
+				<DsTag label="US" size="small" variant="default" />
+				United States
+			</span>
+		),
+	},
+	{
+		value: 'gb',
+		textValue: 'United Kingdom',
+		label: (
+			<span className={styles.customLabelOption}>
+				<DsTag label="GB" size="small" variant="default" />
+				United Kingdom
+			</span>
+		),
+	},
+	{
+		value: 'de',
+		textValue: 'Germany',
+		label: (
+			<span className={styles.customLabelOption}>
+				<DsTag label="DE" size="small" variant="default" />
+				Germany
+			</span>
+		),
+	},
+	{
+		value: 'jp',
+		textValue: 'Japan',
+		label: (
+			<span className={styles.customLabelOption}>
+				<DsIcon icon="flag" size="tiny" />
+				Japan
+			</span>
+		),
+	},
+	{ value: 'fr', label: 'France' },
+];
+
+export const CustomLabel: Story = {
+	render: (args) => <ControlledSelectWrapper {...args} />,
+	args: {
+		options: customLabelOptions,
+		clearable: true,
+		style: {
+			width: '250px',
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('combobox');
+
+		await userEvent.click(trigger);
+
+		const usOption = screen.getByRole('option', { name: /United States/ });
+		await expect(usOption).toBeInTheDocument();
+
+		await userEvent.click(usOption);
+		await expect(trigger).toHaveTextContent('United States');
+
+		await userEvent.click(trigger);
+
+		const franceOption = screen.getByRole('option', { name: 'France' });
+		await userEvent.click(franceOption);
+		await expect(trigger).toHaveTextContent('France');
+	},
+};
+
+export const CustomLabelMultiSelect: Story = {
+	render: (args) => <ControlledSelectWrapper {...args} />,
+	args: {
+		options: customLabelOptions,
+		multiple: true,
+		clearable: true,
+		style: {
+			width: '300px',
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('combobox');
+
+		await userEvent.click(trigger);
+
+		const usOption = screen.getByRole('option', { name: /United States/ });
+		await userEvent.click(usOption);
+
+		const gbOption = screen.getByRole('option', { name: /United Kingdom/ });
+		await userEvent.click(gbOption);
+
+		const usChip = screen.getByRole('button', { name: 'United States' });
+		await expect(usChip).toBeInTheDocument();
+
+		const gbChip = screen.getByRole('button', { name: 'United Kingdom' });
+		await expect(gbChip).toBeInTheDocument();
+	},
+};
+
+export const CustomLabelWithSearch: Story = {
+	render: (args) => <ControlledSelectWrapper {...args} />,
+	args: {
+		options: [...mockOptions, ...customLabelOptions],
+		clearable: true,
+		style: {
+			width: '300px',
+		},
+	},
+	play: async ({ canvasElement, step }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('combobox');
+
+		await step('Search filters JSX-labeled options by textValue', async () => {
+			await userEvent.click(trigger);
+
+			const searchInput = screen.getByPlaceholderText('Search');
+			await userEvent.type(searchInput, 'United');
+
+			await expect(screen.getByRole('option', { name: /United States/ })).toBeInTheDocument();
+			await expect(screen.getByRole('option', { name: /United Kingdom/ })).toBeInTheDocument();
+
+			await expect(screen.queryByRole('option', { name: 'Apple' })).not.toBeInTheDocument();
+			await expect(screen.queryByRole('option', { name: /Germany/ })).not.toBeInTheDocument();
+
+			await userEvent.clear(searchInput);
+		});
+
+		await step('Select a JSX-labeled option from search results', async () => {
+			const searchInput = screen.getByPlaceholderText('Search');
+			await userEvent.type(searchInput, 'Japan');
+
+			const jpOption = screen.getByRole('option', { name: /Japan/ });
+			await userEvent.click(jpOption);
+
+			await expect(trigger).toHaveTextContent('Japan');
 		});
 	},
 };

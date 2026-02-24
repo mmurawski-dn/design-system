@@ -3,6 +3,7 @@ import styles from './ds-select.module.scss';
 import DsButton from '../ds-button/ds-button';
 import DsChip from '../ds-chip/ds-chip';
 import type { DsSelectOption, SelectOptionValue } from './ds-select.types';
+import { getTextValue } from './ds-select';
 
 type SelectItemsChipsProps = {
 	showAll: boolean;
@@ -35,7 +36,7 @@ export function SelectItemsChips({ showAll, onShowAll, onValueChange, count }: S
 					onValueChange?.(filteredValue);
 				};
 
-				return <DsChip key={itemValue} label={item.label} onDelete={onDelete} />;
+				return <DsChip key={itemValue} label={getTextValue(item)} onDelete={onDelete} />;
 			})}
 
 			{!showAll && selectedItems.length > count && (
