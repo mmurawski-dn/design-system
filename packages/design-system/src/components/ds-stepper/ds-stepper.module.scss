@@ -1,5 +1,4 @@
 @use '../../styles/mixin' as mixins;
-@use '../../styles/scrollbars' as scrollbars;
 
 $step-padding: var(--spacing-sm);
 $step-gap: var(--spacing-standard);
@@ -47,14 +46,6 @@ $horizontal-description-line-clamp: 2;
 .root {
 	background: var(--color-background);
 	overflow-y: auto;
-
-	@include scrollbars.scrollbar-base(scrollbars.$scrollbar-thin-size);
-	@include scrollbars.firefox-scrollbar(scrollbars.$scrollbar-thin-size);
-
-	&.floating {
-		overflow-y: hidden;
-		border-radius: inherit;
-	}
 }
 
 .verticalActions {
@@ -225,9 +216,6 @@ $horizontal-description-line-clamp: 2;
 		align-items: stretch;
 		min-width: 0;
 		overflow-x: auto;
-
-		@include scrollbars.scrollbar-base(scrollbars.$scrollbar-thin-size);
-		@include scrollbars.firefox-scrollbar(scrollbars.$scrollbar-thin-size);
 	}
 
 	.horizontalActions {
