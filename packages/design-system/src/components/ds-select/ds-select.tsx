@@ -4,12 +4,11 @@ import { Portal } from '@ark-ui/react/portal';
 import classNames from 'classnames';
 import styles from './ds-select.module.scss';
 import type { DsSelectOption, DsSelectProps } from './ds-select.types';
-import { SelectItemsChips } from './select-items-chips';
-import { getTextValue } from './utils';
-import { DsTypography } from '../ds-typography';
-import { DsTextInput } from '../ds-text-input';
 import { DsIcon } from '../ds-icon';
 import { type DsCheckboxProps, DsCheckbox } from '../ds-checkbox';
+import { SelectItemsChips } from './select-items-chips';
+import { DsTypography } from '../ds-typography';
+import { DsTextInput } from '../ds-text-input';
 
 const SEARCH_THRESHOLD = 13;
 const SELECT_ALL_VALUE = '__INTERNAL_SELECT_ALL_VALUE__';
@@ -31,6 +30,7 @@ const DsSelect = ({
 	className,
 	placeholder = 'Click to select a value',
 	disabled,
+	renderOption,
 	...multiselectProps
 }: DsSelectProps) => {
 	const [searchTerm, setSearchTerm] = useState('');
@@ -41,11 +41,10 @@ const DsSelect = ({
 	const collection = createListCollection({
 		items: internalOptions,
 		itemToValue: (item) => item.value,
-		itemToString: getTextValue,
 	});
 
 	const filteredOptions = internalOptions.filter((option) =>
-		getTextValue(option).toLowerCase().includes(searchTerm.toLowerCase()),
+		option.label.toLowerCase().includes(searchTerm.toLowerCase()),
 	);
 
 	const normalizedValue = Array.isArray(value) ? value : [value].filter((value) => !!value);
@@ -193,7 +192,7 @@ const DsSelect = ({
 									<Select.Item item={item}>
 										{multiselectProps.multiple && <DsCheckbox checked={checked} />}
 										{item.icon && <DsIcon className={styles.itemIcon} icon={item.icon} aria-hidden="true" />}
-										<Select.ItemText>{item.label}</Select.ItemText>
+										<Select.ItemText>{renderOption ? renderOption(item) : item.label}</Select.ItemText>
 									</Select.Item>
 								</DsTypography>
 							);

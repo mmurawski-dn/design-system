@@ -60,6 +60,7 @@ const ControlledSelectWrapper = ({
 	clearable,
 	multiple,
 	disabled,
+	renderOption,
 }: DsSelectProps) => {
 	const [value, setValue] = useState<string | string[]>('');
 
@@ -78,6 +79,7 @@ const ControlledSelectWrapper = ({
 			disabled={disabled}
 			multiple={multiple as never}
 			clearable={clearable as never}
+			renderOption={renderOption}
 		/>
 	);
 };
@@ -270,7 +272,8 @@ export const MultiSelect: Story = {
 		await userEvent.click(trigger);
 
 		// Delete the first option by clicking its delete button
-		const firstOptionChip = screen.getByRole('button', { name: 'Apple' });
+		const firstOption = mockOptions[0] as DsSelectOption;
+		const firstOptionChip = screen.getByRole('button', { name: firstOption.label });
 		const deleteButton = within(firstOptionChip).getByRole('button', { name: 'Delete chip' });
 		await userEvent.click(deleteButton);
 
@@ -359,54 +362,26 @@ export const MultiSelectWithSearch: Story = {
 	},
 };
 
-const customLabelOptions: DsSelectOption[] = [
-	{
-		value: 'us',
-		textValue: 'United States',
-		label: (
-			<span className={styles.customLabelOption}>
-				<DsTag label="US" size="small" variant="default" />
-				United States
-			</span>
-		),
-	},
-	{
-		value: 'gb',
-		textValue: 'United Kingdom',
-		label: (
-			<span className={styles.customLabelOption}>
-				<DsTag label="GB" size="small" variant="default" />
-				United Kingdom
-			</span>
-		),
-	},
-	{
-		value: 'de',
-		textValue: 'Germany',
-		label: (
-			<span className={styles.customLabelOption}>
-				<DsTag label="DE" size="small" variant="default" />
-				Germany
-			</span>
-		),
-	},
-	{
-		value: 'jp',
-		textValue: 'Japan',
-		label: (
-			<span className={styles.customLabelOption}>
-				<DsIcon icon="flag" size="tiny" />
-				Japan
-			</span>
-		),
-	},
+const countryOptions: DsSelectOption[] = [
+	{ value: 'us', label: 'United States' },
+	{ value: 'gb', label: 'United Kingdom' },
+	{ value: 'de', label: 'Germany' },
+	{ value: 'jp', label: 'Japan' },
 	{ value: 'fr', label: 'France' },
 ];
 
-export const CustomLabel: Story = {
+const renderCountryOption = (option: DsSelectOption) => (
+	<span className={styles.customOption}>
+		<DsTag label={option.value.toUpperCase()} size="small" />
+		{option.label}
+	</span>
+);
+
+export const CustomRenderOption: Story = {
 	render: (args) => <ControlledSelectWrapper {...args} />,
 	args: {
-		options: customLabelOptions,
+		options: countryOptions,
+		renderOption: renderCountryOption,
 		clearable: true,
 		style: {
 			width: '250px',
@@ -426,16 +401,17 @@ export const CustomLabel: Story = {
 
 		await userEvent.click(trigger);
 
-		const franceOption = screen.getByRole('option', { name: 'France' });
+		const franceOption = screen.getByRole('option', { name: /France/ });
 		await userEvent.click(franceOption);
 		await expect(trigger).toHaveTextContent('France');
 	},
 };
 
-export const CustomLabelMultiSelect: Story = {
+export const CustomRenderOptionMultiSelect: Story = {
 	render: (args) => <ControlledSelectWrapper {...args} />,
 	args: {
-		options: customLabelOptions,
+		options: countryOptions,
+		renderOption: renderCountryOption,
 		multiple: true,
 		clearable: true,
 		style: {
@@ -462,10 +438,16 @@ export const CustomLabelMultiSelect: Story = {
 	},
 };
 
-export const CustomLabelWithSearch: Story = {
+export const CustomRenderOptionWithSearch: Story = {
 	render: (args) => <ControlledSelectWrapper {...args} />,
 	args: {
-		options: [...mockOptions, ...customLabelOptions],
+		options: [...mockOptions, ...countryOptions],
+		renderOption: (option) => (
+			<span className={styles.customOption}>
+				<DsIcon icon="public" size="tiny" />
+				{option.label}
+			</span>
+		),
 		clearable: true,
 		style: {
 			width: '300px',
@@ -475,7 +457,7 @@ export const CustomLabelWithSearch: Story = {
 		const canvas = within(canvasElement);
 		const trigger = canvas.getByRole('combobox');
 
-		await step('Search filters JSX-labeled options by textValue', async () => {
+		await step('Search filters options by string label', async () => {
 			await userEvent.click(trigger);
 
 			const searchInput = screen.getByPlaceholderText('Search');
@@ -484,13 +466,13 @@ export const CustomLabelWithSearch: Story = {
 			await expect(screen.getByRole('option', { name: /United States/ })).toBeInTheDocument();
 			await expect(screen.getByRole('option', { name: /United Kingdom/ })).toBeInTheDocument();
 
-			await expect(screen.queryByRole('option', { name: 'Apple' })).not.toBeInTheDocument();
+			await expect(screen.queryByRole('option', { name: /Apple/ })).not.toBeInTheDocument();
 			await expect(screen.queryByRole('option', { name: /Germany/ })).not.toBeInTheDocument();
 
 			await userEvent.clear(searchInput);
 		});
 
-		await step('Select a JSX-labeled option from search results', async () => {
+		await step('Select an option from search results', async () => {
 			const searchInput = screen.getByPlaceholderText('Search');
 			await userEvent.type(searchInput, 'Japan');
 

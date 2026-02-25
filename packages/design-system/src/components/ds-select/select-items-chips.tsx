@@ -1,9 +1,8 @@
 import { useSelectContext, type UseSelectContext } from '@ark-ui/react/select';
 import styles from './ds-select.module.scss';
-import type { DsSelectOption, SelectOptionValue } from './ds-select.types';
-import { getTextValue } from './utils';
 import DsButton from '../ds-button/ds-button';
 import DsChip from '../ds-chip/ds-chip';
+import type { DsSelectOption, SelectOptionValue } from './ds-select.types';
 
 type SelectItemsChipsProps = {
 	showAll: boolean;
@@ -36,7 +35,7 @@ export function SelectItemsChips({ showAll, onShowAll, onValueChange, count }: S
 					onValueChange?.(filteredValue);
 				};
 
-				return <DsChip key={itemValue} label={getTextValue(item)} onDelete={onDelete} />;
+				return <DsChip key={itemValue} label={item.label} onDelete={onDelete} />;
 			})}
 
 			{!showAll && selectedItems.length > count && (

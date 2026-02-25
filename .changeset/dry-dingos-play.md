@@ -2,4 +2,4 @@
 '@drivenets/design-system': patch
 ---
 
-Add support for ReactNode `label` prop in `DsSelect`
+Add `renderOption` prop to `DsSelect` for custom option rendering
