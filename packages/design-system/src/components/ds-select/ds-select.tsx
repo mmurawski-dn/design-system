@@ -4,18 +4,15 @@ import { Portal } from '@ark-ui/react/portal';
 import classNames from 'classnames';
 import styles from './ds-select.module.scss';
 import type { DsSelectOption, DsSelectProps } from './ds-select.types';
-import { DsIcon } from '../ds-icon';
-import { type DsCheckboxProps, DsCheckbox } from '../ds-checkbox';
 import { SelectItemsChips } from './select-items-chips';
+import { getTextValue } from './utils';
 import { DsTypography } from '../ds-typography';
 import { DsTextInput } from '../ds-text-input';
+import { DsIcon } from '../ds-icon';
+import { type DsCheckboxProps, DsCheckbox } from '../ds-checkbox';
 
 const SEARCH_THRESHOLD = 13;
 const SELECT_ALL_VALUE = '__INTERNAL_SELECT_ALL_VALUE__';
-
-export function getTextValue(item: DsSelectOption): string {
-	return item.textValue ?? (typeof item.label === 'string' ? item.label : '');
-}
 
 const SELECT_ALL: DsSelectOption = {
 	label: 'All',

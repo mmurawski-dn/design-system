@@ -1,9 +1,9 @@
 import { useSelectContext, type UseSelectContext } from '@ark-ui/react/select';
 import styles from './ds-select.module.scss';
+import type { DsSelectOption, SelectOptionValue } from './ds-select.types';
+import { getTextValue } from './utils';
 import DsButton from '../ds-button/ds-button';
 import DsChip from '../ds-chip/ds-chip';
-import type { DsSelectOption, SelectOptionValue } from './ds-select.types';
-import { getTextValue } from './ds-select';
 
 type SelectItemsChipsProps = {
 	showAll: boolean;
