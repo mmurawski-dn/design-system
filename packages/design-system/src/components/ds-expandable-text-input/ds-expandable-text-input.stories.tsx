@@ -100,19 +100,17 @@ export const ExpandChange: Story = {
 			await expect(input).toHaveValue('');
 		});
 
-		// TODO: Fails due to the component bug https://drivenets.atlassian.net/browse/AR-47261.
-		// Uncomment when the bug is fixed.
-		// await step('Clear flow - by deleting all text', async () => {
-		// 	const iconButton = canvas.getByRole('button', { name: 'Open text input' });
-		// 	await userEvent.click(iconButton);
+		await step('Clear flow - by deleting all text', async () => {
+			const iconButton = canvas.getByRole('button', { name: 'Open text input' });
+			await userEvent.click(iconButton);
 
-		// 	const input = canvas.getByRole('textbox');
-		// 	await userEvent.type(input, 'test');
-		// 	await userEvent.clear(input);
+			const input = canvas.getByRole('textbox');
+			await userEvent.type(input, 'test');
+			await userEvent.clear(input);
 
-		// 	await userEvent.click(canvasElement);
-		// 	await expect(args.onExpandChange).toHaveBeenLastCalledWith(false);
-		// });
+			await userEvent.click(canvasElement);
+			await expect(args.onExpandChange).toHaveBeenLastCalledWith(false);
+		});
 
 		await step('Blur without typing', async () => {
 			const iconButton = canvas.getByRole('button', { name: 'Open text input' });
@@ -138,16 +136,10 @@ export const ExpandChange: Story = {
 };
 
 export const Controlled: Story = {
-	argTypes: {
-		value: {
-			control: 'text',
-			description: 'The current value',
-		},
-		onChange: { action: 'changed' },
-		onClear: { action: 'clear' },
-	},
 	args: {
 		value: 'query',
+		onExpandChange: fn(),
+		onClear: fn(),
 	},
 	render: function Render(args) {
 		const [value, setValue] = useState(args.value);
@@ -156,22 +148,98 @@ export const Controlled: Story = {
 			<DsExpandableTextInput
 				icon="search"
 				value={value}
+				onExpandChange={args.onExpandChange}
 				onChange={(e) => setValue(e.target.value)}
-				onClear={() => setValue('')}
+				onClear={() => {
+					setValue('');
+					args.onClear?.();
+				}}
 			/>
 		);
 	},
-	// TODO: Fails due to the component bug https://drivenets.atlassian.net/browse/AR-47261.
-	// Uncomment when the bug is fixed.
-	// play: async ({ canvasElement }) => {
-	// 	const canvas = within(canvasElement);
+	play: async ({ args, canvasElement, step }) => {
+		const canvas = within(canvasElement);
 
-	// 	const input = canvas.getByRole('textbox');
-	// 	await expect(input).toHaveValue('search');
+		await step('Starts expanded with initial value', async () => {
+			const input = canvas.getByRole('textbox');
+			await expect(input).toHaveValue('query');
+		});
 
-	// 	const clearButton = canvas.getByRole('button', { name: 'Clear' });
-	// 	await expect(clearButton).toBeVisible();
-	// },
+		await step('Clear button is visible', async () => {
+			const clearButton = canvas.getByRole('button', { name: 'Clear' });
+			await expect(clearButton).toBeVisible();
+		});
+
+		await step('Clear resets value and collapses', async () => {
+			const clearButton = canvas.getByRole('button', { name: 'Clear' });
+			await userEvent.click(clearButton);
+
+			await expect(args.onClear).toHaveBeenCalled();
+			await expect(args.onExpandChange).toHaveBeenLastCalledWith(false);
+
+			const input = canvas.getByRole('textbox');
+			await expect(input).toHaveValue('');
+		});
+
+		await step('Re-expand, type, backspace to empty, blur collapses', async () => {
+			const iconButton = canvas.getByRole('button', { name: 'Open text input' });
+			await userEvent.click(iconButton);
+			await expect(args.onExpandChange).toHaveBeenLastCalledWith(true);
+
+			const input = canvas.getByRole('textbox');
+			await userEvent.type(input, 'hello');
+			await userEvent.clear(input);
+
+			await userEvent.click(canvasElement);
+			await expect(args.onExpandChange).toHaveBeenLastCalledWith(false);
+		});
+	},
+};
+
+export const DefaultValue: Story = {
+	args: {
+		icon: 'search',
+		defaultValue: 'initial search',
+		onClear: fn(),
+		onExpandChange: fn(),
+	},
+	play: async ({ args, canvasElement, step }) => {
+		const canvas = within(canvasElement);
+
+		await step('Starts expanded with defaultValue', async () => {
+			const input = canvas.getByRole('textbox');
+			await expect(input).toHaveValue('initial search');
+		});
+
+		await step('Clear button is visible', async () => {
+			const clearButton = canvas.getByRole('button', { name: 'Clear' });
+			await expect(clearButton).toBeVisible();
+		});
+
+		await step('Clear collapses and resets', async () => {
+			const clearButton = canvas.getByRole('button', { name: 'Clear' });
+			await userEvent.click(clearButton);
+
+			await expect(args.onClear).toHaveBeenCalled();
+			await expect(args.onExpandChange).toHaveBeenLastCalledWith(false);
+
+			const input = canvas.getByRole('textbox');
+			await expect(input).toHaveValue('');
+		});
+
+		await step('Re-expand, backspace to empty, blur collapses', async () => {
+			const iconButton = canvas.getByRole('button', { name: 'Open text input' });
+			await userEvent.click(iconButton);
+			await expect(args.onExpandChange).toHaveBeenLastCalledWith(true);
+
+			const input = canvas.getByRole('textbox');
+			await userEvent.type(input, 'something');
+			await userEvent.clear(input);
+
+			await userEvent.click(canvasElement);
+			await expect(args.onExpandChange).toHaveBeenLastCalledWith(false);
+		});
+	},
 };
 
 type Person = {
