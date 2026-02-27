@@ -2,6 +2,13 @@ import type { Preview } from '@storybook/react-vite';
 import '../src/styles/styles.scss';
 
 const preview: Preview = {
+	decorators: [
+		(Story) => {
+			document.body.style.backgroundColor = 'blue';
+			return Story();
+		},
+	],
+
 	parameters: {
 		controls: {
 			matchers: {
@@ -9,6 +16,8 @@ const preview: Preview = {
 				date: /Date$/i,
 			},
 		},
+
+		chromatic: { disableSnapshot: true },
 
 		a11y: {
 			// 'todo' - show a11y violations in the test UI only
