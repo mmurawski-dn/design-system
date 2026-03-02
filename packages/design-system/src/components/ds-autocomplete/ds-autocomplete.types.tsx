@@ -22,9 +22,16 @@ export interface DsAutocompleteProps {
 	 */
 	id?: string;
 	/**
-	 * Options to display in the dropdown
+	 * Options to display in the dropdown.
+	 * For async/server-driven search, update this prop with fetched results.
 	 */
-	options: DsAutocompleteOption[];
+	options?: DsAutocompleteOption[];
+	/**
+	 * Whether the autocomplete is in a loading state.
+	 * When true, a loading message is shown in the dropdown.
+	 */
+	loading?: boolean;
+
 	/**
 	 * Additional styles to apply to the component
 	 */
@@ -45,19 +52,22 @@ export interface DsAutocompleteProps {
 	 * Whether the autocomplete is in an invalid state
 	 */
 	invalid?: boolean;
+
 	/**
-	 * Event handler called when the value changes (when an option is selected or custom value is entered)
+	 * Locale strings for the autocomplete component
 	 */
-	onValueChange?: (value: string) => void;
-	/**
-	 * Event handler called when the input value changes (on every keystroke)
-	 */
-	onInputValueChange?: (value: string) => void;
-	/**
-	 * Message to display when no options match the input
-	 * @default 'No matches found'
-	 */
-	noMatchesMessage?: string;
+	locale?: {
+		/**
+		 * Message to display while results are loading
+		 * @default 'Loading...'
+		 */
+		loading?: string;
+		/**
+		 * Message to display when no options match the input
+		 * @default 'No matches found'
+		 */
+		noMatches?: string;
+	};
 	/**
 	 * Whether to highlight the matching text in the dropdown options
 	 * @default true
@@ -73,4 +83,17 @@ export interface DsAutocompleteProps {
 	 * Content to display at the start of the input (e.g., a search icon).
 	 */
 	startAdornment?: React.ReactNode;
+
+	/**
+	 * Event handler called when the value changes (when an option is selected)
+	 */
+	onValueChange?: (value: string) => void;
+	/**
+	 * Event handler called when the input value changes (on every keystroke)
+	 */
+	onInputValueChange?: (value: string) => void;
+	/**
+	 * Event handler called when the dropdown opens or closes
+	 */
+	onOpenChange?: (open: boolean) => void;
 }

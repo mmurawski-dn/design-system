@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, screen, userEvent, within } from 'storybook/test';
 import { DsIcon } from '../ds-icon';
 import { DsAutocomplete } from './ds-autocomplete';
+import type { DsAutocompleteOption } from './ds-autocomplete.types';
 
 const meta: Meta<typeof DsAutocomplete> = {
 	title: 'Design System/Autocomplete',
@@ -31,9 +33,9 @@ const meta: Meta<typeof DsAutocomplete> = {
 			control: 'object',
 			description: 'Content to display at the start of the input (e.g., a search icon)',
 		},
-		noMatchesMessage: {
-			control: 'text',
-			description: 'Message to display when no options match the input',
+		locale: {
+			control: 'object',
+			description: 'Locale strings for the autocomplete component',
 		},
 	},
 	args: {
@@ -84,7 +86,7 @@ export const Default: Story = {
 	play: async ({ args, canvasElement }) => {
 		const canvas = within(canvasElement);
 		const input = canvas.getByRole('combobox');
-		const trigger = canvas.getByLabelText('Toggle dropdown');
+		const trigger = canvas.getByRole('button', { name: /toggle dropdown/i });
 
 		await expect(trigger).toBeInTheDocument();
 
@@ -170,6 +172,7 @@ export const SearchWithIcon: Story = {
 		await userEvent.click(usOption);
 		await expect(args.onInputValueChange).toHaveBeenCalledWith('United States');
 		await expect(args.onValueChange).toHaveBeenCalledWith('us');
+		await expect(input).toHaveValue('United States');
 	},
 };
 
@@ -245,5 +248,134 @@ export const States: Story = {
 		const invalidInput = inputs[1] as HTMLInputElement;
 		await expect(invalidInput).toBeInTheDocument();
 		await expect(invalidInput).not.toBeDisabled();
+	},
+};
+
+const ASYNC_DELAY_MS = 150;
+
+const fetchCountries = async (query: string): Promise<DsAutocompleteOption[]> => {
+	await new Promise((resolve) => setTimeout(resolve, ASYNC_DELAY_MS));
+
+	return countries.filter((c) => c.label.toLowerCase().includes(query.toLowerCase()));
+};
+
+const fetchAllCountries = async (): Promise<DsAutocompleteOption[]> => {
+	await new Promise((resolve) => setTimeout(resolve, ASYNC_DELAY_MS));
+
+	return countries;
+};
+
+export const AsyncSearch: Story = {
+	render: (args) => {
+		const [options, setOptions] = useState<DsAutocompleteOption[]>([]);
+		const [loading, setLoading] = useState(false);
+
+		const handleInputValueChange = async (value: string) => {
+			args.onInputValueChange?.(value);
+
+			if (!value) {
+				setOptions([]);
+				return;
+			}
+
+			setLoading(true);
+			const results = await fetchCountries(value);
+			setOptions(results);
+			setLoading(false);
+		};
+
+		return (
+			<DsAutocomplete
+				{...args}
+				options={options}
+				loading={loading}
+				onInputValueChange={handleInputValueChange}
+				showTrigger={false}
+				startAdornment={<DsIcon icon="search" size="medium" aria-label="search icon" />}
+				placeholder="Search countries (async)..."
+				locale={{ noMatches: 'No results found' }}
+				style={{ width: '300px' }}
+			/>
+		);
+	},
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('combobox');
+
+		await userEvent.type(input, 'Uni');
+
+		const usOption = await screen.findByRole('option', { name: /United States/i });
+		await expect(usOption).toBeInTheDocument();
+		await expect(screen.getByRole('option', { name: /United Kingdom/i })).toBeInTheDocument();
+		await expect(args.onInputValueChange).toHaveBeenLastCalledWith('Uni');
+
+		await userEvent.click(usOption);
+		await expect(args.onValueChange).toHaveBeenCalledWith('us');
+		await expect(args.onInputValueChange).toHaveBeenLastCalledWith('United States');
+		await expect(input).toHaveValue('United States');
+
+		const clearButton = canvas.getByLabelText('Clear');
+		await userEvent.click(clearButton);
+		await expect(args.onInputValueChange).toHaveBeenLastCalledWith('');
+		await expect(input).toHaveValue('');
+
+		await userEvent.type(input, 'zzz');
+		await screen.findByText('No results found');
+		await expect(screen.queryByRole('option')).not.toBeInTheDocument();
+
+		await userEvent.clear(input);
+		await userEvent.type(input, 'an');
+
+		const options = await screen.findAllByRole('option');
+		await expect(options.length).toBeGreaterThanOrEqual(2);
+		await expect(screen.getByRole('option', { name: /Canada/i })).toBeInTheDocument();
+		await expect(screen.getByRole('option', { name: /France/i })).toBeInTheDocument();
+
+		await userEvent.type(input, 'ad');
+		await screen.findByRole('option', { name: /Canada/i });
+		await expect(screen.queryByRole('option', { name: /France/i })).not.toBeInTheDocument();
+	},
+};
+
+export const AsyncOptions: Story = {
+	render: (args) => {
+		const [options, setOptions] = useState<DsAutocompleteOption[]>([]);
+		const [loading, setLoading] = useState(true);
+
+		useEffect(() => {
+			void fetchAllCountries().then((results) => {
+				setOptions(results);
+				setLoading(false);
+			});
+		}, []);
+
+		return (
+			<DsAutocomplete
+				{...args}
+				options={options}
+				loading={loading}
+				placeholder="Select a country..."
+				style={{ width: '300px' }}
+			/>
+		);
+	},
+	play: async ({ args, canvasElement }) => {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('combobox');
+		const trigger = canvas.getByRole('button', { name: /toggle dropdown/i });
+
+		await userEvent.click(trigger);
+
+		const usOption = await screen.findByRole('option', { name: /United States/i });
+		await expect(usOption).toBeInTheDocument();
+		await expect(screen.getByRole('option', { name: /Japan/i })).toBeInTheDocument();
+
+		await userEvent.type(input, 'Un');
+		await expect(screen.getByRole('option', { name: /United States/i })).toBeInTheDocument();
+		await expect(screen.getByRole('option', { name: /United Kingdom/i })).toBeInTheDocument();
+		await expect(screen.queryByRole('option', { name: /Japan/i })).not.toBeInTheDocument();
+
+		await userEvent.click(screen.getByRole('option', { name: /United States/i }));
+		await expect(args.onValueChange).toHaveBeenCalledWith('us');
 	},
 };

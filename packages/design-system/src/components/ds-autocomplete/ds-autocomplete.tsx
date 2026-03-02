@@ -1,15 +1,17 @@
-import { Combobox, useListCollection } from '@ark-ui/react/combobox';
+import { useState } from 'react';
+import { Combobox, createListCollection } from '@ark-ui/react/combobox';
 import { useFilter } from '@ark-ui/react/locale';
 import { Highlight } from '@ark-ui/react/highlight';
 import { Portal } from '@ark-ui/react/portal';
 import classNames from 'classnames';
 import styles from './ds-autocomplete.module.scss';
-import type { DsAutocompleteProps } from './ds-autocomplete.types';
+import type { DsAutocompleteOption, DsAutocompleteProps } from './ds-autocomplete.types';
 import { DsIcon } from '../ds-icon';
 
 export const DsAutocomplete = ({
 	id,
-	options,
+	options = [],
+	loading = false,
 	style,
 	className,
 	placeholder = 'Start typing to search...',
@@ -17,34 +19,40 @@ export const DsAutocomplete = ({
 	invalid = false,
 	onValueChange,
 	onInputValueChange,
-	noMatchesMessage = 'No matches found',
+	onOpenChange,
+	locale: { loading: loadingMessage = 'Loading...', noMatches: noMatchesMessage = 'No matches found' } = {},
 	highlightMatch = true,
 	showTrigger = true,
 	startAdornment,
 }: DsAutocompleteProps) => {
+	const [filterText, setFilterText] = useState('');
 	const filterUtils = useFilter({ sensitivity: 'base' });
 
-	const { collection, filter } = useListCollection({
-		initialItems: options.map((opt) => opt.label),
-		filter: (item, query) => filterUtils.contains(item, query),
+	const filteredOptions = filterText
+		? options.filter((opt) => filterUtils.contains(opt.label, filterText))
+		: options;
+
+	const collection = createListCollection<DsAutocompleteOption>({
+		items: filteredOptions,
+		itemToString: (item) => item.label,
+		itemToValue: (item) => item.value,
 	});
 
 	const handleInputValueChange = (details: Combobox.InputValueChangeDetails) => {
-		filter(details.inputValue);
+		setFilterText(details.inputValue);
 		onInputValueChange?.(details.inputValue);
 	};
 
-	const handleValueChange = (details: Combobox.ValueChangeDetails) => {
-		const selectedLabel = details.value[0];
-		if (!selectedLabel) {
-			return;
-		}
+	const handleValueChange = (details: Combobox.ValueChangeDetails<DsAutocompleteOption>) => {
+		const selectedItem = details.items[0];
 
-		const selectedOption = options.find((opt) => opt.label === selectedLabel);
-
-		if (selectedOption) {
-			onValueChange?.(selectedOption.value);
+		if (selectedItem) {
+			onValueChange?.(selectedItem.value);
 		}
+	};
+
+	const handleOpenChange = (details: Combobox.OpenChangeDetails) => {
+		onOpenChange?.(details.open);
 	};
 
 	const rootClass = classNames(
@@ -66,6 +74,7 @@ export const DsAutocomplete = ({
 			invalid={invalid}
 			onInputValueChange={handleInputValueChange}
 			onValueChange={handleValueChange}
+			onOpenChange={handleOpenChange}
 			closeOnSelect
 		>
 			<Combobox.Control className={styles.control}>
@@ -95,31 +104,29 @@ export const DsAutocomplete = ({
 			<Portal>
 				<Combobox.Positioner className={styles.positioner}>
 					<Combobox.Content className={styles.content}>
-						{collection.items.length === 0 ? (
+						{loading && <div className={styles.loading}>{loadingMessage}</div>}
+
+						{!loading && collection.items.length === 0 && (
 							<div className={styles.noMatches}>{noMatchesMessage}</div>
-						) : (
+						)}
+
+						{!loading && collection.items.length > 0 && (
 							<Combobox.ItemGroup className={styles.itemGroup}>
-								<Combobox.Context>
-									{(context) =>
-										collection.items.map((item) => {
-											const option = options.find((opt) => opt.label === item);
-											return (
-												<Combobox.Item key={item} item={item} className={styles.item}>
-													{option?.icon && (
-														<DsIcon className={styles.itemIcon} icon={option.icon} aria-hidden="true" />
-													)}
-													<Combobox.ItemText className={styles.itemText}>
-														{highlightMatch ? (
-															<Highlight query={context.inputValue} text={item} ignoreCase />
-														) : (
-															item
-														)}
-													</Combobox.ItemText>
-												</Combobox.Item>
-											);
-										})
-									}
-								</Combobox.Context>
+								{collection.items.map((option) => (
+									<Combobox.Item key={option.value} item={option} className={styles.item}>
+										{option.icon && (
+											<DsIcon className={styles.itemIcon} icon={option.icon} aria-hidden="true" />
+										)}
+
+										<Combobox.ItemText className={styles.itemText}>
+											{highlightMatch ? (
+												<Highlight query={filterText} text={option.label} ignoreCase />
+											) : (
+												option.label
+											)}
+										</Combobox.ItemText>
+									</Combobox.Item>
+								))}
 							</Combobox.ItemGroup>
 						)}
 					</Combobox.Content>

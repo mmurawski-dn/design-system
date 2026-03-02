@@ -189,7 +189,8 @@ $autocomplete-opacity-visible: 1;
 	}
 }
 
-.noMatches {
+.noMatches,
+.loading {
 	padding: var(--spacing-xs);
 	color: var(--color-font-disabled);
 	text-align: center;
