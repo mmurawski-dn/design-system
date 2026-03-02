@@ -5,6 +5,7 @@ import DsSelect from './ds-select';
 import type { DsSelectOption, DsSelectProps } from './ds-select.types';
 import { DsTag } from '../ds-tag';
 import { DsIcon } from '../ds-icon';
+import { DsStatusBadge } from '../ds-status-badge';
 import styles from './ds-select.stories.module.scss';
 
 const meta: Meta<typeof DsSelect> = {
@@ -61,6 +62,7 @@ const ControlledSelectWrapper = ({
 	multiple,
 	disabled,
 	renderOption,
+	renderValue,
 }: DsSelectProps) => {
 	const [value, setValue] = useState<string | string[]>('');
 
@@ -80,6 +82,7 @@ const ControlledSelectWrapper = ({
 			multiple={multiple as never}
 			clearable={clearable as never}
 			renderOption={renderOption}
+			renderValue={renderValue}
 		/>
 	);
 };
@@ -370,12 +373,50 @@ const countryOptions: DsSelectOption[] = [
 	{ value: 'fr', label: 'France' },
 ];
 
-const renderCountryOption = (option: DsSelectOption) => (
+const renderCountryOption = (option: DsSelectOption) => {
+	if (option.value === DsSelect.SELECT_ALL_OPTION.value) {
+		return option.label;
+	}
+
+	return (
+		<span className={styles.customOption}>
+			<DsTag label={option.value.toUpperCase()} size="small" />
+			{option.label}
+		</span>
+	);
+};
+
+const renderCountryValue = (selected: DsSelectOption[]) => (
 	<span className={styles.customOption}>
-		<DsTag label={option.value.toUpperCase()} size="small" />
-		{option.label}
+		{selected.map((opt) => (
+			<DsTag key={opt.value} label={opt.value.toUpperCase()} size="small" />
+		))}
 	</span>
 );
+
+const versionOptions: DsSelectOption[] = [
+	{ value: 'v0.8', label: 'v0.8' },
+	{ value: 'v1.0', label: 'v1.0' },
+	{ value: 'v1.4', label: 'v1.4' },
+	{ value: 'v2.3', label: 'v2.3' },
+	{ value: 'v3.6', label: 'v3.6' },
+	{ value: 'v4.1', label: 'v4.1' },
+];
+
+const renderVersionValue = (selected: DsSelectOption[]) => {
+	const first = selected[0];
+
+	if (!first) {
+		return null;
+	}
+
+	return (
+		<span className={styles.customOption}>
+			{first.label}
+			<DsStatusBadge status="active" label="Live" size="small" ghost icon="check_circle" />
+		</span>
+	);
+};
 
 export const CustomRenderOption: Story = {
 	render: (args) => <ControlledSelectWrapper {...args} />,
@@ -481,6 +522,97 @@ export const CustomRenderOptionWithSearch: Story = {
 
 			await expect(trigger).toHaveTextContent('Japan');
 		});
+	},
+};
+
+export const CustomRenderValue: Story = {
+	render: (args) => <ControlledSelectWrapper {...args} />,
+	args: {
+		options: versionOptions,
+		renderValue: renderVersionValue,
+		clearable: true,
+		style: {
+			width: '250px',
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('combobox');
+
+		await expect(trigger).toHaveTextContent('Click to select a value');
+
+		await userEvent.click(trigger);
+
+		const v08 = screen.getByRole('option', { name: 'v0.8' });
+		await userEvent.click(v08);
+
+		await expect(trigger).toHaveTextContent('v0.8');
+		await expect(trigger).toHaveTextContent('Live');
+
+		await userEvent.click(trigger);
+
+		const v23 = screen.getByRole('option', { name: 'v2.3' });
+		await userEvent.click(v23);
+
+		await expect(trigger).toHaveTextContent('v2.3');
+		await expect(trigger).toHaveTextContent('Live');
+	},
+};
+
+export const CustomRenderValueMultiSelect: Story = {
+	render: (args) => <ControlledSelectWrapper {...args} />,
+	args: {
+		options: countryOptions,
+		renderOption: renderCountryOption,
+		renderValue: renderCountryValue,
+		multiple: true,
+		clearable: true,
+		style: {
+			width: '300px',
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('combobox');
+
+		await userEvent.click(trigger);
+
+		const usOption = screen.getByRole('option', { name: /United States/ });
+		await userEvent.click(usOption);
+
+		const deOption = screen.getByRole('option', { name: /Germany/ });
+		await userEvent.click(deOption);
+
+		await expect(trigger).toHaveTextContent('US');
+		await expect(trigger).toHaveTextContent('DE');
+	},
+};
+
+export const CustomRenderValueWithStatus: Story = {
+	render: (args) => <ControlledSelectWrapper {...args} />,
+	args: {
+		options: versionOptions,
+		renderValue: renderVersionValue,
+		multiple: true,
+		clearable: true,
+		style: {
+			width: '250px',
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const trigger = canvas.getByRole('combobox');
+
+		await userEvent.click(trigger);
+
+		const v08 = screen.getByRole('option', { name: 'v0.8' });
+		await userEvent.click(v08);
+
+		const v14 = screen.getByRole('option', { name: 'v1.4' });
+		await userEvent.click(v14);
+
+		await expect(trigger).toHaveTextContent('v0.8');
+		await expect(trigger).toHaveTextContent('Live');
 	},
 };
 

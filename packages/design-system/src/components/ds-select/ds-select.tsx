@@ -9,11 +9,11 @@ import { type DsCheckboxProps, DsCheckbox } from '../ds-checkbox';
 import { SelectItemsChips } from './select-items-chips';
 import { DsTypography } from '../ds-typography';
 import { DsTextInput } from '../ds-text-input';
+import { SELECT_ALL_VALUE, getUserSelectedItems } from './utils';
 
 const SEARCH_THRESHOLD = 13;
-const SELECT_ALL_VALUE = '__INTERNAL_SELECT_ALL_VALUE__';
 
-const SELECT_ALL: DsSelectOption = {
+const SELECT_ALL_OPTION: DsSelectOption = {
 	label: 'All',
 	value: SELECT_ALL_VALUE,
 };
@@ -31,12 +31,13 @@ const DsSelect = ({
 	placeholder = 'Click to select a value',
 	disabled,
 	renderOption,
+	renderValue,
 	...multiselectProps
 }: DsSelectProps) => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [showAllItems, setShowAllItems] = useState(false);
 
-	const internalOptions = multiselectProps.multiple ? [SELECT_ALL, ...userOptions] : userOptions;
+	const internalOptions = multiselectProps.multiple ? [SELECT_ALL_OPTION, ...userOptions] : userOptions;
 
 	const collection = createListCollection({
 		items: internalOptions,
@@ -132,9 +133,15 @@ const DsSelect = ({
 					// automatic labelling here.
 					aria-labelledby={null as never}
 				>
-					<DsTypography className={styles.valueText} variant="body-sm-reg" asChild>
-						<Select.ValueText placeholder={placeholder} />
-					</DsTypography>
+					{renderValue && select.hasSelectedItems ? (
+						<DsTypography className={styles.valueText} variant="body-sm-reg">
+							{renderValue(getUserSelectedItems(select.selectedItems))}
+						</DsTypography>
+					) : (
+						<DsTypography className={styles.valueText} variant="body-sm-reg" asChild>
+							<Select.ValueText placeholder={placeholder} />
+						</DsTypography>
+					)}
 
 					<Select.Indicator className={styles.triggerIcon}>
 						<DsIcon icon="keyboard_arrow_down" size={size === 'small' ? 'small' : 'medium'} />
@@ -236,5 +243,7 @@ function getItemCheckedState({
 
 	return someSelected ? 'indeterminate' : false;
 }
+
+DsSelect.SELECT_ALL_OPTION = SELECT_ALL_OPTION;
 
 export default DsSelect;
