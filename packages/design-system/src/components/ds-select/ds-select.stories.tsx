@@ -373,18 +373,12 @@ const countryOptions: DsSelectOption[] = [
 	{ value: 'fr', label: 'France' },
 ];
 
-const renderCountryOption = (option: DsSelectOption) => {
-	if (option.value === DsSelect.SELECT_ALL_OPTION.value) {
-		return option.label;
-	}
-
-	return (
-		<span className={styles.customOption}>
-			<DsTag label={option.value.toUpperCase()} size="small" />
-			{option.label}
-		</span>
-	);
-};
+const renderCountryOption = (option: DsSelectOption) => (
+	<span className={styles.customOption}>
+		<DsTag label={option.value.toUpperCase()} size="small" />
+		{option.label}
+	</span>
+);
 
 const versionOptions: DsSelectOption[] = [
 	{ value: 'v0.8', label: 'v0.8' },
@@ -567,18 +561,12 @@ export const CustomRenderValueMultiSelect: Story = {
 	render: () => {
 		const [value, setValue] = useState<string[]>([]);
 
-		const renderOption = (option: DsSelectOption) => {
-			if (option.value === DsSelect.SELECT_ALL_OPTION.value) {
-				return option.label;
-			}
-
-			return (
-				<span className={styles.customOption}>
-					<DsTag label={option.value.toUpperCase()} size="small" />
-					{option.label}
-				</span>
-			);
-		};
+		const renderOption = (option: DsSelectOption) => (
+			<span className={styles.customOption}>
+				<DsTag label={option.value.toUpperCase()} size="small" />
+				{option.label}
+			</span>
+		);
 
 		const renderValue = (selected: DsSelectOption[]) => (
 			<span className={styles.customOption}>
@@ -693,10 +681,6 @@ export const CustomRenderValueAndOptionMultiSelect: Story = {
 		const [value, setValue] = useState<string[]>([]);
 
 		const renderOption = (option: DsSelectOption) => {
-			if (option.value === DsSelect.SELECT_ALL_OPTION.value) {
-				return option.label;
-			}
-
 			const info = versionStatusMap[option.value];
 
 			if (!info) {

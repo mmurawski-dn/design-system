@@ -224,7 +224,9 @@ const DsSelect = ({
 									<Select.Item item={item}>
 										{multiselectProps.multiple && <DsCheckbox checked={checked} />}
 										{item.icon && <DsIcon className={styles.itemIcon} icon={item.icon} aria-hidden="true" />}
-										<Select.ItemText>{renderOption ? renderOption(item) : item.label}</Select.ItemText>
+										<Select.ItemText>
+											{renderOption && item.value !== SELECT_ALL_VALUE ? renderOption(item) : item.label}
+										</Select.ItemText>
 									</Select.Item>
 								</DsTypography>
 							);
@@ -268,7 +270,5 @@ function getItemCheckedState({
 
 	return someSelected ? 'indeterminate' : false;
 }
-
-DsSelect.SELECT_ALL_OPTION = SELECT_ALL_OPTION;
 
 export default DsSelect;
