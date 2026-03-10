@@ -1,6 +1,7 @@
 import type { TSESLint } from '@typescript-eslint/utils';
 import type { Linter } from '@typescript-eslint/utils/ts-eslint';
 
+import { consistentDeprecatedStories } from './rules/consistent-deprecated-stories';
 import { noCrossComponentInternalImport } from './rules/no-cross-component-internal-import';
 import { noUselessTsxExtension } from './rules/no-useless-tsx-extension';
 import { noVitestInStories } from './rules/no-vitest-in-stories';
@@ -12,6 +13,7 @@ const plugin = {
 	},
 
 	rules: {
+		'consistent-deprecated-stories': consistentDeprecatedStories,
 		'no-cross-component-internal-import': noCrossComponentInternalImport,
 		'no-useless-tsx-extension': noUselessTsxExtension,
 		'no-vitest-in-stories': noVitestInStories,
@@ -43,6 +45,7 @@ Object.assign(plugin.configs, {
 			},
 			files: ['**/*.stories.ts?(x)'],
 			rules: {
+				'@drivenets/ds-internal/consistent-deprecated-stories': 'error',
 				'@drivenets/ds-internal/no-vitest-in-stories': 'error',
 			},
 		},
