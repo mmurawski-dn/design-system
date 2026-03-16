@@ -1,5 +1,5 @@
 import { type RefObject, type ReactNode } from 'react';
-import type { RowSelectionState, Table } from '@tanstack/react-table';
+import { type RowSelectionState, type Table } from '@tanstack/react-table';
 
 export interface DsTableBodyVirtualizedProps<TData> {
 	table: Table<TData>;
