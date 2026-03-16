@@ -19,7 +19,7 @@ const MANUFACTURER_OPTIONS: DsSelectOption[] = [
 ];
 
 const meta: Meta<typeof DsKeyValuePair> = {
-	title: 'Design System/Key Value Pair',
+	title: 'Design System/KeyValuePair',
 	component: DsKeyValuePair,
 	parameters: {
 		layout: 'centered',
