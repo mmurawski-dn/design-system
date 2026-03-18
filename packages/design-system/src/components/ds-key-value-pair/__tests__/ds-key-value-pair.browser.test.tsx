@@ -55,7 +55,7 @@ describe('DsKeyValuePair', () => {
 		await expect.element(page.getByText('99887766')).toBeVisible();
 	});
 
-	it('should reveal editor on hover in editable vertical mode', async () => {
+	it('should reveal editor on focus in editable vertical mode', async () => {
 		await page.render(
 			<DsKeyValuePair label="Serial Number" value="99887766" orientation="vertical">
 				<DsTextInput defaultValue="99887766" size="small" />
@@ -64,7 +64,7 @@ describe('DsKeyValuePair', () => {
 
 		await expect.element(page.getByText('99887766')).toBeVisible();
 
-		await page.getByText('99887766').hover();
+		await userEvent.tab();
 
 		await expect.element(page.getByRole('textbox')).toBeVisible();
 	});
@@ -105,7 +105,7 @@ describe('DsKeyValuePair', () => {
 		await expect.element(page.getByText('99887766')).toBeVisible();
 	});
 
-	it('should reveal editor with trailing icon on hover', async () => {
+	it('should reveal editor with trailing icon on focus', async () => {
 		await page.render(
 			<DsKeyValuePair
 				label="Editable"
@@ -131,7 +131,7 @@ describe('DsKeyValuePair', () => {
 		await expect.element(page.getByText('Editable value')).toBeVisible();
 		await expect.element(page.getByText('info').first()).toBeVisible();
 
-		await page.getByText('Editable value').hover();
+		await userEvent.tab();
 
 		await expect.element(page.getByRole('textbox')).toBeVisible();
 	});
