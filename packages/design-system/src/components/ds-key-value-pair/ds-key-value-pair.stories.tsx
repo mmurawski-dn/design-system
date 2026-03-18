@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import DsKeyValuePair from './ds-key-value-pair';
-import { dsKeyValuePairLayouts } from './ds-key-value-pair.types';
+import { dsKeyValuePairOrientations } from './ds-key-value-pair.types';
 import { DsTextInput } from '../ds-text-input';
 import { DsTextarea } from '../ds-textarea';
 import { DsSelect, type DsSelectOption } from '../ds-select';
@@ -25,7 +25,7 @@ const meta: Meta<typeof DsKeyValuePair> = {
 		layout: 'centered',
 	},
 	argTypes: {
-		layout: { control: 'select', options: dsKeyValuePairLayouts },
+		orientation: { control: 'select', options: dsKeyValuePairOrientations },
 		readOnly: { control: 'boolean' },
 		className: { table: { disable: true } },
 		style: { table: { disable: true } },
@@ -42,7 +42,7 @@ export const ReadOnlyVertical: Story = {
 		label: 'Start time',
 		value: '2024-05-23 16:47',
 		readOnly: true,
-		layout: 'vertical',
+		orientation: 'vertical',
 	},
 };
 
@@ -51,7 +51,7 @@ export const ReadOnlyHorizontal: Story = {
 		label: 'MAC',
 		value: '00:1A:2B:3C:4D:5E',
 		readOnly: true,
-		layout: 'horizontal',
+		orientation: 'horizontal',
 	},
 };
 
@@ -65,7 +65,7 @@ export const CustomLabel: Story = {
 		),
 		value: '99887766',
 		readOnly: true,
-		layout: 'horizontal',
+		orientation: 'horizontal',
 	},
 };
 
@@ -73,7 +73,7 @@ export const EditableVertical: Story = {
 	args: {
 		label: 'Serial Number',
 		value: '99887766',
-		layout: 'vertical',
+		orientation: 'vertical',
 	},
 	render: (args) => (
 		<DsKeyValuePair {...args} className={storyStyles.editableVerticalDemo}>
@@ -86,7 +86,7 @@ export const EditableHorizontal: Story = {
 	args: {
 		label: 'Model',
 		value: 'Cisco RTR-X2000',
-		layout: 'horizontal',
+		orientation: 'horizontal',
 	},
 	render: (args) => (
 		<DsKeyValuePair {...args} className={storyStyles.editableHorizontalDemo}>
@@ -99,7 +99,7 @@ export const WithTrailingIcon: Story = {
 	name: 'Editable with trailing icon + tooltip',
 	args: {
 		label: 'Editable',
-		layout: 'horizontal',
+		orientation: 'horizontal',
 	},
 	render: (args) => (
 		<DsKeyValuePair
@@ -130,15 +130,15 @@ export const Group: Story = {
 
 		return (
 			<div className={storyStyles.pairsColumn}>
-				<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly layout="horizontal" />
-				<DsKeyValuePair label="SN" value="99887766" layout="horizontal">
+				<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
+				<DsKeyValuePair label="SN" value="99887766" orientation="horizontal">
 					<DsTextInput defaultValue="99887766" size="small" className={storyStyles.narrowInput} />
 				</DsKeyValuePair>
-				<DsKeyValuePair label="Model" value="Cisco RTR-X2000" readOnly layout="horizontal" />
+				<DsKeyValuePair label="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
 				<DsKeyValuePair
 					label="MFR"
 					value={MANUFACTURER_OPTIONS.find((o) => o.value === manufacturer)?.label ?? manufacturer}
-					layout="horizontal"
+					orientation="horizontal"
 				>
 					<DsSelect
 						options={MANUFACTURER_OPTIONS}
@@ -178,12 +178,17 @@ export const ResponsiveWidth: Story = {
 				</div>
 
 				<div className={storyStyles.responsivePairs} style={{ width }}>
-					<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly layout="horizontal" />
-					<DsKeyValuePair label="Serial Number" value="99887766" layout="horizontal">
+					<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
+					<DsKeyValuePair label="Serial Number" value="99887766" orientation="horizontal">
 						<DsTextInput defaultValue="99887766" size="small" className={storyStyles.narrowInput} />
 					</DsKeyValuePair>
-					<DsKeyValuePair label="Model" value="Cisco RTR-X2000" readOnly layout="horizontal" />
-					<DsKeyValuePair label="Firmware Version" value="v4.2.1-build.2847" readOnly layout="horizontal" />
+					<DsKeyValuePair label="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+					<DsKeyValuePair
+						label="Firmware Version"
+						value="v4.2.1-build.2847"
+						readOnly
+						orientation="horizontal"
+					/>
 				</div>
 			</div>
 		);
@@ -201,16 +206,16 @@ export const ValueTypes: Story = {
 
 		return (
 			<div className={storyStyles.pairsColumn}>
-				<DsKeyValuePair label="Read-only" value="Read only value" readOnly layout="horizontal" />
+				<DsKeyValuePair label="Read-only" value="Read only value" readOnly orientation="horizontal" />
 
-				<DsKeyValuePair label="Editable" value="Editable value" layout="horizontal">
+				<DsKeyValuePair label="Editable" value="Editable value" orientation="horizontal">
 					<DsTextInput defaultValue="Editable value" size="small" className={storyStyles.mediumInput} />
 				</DsKeyValuePair>
 
 				<DsKeyValuePair
 					label="MFR"
 					value={MANUFACTURER_OPTIONS.find((o) => o.value === manufacturer)?.label ?? manufacturer}
-					layout="horizontal"
+					orientation="horizontal"
 				>
 					<DsSelect
 						options={MANUFACTURER_OPTIONS}
@@ -229,7 +234,7 @@ export const ValueTypes: Story = {
 						</span>
 					}
 					readOnly
-					layout="horizontal"
+					orientation="horizontal"
 				/>
 
 				<DsKeyValuePair
@@ -242,10 +247,10 @@ export const ValueTypes: Story = {
 						</span>
 					}
 					readOnly
-					layout="horizontal"
+					orientation="horizontal"
 				/>
 
-				<DsKeyValuePair label="Description" value={LONG_TEXT} layout="horizontal">
+				<DsKeyValuePair label="Description" value={LONG_TEXT} orientation="horizontal">
 					<DsTextarea defaultValue={LONG_TEXT} rows={4} className={storyStyles.descriptionTextarea} />
 				</DsKeyValuePair>
 			</div>

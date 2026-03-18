@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import classNames from 'classnames';
 
+import { DsTypography } from '../ds-typography';
 import styles from './ds-key-value-pair.module.scss';
 import type { DsKeyValuePairProps } from './ds-key-value-pair.types';
 
@@ -9,61 +9,37 @@ const DsKeyValuePair = ({
 	label,
 	value,
 	readOnly = false,
-	layout = 'vertical',
+	orientation = 'vertical',
 	children,
 	className,
 	style,
 }: DsKeyValuePairProps) => {
-	const [isHovered, setIsHovered] = useState(false);
-	const [isFocusedWithin, setIsFocusedWithin] = useState(false);
-
 	const hasEditor = !readOnly && children !== undefined && children !== null;
-	const isEditorActive = hasEditor && (isHovered || isFocusedWithin);
 
 	return (
 		<div
 			ref={ref}
 			className={classNames(styles.root, className)}
-			data-layout={layout}
+			data-orientation={orientation}
 			data-readonly={readOnly || undefined}
 			style={style}
 		>
-			<span className={styles.label}>{label}</span>
+			<DsTypography variant="body-sm-md" className={styles.label}>
+				{label}
+			</DsTypography>
 
+			{/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- tabIndex enables keyboard focus which triggers :focus-within to reveal the editor */}
 			<div
 				className={styles.valueContainer}
-				tabIndex={hasEditor ? (isEditorActive ? -1 : 0) : undefined}
-				onMouseEnter={hasEditor ? () => setIsHovered(true) : undefined}
-				onMouseLeave={hasEditor ? () => setIsHovered(false) : undefined}
-				onFocusCapture={hasEditor ? () => setIsFocusedWithin(true) : undefined}
-				onBlurCapture={
-					hasEditor
-						? (e) => {
-								if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-									setIsFocusedWithin(false);
-								}
-							}
-						: undefined
-				}
+				tabIndex={hasEditor ? 0 : undefined}
+				data-editable={hasEditor || undefined}
 			>
-				<div
-					className={styles.valueDisplay}
-					aria-hidden={isEditorActive || undefined}
-					data-hidden={isEditorActive || undefined}
-				>
-					{value}
-				</div>
+				{/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
+				<DsTypography variant="body-sm-reg" asChild>
+					<div className={styles.valueDisplay}>{value}</div>
+				</DsTypography>
 
-				{hasEditor && (
-					<div
-						className={styles.editorSlot}
-						aria-hidden={!isEditorActive || undefined}
-						inert={!isEditorActive || undefined}
-						data-active={isEditorActive || undefined}
-					>
-						{children}
-					</div>
-				)}
+				{hasEditor && <div className={styles.editorSlot}>{children}</div>}
 			</div>
 		</div>
 	);

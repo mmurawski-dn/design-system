@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode, Ref } from 'react';
 
-export const dsKeyValuePairLayouts = ['vertical', 'horizontal'] as const;
-export type DsKeyValuePairLayout = (typeof dsKeyValuePairLayouts)[number];
+export const dsKeyValuePairOrientations = ['vertical', 'horizontal'] as const;
+export type DsKeyValuePairOrientation = (typeof dsKeyValuePairOrientations)[number];
 
 export interface DsKeyValuePairProps {
 	label: ReactNode;
@@ -13,7 +13,7 @@ export interface DsKeyValuePairProps {
 	readOnly?: boolean;
 
 	/** @default 'vertical' */
-	layout?: DsKeyValuePairLayout;
+	orientation?: DsKeyValuePairOrientation;
 
 	/** Editor content revealed on hover/focus when not read-only. */
 	children?: ReactNode;

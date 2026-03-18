@@ -1,15 +1,13 @@
-@use '../../styles/typography';
-
 .root {
 	display: flex;
 	align-items: flex-start;
 }
 
-.root[data-layout='vertical'] {
+.root[data-orientation='vertical'] {
 	flex-direction: column;
 }
 
-.root[data-layout='horizontal'] {
+.root[data-orientation='horizontal'] {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	column-gap: var(--spacing-xs);
@@ -17,8 +15,6 @@
 }
 
 .label {
-	@include typography.body-sm-md;
-
 	padding-bottom: var(--spacing-4xs);
 	padding-left: var(--spacing-sm);
 	color: var(--color-font-main);
@@ -26,7 +22,7 @@
 	flex-shrink: 0;
 }
 
-.root[data-layout='horizontal'] .label {
+.root[data-orientation='horizontal'] .label {
 	padding-bottom: 0;
 	padding-top: var(--spacing-3xs);
 }
@@ -38,28 +34,34 @@
 	outline: none;
 }
 
-.root[data-layout='horizontal'] .valueContainer {
+.root[data-orientation='horizontal'] .valueContainer {
 	text-align: right;
 }
 
-.valueDisplay {
-	@include typography.body-sm-reg;
-	@include typography.ellipsis;
-
+.valueDisplay,
+.editorSlot {
+	grid-area: 1 / 1;
 	min-width: 0;
-	padding: var(--spacing-3xs) var(--spacing-sm);
-	color: var(--color-font-secondary);
 }
 
-.valueDisplay[data-hidden] {
-	display: none;
+.valueDisplay {
+	padding: var(--spacing-3xs) var(--spacing-sm);
+	color: var(--color-font-secondary);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .editorSlot {
-	display: none;
-	min-width: 0;
+	visibility: hidden;
 }
 
-.editorSlot[data-active] {
-	display: block;
+.valueContainer[data-editable]:hover .valueDisplay,
+.valueContainer[data-editable]:focus-within .valueDisplay {
+	visibility: hidden;
+}
+
+.valueContainer[data-editable]:hover .editorSlot,
+.valueContainer[data-editable]:focus-within .editorSlot {
+	visibility: visible;
 }
