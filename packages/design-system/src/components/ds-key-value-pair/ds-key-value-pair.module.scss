@@ -38,13 +38,8 @@
 	text-align: right;
 }
 
-.valueDisplay,
-.editorSlot {
-	grid-area: 1 / 1;
-	min-width: 0;
-}
-
 .valueDisplay {
+	min-width: 0;
 	padding: var(--spacing-3xs) var(--spacing-sm);
 	color: var(--color-font-secondary);
 	text-overflow: ellipsis;
@@ -53,15 +48,16 @@
 }
 
 .editorSlot {
-	visibility: hidden;
+	display: none;
+	min-width: 0;
 }
 
 .valueContainer[data-editable]:hover .valueDisplay,
 .valueContainer[data-editable]:focus-within .valueDisplay {
-	visibility: hidden;
+	display: none;
 }
 
 .valueContainer[data-editable]:hover .editorSlot,
 .valueContainer[data-editable]:focus-within .editorSlot {
-	visibility: visible;
+	display: block;
 }
