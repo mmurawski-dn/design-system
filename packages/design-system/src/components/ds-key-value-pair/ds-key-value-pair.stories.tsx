@@ -70,67 +70,76 @@ export const CustomLabel: Story = {
 };
 
 export const EditableVertical: Story = {
-	args: {
-		keyLabel: 'Serial Number',
-		value: '99887766',
-		orientation: 'vertical',
+	render: function Render() {
+		const [serial, setSerial] = useState('99887766');
+
+		return (
+			<DsKeyValuePair
+				keyLabel="Serial Number"
+				value={serial}
+				orientation="vertical"
+				className={storyStyles.editableVerticalDemo}
+				editInput={<DsTextInput value={serial} onValueChange={setSerial} size="small" />}
+			/>
+		);
 	},
-	render: (args) => (
-		<DsKeyValuePair
-			{...args}
-			className={storyStyles.editableVerticalDemo}
-			editInput={<DsTextInput defaultValue="99887766" size="small" />}
-		/>
-	),
 };
 
 export const EditableHorizontal: Story = {
-	args: {
-		keyLabel: 'Model',
-		value: 'Cisco RTR-X2000',
-		orientation: 'horizontal',
+	render: function Render() {
+		const [model, setModel] = useState('Cisco RTR-X2000');
+
+		return (
+			<DsKeyValuePair
+				keyLabel="Model"
+				value={model}
+				orientation="horizontal"
+				className={storyStyles.editableHorizontalDemo}
+				editInput={<DsTextInput value={model} onValueChange={setModel} size="small" />}
+			/>
+		);
 	},
-	render: (args) => (
-		<DsKeyValuePair
-			{...args}
-			className={storyStyles.editableHorizontalDemo}
-			editInput={<DsTextInput defaultValue="Cisco RTR-X2000" size="small" />}
-		/>
-	),
 };
 
 export const WithTrailingIcon: Story = {
 	name: 'Editable with trailing icon + tooltip',
-	args: {
-		keyLabel: 'Editable',
-		orientation: 'horizontal',
+	render: function Render() {
+		const [val, setVal] = useState('Editable value');
+
+		return (
+			<DsKeyValuePair
+				keyLabel="Editable"
+				orientation="horizontal"
+				className={storyStyles.editableHorizontalDemo}
+				value={
+					<span className={storyStyles.valueWithIcon}>
+						{val}
+						<DsTooltip content="Additional info about this field">
+							<DsIcon icon="info" size="tiny" />
+						</DsTooltip>
+					</span>
+				}
+				editInput={
+					<span className={storyStyles.valueWithIcon}>
+						<DsTextInput
+							value={val}
+							onValueChange={setVal}
+							size="small"
+							className={storyStyles.mediumInput}
+						/>
+						<DsTooltip content="Additional info about this field">
+							<DsIcon icon="info" size="tiny" />
+						</DsTooltip>
+					</span>
+				}
+			/>
+		);
 	},
-	render: (args) => (
-		<DsKeyValuePair
-			{...args}
-			className={storyStyles.editableHorizontalDemo}
-			value={
-				<span className={storyStyles.valueWithIcon}>
-					Editable value
-					<DsTooltip content="Additional info about this field">
-						<DsIcon icon="info" size="tiny" />
-					</DsTooltip>
-				</span>
-			}
-			editInput={
-				<span className={storyStyles.valueWithIcon}>
-					<DsTextInput defaultValue="Editable value" size="small" className={storyStyles.mediumInput} />
-					<DsTooltip content="Additional info about this field">
-						<DsIcon icon="info" size="tiny" />
-					</DsTooltip>
-				</span>
-			}
-		/>
-	),
 };
 
 export const Group: Story = {
 	render: function Render() {
+		const [serial, setSerial] = useState('99887766');
 		const [manufacturer, setManufacturer] = useState('cisco');
 
 		return (
@@ -138,9 +147,16 @@ export const Group: Story = {
 				<DsKeyValuePair keyLabel="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
 				<DsKeyValuePair
 					keyLabel="SN"
-					value="99887766"
+					value={serial}
 					orientation="horizontal"
-					editInput={<DsTextInput defaultValue="99887766" size="small" className={storyStyles.narrowInput} />}
+					editInput={
+						<DsTextInput
+							value={serial}
+							onValueChange={setSerial}
+							size="small"
+							className={storyStyles.narrowInput}
+						/>
+					}
 				/>
 				<DsKeyValuePair keyLabel="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
 				<DsKeyValuePair
@@ -169,6 +185,7 @@ export const ResponsiveWidth: Story = {
 	name: 'Responsive container width',
 	render: function Render() {
 		const [width, setWidth] = useState(DEFAULT_WIDTH);
+		const [serial, setSerial] = useState('99887766');
 
 		return (
 			<div className={storyStyles.responsiveDemo}>
@@ -190,10 +207,15 @@ export const ResponsiveWidth: Story = {
 					<DsKeyValuePair keyLabel="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
 					<DsKeyValuePair
 						keyLabel="Serial Number"
-						value="99887766"
+						value={serial}
 						orientation="horizontal"
 						editInput={
-							<DsTextInput defaultValue="99887766" size="small" className={storyStyles.narrowInput} />
+							<DsTextInput
+								value={serial}
+								onValueChange={setSerial}
+								size="small"
+								className={storyStyles.narrowInput}
+							/>
 						}
 					/>
 					<DsKeyValuePair keyLabel="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
@@ -216,7 +238,10 @@ const LONG_TEXT =
 export const ValueTypes: Story = {
 	name: 'Value types (Figma reference)',
 	render: function Render() {
+		const [editable, setEditable] = useState('Editable value');
 		const [manufacturer, setManufacturer] = useState('cisco');
+		const [description, setDescription] = useState(LONG_TEXT);
+		const [empty, setEmpty] = useState('');
 
 		return (
 			<div className={storyStyles.pairsColumn}>
@@ -224,10 +249,15 @@ export const ValueTypes: Story = {
 
 				<DsKeyValuePair
 					keyLabel="Editable"
-					value="Editable value"
+					value={editable}
 					orientation="horizontal"
 					editInput={
-						<DsTextInput defaultValue="Editable value" size="small" className={storyStyles.mediumInput} />
+						<DsTextInput
+							value={editable}
+							onValueChange={setEditable}
+							size="small"
+							className={storyStyles.mediumInput}
+						/>
 					}
 				/>
 
@@ -272,11 +302,23 @@ export const ValueTypes: Story = {
 
 				<DsKeyValuePair
 					keyLabel="Description"
-					value={LONG_TEXT}
+					value={description}
 					orientation="horizontal"
 					editInput={
-						<DsTextarea defaultValue={LONG_TEXT} rows={4} className={storyStyles.descriptionTextarea} />
+						<DsTextarea
+							value={description}
+							onValueChange={setDescription}
+							rows={4}
+							className={storyStyles.descriptionTextarea}
+						/>
 					}
+				/>
+
+				<DsKeyValuePair
+					keyLabel="Empty Value"
+					value={empty || undefined}
+					orientation="horizontal"
+					editInput={<DsTextInput value={empty} onValueChange={setEmpty} size="small" />}
 				/>
 			</div>
 		);

@@ -14,7 +14,7 @@ const DsKeyValuePair = ({
 	className,
 	style,
 }: DsKeyValuePairProps) => {
-	const hasEditor = !readOnly && editInput !== undefined && editInput !== null;
+	const editable = !readOnly && !!editInput;
 
 	return (
 		<div
@@ -28,18 +28,17 @@ const DsKeyValuePair = ({
 				{keyLabel}
 			</DsTypography>
 
-			{/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- tabIndex enables keyboard focus which triggers :focus-within to reveal the editor */}
 			<div
 				className={styles.valueContainer}
-				tabIndex={hasEditor ? 0 : undefined}
-				data-editable={hasEditor || undefined}
+				/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- tabIndex enables keyboard focus which triggers :focus-within to reveal the editor */
+				tabIndex={editable ? 0 : undefined}
+				data-editable={editable || undefined}
 			>
-				{/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
 				<DsTypography variant="body-sm-reg" asChild>
 					<div className={styles.valueDisplay}>{value}</div>
 				</DsTypography>
 
-				{hasEditor && <div className={styles.editorSlot}>{editInput}</div>}
+				{editable && <div className={styles.editorSlot}>{editInput}</div>}
 			</div>
 		</div>
 	);

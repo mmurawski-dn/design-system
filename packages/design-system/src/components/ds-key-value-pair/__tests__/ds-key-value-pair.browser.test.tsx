@@ -114,6 +114,30 @@ describe('DsKeyValuePair', () => {
 		await expect.element(page.getByText('99887766')).toBeVisible();
 	});
 
+	it('should support controlled mode: value updates via editInput callback', async () => {
+		function Controlled() {
+			const [val, setVal] = useState('Initial');
+			return (
+				<DsKeyValuePair
+					keyLabel="Controlled"
+					value={val}
+					editInput={<DsTextInput value={val} onValueChange={setVal} />}
+				/>
+			);
+		}
+
+		await page.render(<Controlled />);
+
+		await expect.element(page.getByText('Initial')).toBeVisible();
+
+		await userEvent.tab();
+		const input = page.getByRole('textbox');
+		await input.fill('Updated');
+		await userEvent.tab();
+
+		await expect.element(page.getByText('Updated')).toBeVisible();
+	});
+
 	it('should reveal editor with trailing icon on focus', async () => {
 		await page.render(
 			<DsKeyValuePair
