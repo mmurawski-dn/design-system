@@ -4,7 +4,7 @@ export const dsKeyValuePairOrientations = ['vertical', 'horizontal'] as const;
 export type DsKeyValuePairOrientation = (typeof dsKeyValuePairOrientations)[number];
 
 export interface DsKeyValuePairProps {
-	label: ReactNode;
+	keyLabel: ReactNode;
 
 	/** Shown when the editor is not active (read-only or not hovered). */
 	value?: ReactNode;
@@ -16,7 +16,7 @@ export interface DsKeyValuePairProps {
 	orientation?: DsKeyValuePairOrientation;
 
 	/** Editor content revealed on hover/focus when not read-only. */
-	children?: ReactNode;
+	editInput?: ReactNode;
 
 	ref?: Ref<HTMLDivElement>;
 	className?: string;

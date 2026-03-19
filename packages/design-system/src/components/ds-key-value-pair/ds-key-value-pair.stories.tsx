@@ -39,7 +39,7 @@ type Story = StoryObj<typeof DsKeyValuePair>;
 
 export const ReadOnlyVertical: Story = {
 	args: {
-		label: 'Start time',
+		keyLabel: 'Start time',
 		value: '2024-05-23 16:47',
 		readOnly: true,
 		orientation: 'vertical',
@@ -48,7 +48,7 @@ export const ReadOnlyVertical: Story = {
 
 export const ReadOnlyHorizontal: Story = {
 	args: {
-		label: 'MAC',
+		keyLabel: 'MAC',
 		value: '00:1A:2B:3C:4D:5E',
 		readOnly: true,
 		orientation: 'horizontal',
@@ -57,7 +57,7 @@ export const ReadOnlyHorizontal: Story = {
 
 export const CustomLabel: Story = {
 	args: {
-		label: (
+		keyLabel: (
 			<span className={storyStyles.iconLabel}>
 				<DsIcon icon="info" size="tiny" />
 				Serial Number
@@ -71,34 +71,38 @@ export const CustomLabel: Story = {
 
 export const EditableVertical: Story = {
 	args: {
-		label: 'Serial Number',
+		keyLabel: 'Serial Number',
 		value: '99887766',
 		orientation: 'vertical',
 	},
 	render: (args) => (
-		<DsKeyValuePair {...args} className={storyStyles.editableVerticalDemo}>
-			<DsTextInput defaultValue="99887766" size="small" />
-		</DsKeyValuePair>
+		<DsKeyValuePair
+			{...args}
+			className={storyStyles.editableVerticalDemo}
+			editInput={<DsTextInput defaultValue="99887766" size="small" />}
+		/>
 	),
 };
 
 export const EditableHorizontal: Story = {
 	args: {
-		label: 'Model',
+		keyLabel: 'Model',
 		value: 'Cisco RTR-X2000',
 		orientation: 'horizontal',
 	},
 	render: (args) => (
-		<DsKeyValuePair {...args} className={storyStyles.editableHorizontalDemo}>
-			<DsTextInput defaultValue="Cisco RTR-X2000" size="small" />
-		</DsKeyValuePair>
+		<DsKeyValuePair
+			{...args}
+			className={storyStyles.editableHorizontalDemo}
+			editInput={<DsTextInput defaultValue="Cisco RTR-X2000" size="small" />}
+		/>
 	),
 };
 
 export const WithTrailingIcon: Story = {
 	name: 'Editable with trailing icon + tooltip',
 	args: {
-		label: 'Editable',
+		keyLabel: 'Editable',
 		orientation: 'horizontal',
 	},
 	render: (args) => (
@@ -113,14 +117,15 @@ export const WithTrailingIcon: Story = {
 					</DsTooltip>
 				</span>
 			}
-		>
-			<span className={storyStyles.valueWithIcon}>
-				<DsTextInput defaultValue="Editable value" size="small" className={storyStyles.mediumInput} />
-				<DsTooltip content="Additional info about this field">
-					<DsIcon icon="info" size="tiny" />
-				</DsTooltip>
-			</span>
-		</DsKeyValuePair>
+			editInput={
+				<span className={storyStyles.valueWithIcon}>
+					<DsTextInput defaultValue="Editable value" size="small" className={storyStyles.mediumInput} />
+					<DsTooltip content="Additional info about this field">
+						<DsIcon icon="info" size="tiny" />
+					</DsTooltip>
+				</span>
+			}
+		/>
 	),
 };
 
@@ -130,23 +135,27 @@ export const Group: Story = {
 
 		return (
 			<div className={storyStyles.pairsColumn}>
-				<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
-				<DsKeyValuePair label="SN" value="99887766" orientation="horizontal">
-					<DsTextInput defaultValue="99887766" size="small" className={storyStyles.narrowInput} />
-				</DsKeyValuePair>
-				<DsKeyValuePair label="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+				<DsKeyValuePair keyLabel="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
 				<DsKeyValuePair
-					label="MFR"
+					keyLabel="SN"
+					value="99887766"
+					orientation="horizontal"
+					editInput={<DsTextInput defaultValue="99887766" size="small" className={storyStyles.narrowInput} />}
+				/>
+				<DsKeyValuePair keyLabel="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+				<DsKeyValuePair
+					keyLabel="MFR"
 					value={MANUFACTURER_OPTIONS.find((o) => o.value === manufacturer)?.label ?? manufacturer}
 					orientation="horizontal"
-				>
-					<DsSelect
-						options={MANUFACTURER_OPTIONS}
-						value={manufacturer}
-						onValueChange={setManufacturer}
-						size="small"
-					/>
-				</DsKeyValuePair>
+					editInput={
+						<DsSelect
+							options={MANUFACTURER_OPTIONS}
+							value={manufacturer}
+							onValueChange={setManufacturer}
+							size="small"
+						/>
+					}
+				/>
 			</div>
 		);
 	},
@@ -178,13 +187,18 @@ export const ResponsiveWidth: Story = {
 				</div>
 
 				<div className={storyStyles.responsivePairs} style={{ width }}>
-					<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
-					<DsKeyValuePair label="Serial Number" value="99887766" orientation="horizontal">
-						<DsTextInput defaultValue="99887766" size="small" className={storyStyles.narrowInput} />
-					</DsKeyValuePair>
-					<DsKeyValuePair label="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+					<DsKeyValuePair keyLabel="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
 					<DsKeyValuePair
-						label="Firmware Version"
+						keyLabel="Serial Number"
+						value="99887766"
+						orientation="horizontal"
+						editInput={
+							<DsTextInput defaultValue="99887766" size="small" className={storyStyles.narrowInput} />
+						}
+					/>
+					<DsKeyValuePair keyLabel="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+					<DsKeyValuePair
+						keyLabel="Firmware Version"
 						value="v4.2.1-build.2847"
 						readOnly
 						orientation="horizontal"
@@ -206,27 +220,33 @@ export const ValueTypes: Story = {
 
 		return (
 			<div className={storyStyles.pairsColumn}>
-				<DsKeyValuePair label="Read-only" value="Read only value" readOnly orientation="horizontal" />
-
-				<DsKeyValuePair label="Editable" value="Editable value" orientation="horizontal">
-					<DsTextInput defaultValue="Editable value" size="small" className={storyStyles.mediumInput} />
-				</DsKeyValuePair>
+				<DsKeyValuePair keyLabel="Read-only" value="Read only value" readOnly orientation="horizontal" />
 
 				<DsKeyValuePair
-					label="MFR"
+					keyLabel="Editable"
+					value="Editable value"
+					orientation="horizontal"
+					editInput={
+						<DsTextInput defaultValue="Editable value" size="small" className={storyStyles.mediumInput} />
+					}
+				/>
+
+				<DsKeyValuePair
+					keyLabel="MFR"
 					value={MANUFACTURER_OPTIONS.find((o) => o.value === manufacturer)?.label ?? manufacturer}
 					orientation="horizontal"
-				>
-					<DsSelect
-						options={MANUFACTURER_OPTIONS}
-						value={manufacturer}
-						onValueChange={setManufacturer}
-						size="small"
-					/>
-				</DsKeyValuePair>
+					editInput={
+						<DsSelect
+							options={MANUFACTURER_OPTIONS}
+							value={manufacturer}
+							onValueChange={setManufacturer}
+							size="small"
+						/>
+					}
+				/>
 
 				<DsKeyValuePair
-					label="Status"
+					keyLabel="Status"
 					value={
 						<span className={storyStyles.statusBadge}>
 							<DsIcon icon="check_circle" size="tiny" />
@@ -238,7 +258,7 @@ export const ValueTypes: Story = {
 				/>
 
 				<DsKeyValuePair
-					label="Tags"
+					keyLabel="Tags"
 					value={
 						<span className={storyStyles.tagGroup}>
 							<DsTag label="Tag-name" size="small" />
@@ -250,9 +270,14 @@ export const ValueTypes: Story = {
 					orientation="horizontal"
 				/>
 
-				<DsKeyValuePair label="Description" value={LONG_TEXT} orientation="horizontal">
-					<DsTextarea defaultValue={LONG_TEXT} rows={4} className={storyStyles.descriptionTextarea} />
-				</DsKeyValuePair>
+				<DsKeyValuePair
+					keyLabel="Description"
+					value={LONG_TEXT}
+					orientation="horizontal"
+					editInput={
+						<DsTextarea defaultValue={LONG_TEXT} rows={4} className={storyStyles.descriptionTextarea} />
+					}
+				/>
 			</div>
 		);
 	},

@@ -20,7 +20,7 @@ const MANUFACTURER_OPTIONS: DsSelectOption[] = [
 describe('DsKeyValuePair', () => {
 	it('should render read-only vertical layout', async () => {
 		await page.render(
-			<DsKeyValuePair label="Start time" value="2024-05-23 16:47" readOnly orientation="vertical" />,
+			<DsKeyValuePair keyLabel="Start time" value="2024-05-23 16:47" readOnly orientation="vertical" />,
 		);
 
 		await expect.element(page.getByText('Start time')).toBeInTheDocument();
@@ -29,7 +29,7 @@ describe('DsKeyValuePair', () => {
 
 	it('should render read-only horizontal layout', async () => {
 		await page.render(
-			<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />,
+			<DsKeyValuePair keyLabel="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />,
 		);
 
 		await expect.element(page.getByText('MAC')).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe('DsKeyValuePair', () => {
 	it('should render custom label content', async () => {
 		await page.render(
 			<DsKeyValuePair
-				label={
+				keyLabel={
 					<span>
 						<DsIcon icon="info" size="tiny" />
 						Serial Number
@@ -57,9 +57,12 @@ describe('DsKeyValuePair', () => {
 
 	it('should reveal editor on focus in editable vertical mode', async () => {
 		await page.render(
-			<DsKeyValuePair label="Serial Number" value="99887766" orientation="vertical">
-				<DsTextInput defaultValue="99887766" size="small" />
-			</DsKeyValuePair>,
+			<DsKeyValuePair
+				keyLabel="Serial Number"
+				value="99887766"
+				orientation="vertical"
+				editInput={<DsTextInput defaultValue="99887766" size="small" />}
+			/>,
 		);
 
 		await expect.element(page.getByText('99887766')).toBeVisible();
@@ -71,9 +74,12 @@ describe('DsKeyValuePair', () => {
 
 	it('should render editable horizontal layout', async () => {
 		await page.render(
-			<DsKeyValuePair label="Model" value="Cisco RTR-X2000" orientation="horizontal">
-				<DsTextInput defaultValue="Cisco RTR-X2000" size="small" />
-			</DsKeyValuePair>,
+			<DsKeyValuePair
+				keyLabel="Model"
+				value="Cisco RTR-X2000"
+				orientation="horizontal"
+				editInput={<DsTextInput defaultValue="Cisco RTR-X2000" size="small" />}
+			/>,
 		);
 
 		await expect.element(page.getByText('Cisco RTR-X2000')).toBeVisible();
@@ -82,9 +88,12 @@ describe('DsKeyValuePair', () => {
 
 	it('should support keyboard edit cycle: tab in, edit, tab out', async () => {
 		await page.render(
-			<DsKeyValuePair label="Serial Number" value="99887766" orientation="horizontal">
-				<DsTextInput defaultValue="99887766" size="small" />
-			</DsKeyValuePair>,
+			<DsKeyValuePair
+				keyLabel="Serial Number"
+				value="99887766"
+				orientation="horizontal"
+				editInput={<DsTextInput defaultValue="99887766" size="small" />}
+			/>,
 		);
 
 		await expect.element(page.getByText('99887766')).toBeVisible();
@@ -108,7 +117,7 @@ describe('DsKeyValuePair', () => {
 	it('should reveal editor with trailing icon on focus', async () => {
 		await page.render(
 			<DsKeyValuePair
-				label="Editable"
+				keyLabel="Editable"
 				orientation="horizontal"
 				value={
 					<span>
@@ -118,14 +127,15 @@ describe('DsKeyValuePair', () => {
 						</DsTooltip>
 					</span>
 				}
-			>
-				<span>
-					<DsTextInput defaultValue="Editable value" size="small" />
-					<DsTooltip content="Additional info about this field">
-						<DsIcon icon="info" size="tiny" />
-					</DsTooltip>
-				</span>
-			</DsKeyValuePair>,
+				editInput={
+					<span>
+						<DsTextInput defaultValue="Editable value" size="small" />
+						<DsTooltip content="Additional info about this field">
+							<DsIcon icon="info" size="tiny" />
+						</DsTooltip>
+					</span>
+				}
+			/>,
 		);
 
 		await expect.element(page.getByText('Editable value')).toBeVisible();
@@ -136,8 +146,8 @@ describe('DsKeyValuePair', () => {
 		await expect.element(page.getByRole('textbox')).toBeVisible();
 	});
 
-	it('should fall back to value display without children', async () => {
-		await page.render(<DsKeyValuePair label="MFR" value="Cisco Systems" readOnly={false} />);
+	it('should fall back to value display without editInput', async () => {
+		await page.render(<DsKeyValuePair keyLabel="MFR" value="Cisco Systems" readOnly={false} />);
 
 		await expect.element(page.getByText('Cisco Systems')).toBeVisible();
 	});
@@ -148,23 +158,27 @@ describe('DsKeyValuePair', () => {
 
 			return (
 				<div>
-					<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
-					<DsKeyValuePair label="SN" value="99887766" orientation="horizontal">
-						<DsTextInput defaultValue="99887766" size="small" />
-					</DsKeyValuePair>
-					<DsKeyValuePair label="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+					<DsKeyValuePair keyLabel="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
 					<DsKeyValuePair
-						label="MFR"
+						keyLabel="SN"
+						value="99887766"
+						orientation="horizontal"
+						editInput={<DsTextInput defaultValue="99887766" size="small" />}
+					/>
+					<DsKeyValuePair keyLabel="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+					<DsKeyValuePair
+						keyLabel="MFR"
 						value={MANUFACTURER_OPTIONS.find((o) => o.value === manufacturer)?.label ?? manufacturer}
 						orientation="horizontal"
-					>
-						<DsSelect
-							options={MANUFACTURER_OPTIONS}
-							value={manufacturer}
-							onValueChange={setManufacturer}
-							size="small"
-						/>
-					</DsKeyValuePair>
+						editInput={
+							<DsSelect
+								options={MANUFACTURER_OPTIONS}
+								value={manufacturer}
+								onValueChange={setManufacturer}
+								size="small"
+							/>
+						}
+					/>
 				</div>
 			);
 		}
@@ -191,13 +205,16 @@ describe('DsKeyValuePair', () => {
 						onChange={(e) => setWidth(Number(e.target.value))}
 					/>
 					<div style={{ width }}>
-						<DsKeyValuePair label="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
-						<DsKeyValuePair label="Serial Number" value="99887766" orientation="horizontal">
-							<DsTextInput defaultValue="99887766" size="small" />
-						</DsKeyValuePair>
-						<DsKeyValuePair label="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+						<DsKeyValuePair keyLabel="MAC" value="00:1A:2B:3C:4D:5E" readOnly orientation="horizontal" />
 						<DsKeyValuePair
-							label="Firmware Version"
+							keyLabel="Serial Number"
+							value="99887766"
+							orientation="horizontal"
+							editInput={<DsTextInput defaultValue="99887766" size="small" />}
+						/>
+						<DsKeyValuePair keyLabel="Model" value="Cisco RTR-X2000" readOnly orientation="horizontal" />
+						<DsKeyValuePair
+							keyLabel="Firmware Version"
 							value="v4.2.1-build.2847"
 							readOnly
 							orientation="horizontal"
@@ -224,27 +241,31 @@ describe('DsKeyValuePair', () => {
 
 			return (
 				<div>
-					<DsKeyValuePair label="Read-only" value="Read only value" readOnly orientation="horizontal" />
-
-					<DsKeyValuePair label="Editable" value="Editable value" orientation="horizontal">
-						<DsTextInput defaultValue="Editable value" size="small" />
-					</DsKeyValuePair>
+					<DsKeyValuePair keyLabel="Read-only" value="Read only value" readOnly orientation="horizontal" />
 
 					<DsKeyValuePair
-						label="MFR"
+						keyLabel="Editable"
+						value="Editable value"
+						orientation="horizontal"
+						editInput={<DsTextInput defaultValue="Editable value" size="small" />}
+					/>
+
+					<DsKeyValuePair
+						keyLabel="MFR"
 						value={MANUFACTURER_OPTIONS.find((o) => o.value === manufacturer)?.label ?? manufacturer}
 						orientation="horizontal"
-					>
-						<DsSelect
-							options={MANUFACTURER_OPTIONS}
-							value={manufacturer}
-							onValueChange={setManufacturer}
-							size="small"
-						/>
-					</DsKeyValuePair>
+						editInput={
+							<DsSelect
+								options={MANUFACTURER_OPTIONS}
+								value={manufacturer}
+								onValueChange={setManufacturer}
+								size="small"
+							/>
+						}
+					/>
 
 					<DsKeyValuePair
-						label="Status"
+						keyLabel="Status"
 						value={
 							<span>
 								<DsIcon icon="check_circle" size="tiny" />
@@ -256,7 +277,7 @@ describe('DsKeyValuePair', () => {
 					/>
 
 					<DsKeyValuePair
-						label="Tags"
+						keyLabel="Tags"
 						value={
 							<span>
 								<DsTag label="Tag-name" size="small" />
@@ -268,9 +289,12 @@ describe('DsKeyValuePair', () => {
 						orientation="horizontal"
 					/>
 
-					<DsKeyValuePair label="Description" value={LONG_TEXT} orientation="horizontal">
-						<DsTextarea defaultValue={LONG_TEXT} rows={4} />
-					</DsKeyValuePair>
+					<DsKeyValuePair
+						keyLabel="Description"
+						value={LONG_TEXT}
+						orientation="horizontal"
+						editInput={<DsTextarea defaultValue={LONG_TEXT} rows={4} />}
+					/>
 				</div>
 			);
 		}

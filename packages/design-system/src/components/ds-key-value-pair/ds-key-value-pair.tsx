@@ -6,15 +6,15 @@ import type { DsKeyValuePairProps } from './ds-key-value-pair.types';
 
 const DsKeyValuePair = ({
 	ref,
-	label,
+	keyLabel,
 	value,
 	readOnly = false,
 	orientation = 'vertical',
-	children,
+	editInput,
 	className,
 	style,
 }: DsKeyValuePairProps) => {
-	const hasEditor = !readOnly && children !== undefined && children !== null;
+	const hasEditor = !readOnly && editInput !== undefined && editInput !== null;
 
 	return (
 		<div
@@ -25,7 +25,7 @@ const DsKeyValuePair = ({
 			style={style}
 		>
 			<DsTypography variant="body-sm-md" className={styles.label}>
-				{label}
+				{keyLabel}
 			</DsTypography>
 
 			{/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- tabIndex enables keyboard focus which triggers :focus-within to reveal the editor */}
@@ -39,7 +39,7 @@ const DsKeyValuePair = ({
 					<div className={styles.valueDisplay}>{value}</div>
 				</DsTypography>
 
-				{hasEditor && <div className={styles.editorSlot}>{children}</div>}
+				{hasEditor && <div className={styles.editorSlot}>{editInput}</div>}
 			</div>
 		</div>
 	);
