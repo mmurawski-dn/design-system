@@ -1,8 +1,10 @@
 import { createRule } from '../create-rule';
 import { isDeprecated } from './utils/is-deprecated';
-import { getObjectProperty } from './utils/get-object-property';
 import { resolveStoryMeta } from './utils/resolve-story-meta';
 import { AST_NODE_TYPES, ESLintUtils, type TSESTree } from '@typescript-eslint/utils';
+import { getStoryMetaProps } from './utils/get-story-meta-props';
+import { getComponentParts } from './utils/get-component-parts';
+import { removeWithTrailingComma } from './utils/remove-with-trailing-comma';
 
 type MessageId =
 	| 'missingDeprecatedSuffix'
@@ -53,9 +55,17 @@ export const consistentDeprecatedStories = createRule<[], MessageId>({
 				return;
 			}
 
-			const componentRef = componentProp.value;
-			const componentName = componentRef.name;
-			const isComponentDeprecated = isDeprecated(services, componentRef);
+			const {
+				name: componentName,
+				displayName: componentDisplayName,
+				node: componentNode,
+			} = getComponentParts(services, componentProp.value);
+
+			if (!componentName) {
+				return;
+			}
+
+			const isComponentDeprecated = isDeprecated(services, componentNode);
 
 			const title = String(titleProp?.value.value);
 			const hasSuffix = title.endsWith(SUFFIX);
@@ -75,7 +85,7 @@ export const consistentDeprecatedStories = createRule<[], MessageId>({
 					context.report({
 						node: titleProp.value,
 						messageId: 'noUnusedDeprecatedSuffix',
-						data: { component: componentName },
+						data: { component: componentDisplayName },
 						fix: (fixer) => {
 							const replaced = title.replace(SUFFIX, '').trim();
 
@@ -89,9 +99,16 @@ export const consistentDeprecatedStories = createRule<[], MessageId>({
 					context.report({
 						node: deprecatedTag,
 						messageId: 'noUnusedDeprecatedTag',
-						data: { component: componentName },
+						data: { component: componentDisplayName },
 						fix: (fixer) => {
-							return fixer.remove(deprecatedTag);
+							const hasOnlyOneTag = tagsArray?.elements.length === 1;
+							const nodeToRemove = hasOnlyOneTag ? tagsProp : deprecatedTag;
+
+							if (!nodeToRemove) {
+								return null;
+							}
+
+							return removeWithTrailingComma(context.sourceCode, fixer, nodeToRemove);
 						},
 					});
 				}
@@ -104,7 +121,7 @@ export const consistentDeprecatedStories = createRule<[], MessageId>({
 				context.report({
 					node: metaNode,
 					messageId: 'missingDeprecatedSuffix',
-					data: { component: componentName },
+					data: { component: componentDisplayName },
 					fix: (fixer) => {
 						return fixer.insertTextAfter(componentProp, `,\n\ttitle: '${componentName} ${SUFFIX}'`);
 					},
@@ -118,7 +135,7 @@ export const consistentDeprecatedStories = createRule<[], MessageId>({
 				context.report({
 					node: titleProp.value,
 					messageId: hasSuffix ? 'unformattedDeprecatedSuffix' : 'missingDeprecatedSuffix',
-					data: { component: componentName },
+					data: { component: componentDisplayName },
 					fix: (fixer) => {
 						const base = title.replace(new RegExp(`\\s*${SUFFIX_ESCAPED}`, 'g'), '').trim();
 
@@ -132,7 +149,7 @@ export const consistentDeprecatedStories = createRule<[], MessageId>({
 				context.report({
 					node: tagsProp ?? metaNode,
 					messageId: 'missingDeprecatedTag',
-					data: { component: componentName },
+					data: { component: componentDisplayName },
 					fix: (fixer) => {
 						// Create the tags property if it doesn't exist.
 						if (!tagsProp) {
@@ -159,29 +176,3 @@ export const consistentDeprecatedStories = createRule<[], MessageId>({
 		};
 	},
 });
-
-function getStoryMetaProps(metaNode: TSESTree.ObjectExpression) {
-	const tagsProp = getObjectProperty({
-		obj: metaNode,
-		name: 'tags',
-		predicate: (v) => v.type === AST_NODE_TYPES.ArrayExpression,
-	});
-
-	const componentProp = getObjectProperty({
-		obj: metaNode,
-		name: 'component',
-		predicate: (v) => v.type === AST_NODE_TYPES.Identifier,
-	});
-
-	const titleProp = getObjectProperty({
-		obj: metaNode,
-		name: 'title',
-		predicate: (v) => v.type === AST_NODE_TYPES.Literal,
-	});
-
-	return {
-		tagsProp,
-		titleProp,
-		componentProp,
-	};
-}

@@ -5,6 +5,7 @@ import { consistentDeprecatedStories } from './rules/consistent-deprecated-stori
 import { consistentStoryTitles } from './rules/consistent-story-titles';
 import { noAutodocsTag } from './rules/no-autodocs-tag';
 import { noCrossComponentInternalImport } from './rules/no-cross-component-internal-import';
+import { noEmptyStory } from './rules/no-empty-story';
 import { noUselessTsxExtension } from './rules/no-useless-tsx-extension';
 import { noVitestBrowserReact } from './rules/no-vitest-browser-react';
 import { noVitestInStories } from './rules/no-vitest-in-stories';
@@ -21,6 +22,7 @@ const plugin = {
 		'consistent-story-titles': consistentStoryTitles,
 		'no-autodocs-tag': noAutodocsTag,
 		'no-cross-component-internal-import': noCrossComponentInternalImport,
+		'no-empty-story': noEmptyStory,
 		'no-useless-tsx-extension': noUselessTsxExtension,
 		'no-vitest-browser-react': noVitestBrowserReact,
 		'no-vitest-in-stories': noVitestInStories,
@@ -36,7 +38,7 @@ const plugin = {
 Object.assign(plugin.configs, {
 	recommended: [
 		{
-			name: 'ds-internal:recommended:all',
+			name: 'ds-internal/recommended/all',
 			plugins: {
 				'@drivenets/ds-internal': plugin,
 			},
@@ -47,7 +49,7 @@ Object.assign(plugin.configs, {
 		},
 
 		{
-			name: 'ds-internal:recommended:stories',
+			name: 'ds-internal/recommended/stories',
 			plugins: {
 				'@drivenets/ds-internal': plugin,
 			},
@@ -56,13 +58,14 @@ Object.assign(plugin.configs, {
 				'@drivenets/ds-internal/consistent-deprecated-stories': 'error',
 				'@drivenets/ds-internal/consistent-story-titles': 'error',
 				'@drivenets/ds-internal/no-autodocs-tag': 'error',
+				'@drivenets/ds-internal/no-empty-story': 'error',
 				'@drivenets/ds-internal/no-vitest-in-stories': 'error',
 				'@drivenets/ds-internal/require-story-params': 'error',
 			},
 		},
 
 		{
-			name: 'ds-internal:recommended:tests:browser',
+			name: 'ds-internal/recommended/tests/browser',
 			plugins: {
 				'@drivenets/ds-internal': plugin,
 			},

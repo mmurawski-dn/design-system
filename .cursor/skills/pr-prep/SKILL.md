@@ -5,7 +5,7 @@ description: Prepare a PR for submission by running all checks, validating stori
 
 # PR Preparation Skill
 
-Automate the pre-submission checklist from `standards.mdc`.
+Automate the pre-submission checklist from `code-review.mdc`.
 
 ## Steps
 
@@ -21,6 +21,7 @@ Categorize files by type:
 - `*.stories.tsx` -- Story files
 - `*.module.scss` -- Style files
 - `*.test.ts` / `*.test.tsx` -- Test files
+- `*.browser.test.tsx` -- Vitest browser tests (live next to components under `__tests__/`)
 - `.changeset/*.md` -- Changeset files
 
 ### Step 2: Run checkers on changed files only
@@ -45,13 +46,11 @@ pnpm --filter @drivenets/design-system typecheck
 pnpm --filter @drivenets/design-system test <test-file> --run
 ```
 
-### Step 3: Validate story files
+For new components or substantial interaction/behavior changes, confirm an updated `*.browser.test.tsx` exists under the component's `__tests__/` when appropriate.
 
-For every `.stories.tsx` in the diff:
+### Step 3: Review changed files against project rules
 
-1. Check that every exported story has a `play` function. Search for `export const` declarations and verify each has `play:` or `play :`.
-2. Check that callback args use `fn()` not inline functions.
-3. Check for inline `style=` attributes -- should use `*.stories.module.scss` instead.
+For each changed file, apply the relevant cursor rules (`scss.mdc`, `react-patterns.mdc`, `storybook.mdc`, `standards.mdc`). Flag violations found in the diff.
 
 ### Step 4: Validate SCSS files
 
@@ -72,7 +71,7 @@ For every `.tsx` / `.ts` in the diff:
 3. Check for `vi.useFakeTimers` in story files -- should use `mockdate`.
 4. Check for raw `<img` tags in component `.tsx` files (not stories) -- should use `DsAvatar` or equivalent DS component with fallback.
 5. Check for spread of native objects (`{...file}`, `{...blob}`) -- flag as prototype loss risk.
-6. In `.stories.tsx` files, check for AI-generated test smell: `play` functions that only call `expect(canvasElement).toBeTruthy()` or repeat the same assertion as another story with a different name -- flag as likely useless AI-generated test.
+6. In `.stories.tsx` and `.browser.test.tsx` files, check for AI-generated test smell: assertions that only check `toBeTruthy()` / `toBeInTheDocument()` without testing behavior unique to that scenario -- flag as likely useless AI-generated test.
 
 ### Step 6: Check changeset
 
@@ -95,7 +94,7 @@ PR Preparation Report
 [PASS/FAIL] Lint .................. {details}
 [PASS/FAIL] Typecheck ............. {details}
 [PASS/FAIL] Tests ................. {details}
-[PASS/FAIL] Stories have play ..... {details}
+[PASS/FAIL] Rule violations ....... {details}
 [PASS/FAIL] No !important ........ {details}
 [PASS/FAIL] No hardcoded colors .. {details}
 [PASS/FAIL] No :global ........... {details}
