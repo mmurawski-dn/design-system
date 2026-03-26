@@ -15,6 +15,7 @@ globs: **/*.stories.tsx
 | **Semantic assertions**                      | `toBeChecked()`, `toBeDisabled()`, `toBeVisible()` over `toHaveAttribute`        |
 | **Don't test implementation details**        | No data attributes, CSS selectors, or internal state; test user-visible behavior |
 | **Await all interactions**                   | `await userEvent.click(...)`, `await expect(...)`                                |
+| **Scrutinize AI-generated tests**            | AI tools produce tests that look real but assert nothing useful; verify each `play` tests real behavior |
 
 ```tsx
 // Good
@@ -55,6 +56,29 @@ await userEvent.click(element, { pointerEventsCheck: 0 });
 await expect(args.onClick).not.toHaveBeenCalled();
 ```
 
+
+```tsx
+// Red flag - AI slop: looks like a test but asserts nothing meaningful
+export const DifferentOrientation: Story = {
+  args: { orientation: 'vertical' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('group')).toBeInTheDocument(); // same as Default
+  },
+};
+
+// Good - actually verifies orientation-specific behavior
+export const Vertical: Story = {
+  args: { orientation: 'vertical' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const inputs = canvas.getAllByRole('textbox');
+    const firstRect = inputs[0].getBoundingClientRect();
+    const secondRect = inputs[1].getBoundingClientRect();
+    await expect(secondRect.top).toBeGreaterThan(firstRect.bottom);
+  },
+};
+```
 
 ---
 

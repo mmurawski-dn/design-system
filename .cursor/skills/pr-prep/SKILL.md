@@ -60,6 +60,8 @@ For every `.module.scss` in the diff:
 1. Search for `!important` -- flag any occurrence.
 2. Search for hardcoded colors (hex values like `#xxx`) -- flag any not in a comment.
 3. Search for `:global` -- flag any occurrence.
+4. Search for `overflow: hidden` or `overflow: auto` -- flag for manual review (may be masking a layout bug).
+5. Search for `-webkit-` prefixed properties -- flag any without a standard CSS fallback or `@supports` guard (e.g., `-webkit-scrollbar` without `scrollbar-width: none`).
 
 ### Step 5: Validate TypeScript files
 
@@ -68,6 +70,9 @@ For every `.tsx` / `.ts` in the diff:
 1. Check for cross-component imports (importing from `../ds-other-component/`) -- flag as violation. Only allow main components imports, not utilities or subcomponents.
 2. Check for `forwardRef` usage -- flag as deprecated.
 3. Check for `vi.useFakeTimers` in story files -- should use `mockdate`.
+4. Check for raw `<img` tags in component `.tsx` files (not stories) -- should use `DsAvatar` or equivalent DS component with fallback.
+5. Check for spread of native objects (`{...file}`, `{...blob}`) -- flag as prototype loss risk.
+6. In `.stories.tsx` files, check for AI-generated test smell: `play` functions that only call `expect(canvasElement).toBeTruthy()` or repeat the same assertion as another story with a different name -- flag as likely useless AI-generated test.
 
 ### Step 6: Check changeset
 
@@ -96,9 +101,14 @@ PR Preparation Report
 [PASS/FAIL] No :global ........... {details}
 [PASS/FAIL] No cross-component ... {details}
 [PASS/FAIL] No forwardRef ........ {details}
+[PASS/FAIL] No overflow:hidden ... {details}
+[PASS/FAIL] No raw <img> ........ {details}
+[PASS/FAIL] No native spread .... {details}
+[PASS/FAIL] No webkit-only ..... {details}
+[PASS/FAIL] No AI test slop .... {details}
 [PASS/FAIL] Changeset ............ {details}
 
-{N}/10 checks passed.
+{N}/15 checks passed.
 ```
 
 If all pass, the PR is ready for submission. If any fail, list the specific files and lines that need fixing.

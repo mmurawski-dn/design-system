@@ -37,5 +37,10 @@ It is a local code review process done before submitting a PR.
 - Stories have `play` functions with `fn()` and a11y queries
 - No inline styles in stories
 - Props layer doesn't expose library internals
+- No `overflow: hidden` as a band-aid for layout bugs
+- Image/avatar elements use DS components (e.g., `DsAvatar`) with fallback, not raw `<img>`
+- No leftover code from abandoned implementation approaches
+- No `-webkit-*` without cross-browser fallback or `@supports` guard
+- AI-generated tests actually assert meaningful behavior (not duplicate/trivial assertions)
 - Logic errors, security issues, race conditions, missing edge cases
 
