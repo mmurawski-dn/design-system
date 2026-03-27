@@ -17,6 +17,7 @@ const meta: Meta<typeof DsButtonV3> = {
 		size: { control: 'select', options: buttonV3Sizes },
 		onDark: { control: 'boolean' },
 		loading: { control: 'boolean' },
+		disabled: { control: 'boolean' },
 		className: { table: { disable: true } },
 		style: { table: { disable: true } },
 		ref: { table: { disable: true } },

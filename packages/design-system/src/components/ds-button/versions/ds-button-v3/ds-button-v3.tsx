@@ -48,7 +48,7 @@ const DsButtonV3 = ({
 			className={classNames(
 				styles.root,
 				sizeClassMap[size],
-				{ [styles.iconOnly]: isIconOnly, [styles.loading]: loading },
+				{ [styles.iconOnly]: isIconOnly, [styles.loading]: loading && !disabled },
 				className,
 			)}
 			style={style}
