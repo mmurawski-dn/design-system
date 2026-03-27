@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, CSSProperties, ReactNode, Ref } from 'react';
+import type { ButtonHTMLAttributes, Ref } from 'react';
 import type { IconType } from '../../../ds-icon';
 
 export const buttonV3Variants = ['primary', 'secondary', 'tertiary'] as const;
@@ -12,9 +12,6 @@ export type ButtonV3Size = (typeof buttonV3Sizes)[number];
 
 export interface DsButtonV3Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 	ref?: Ref<HTMLButtonElement>;
-	className?: string;
-	style?: CSSProperties;
-	children?: ReactNode;
 
 	/**
 	 * - `default` — standard light-UI palette
@@ -40,6 +37,9 @@ export interface DsButtonV3Props extends ButtonHTMLAttributes<HTMLButtonElement>
 	 */
 	size?: ButtonV3Size;
 
+	/**
+	 * @default false
+	 */
 	selected?: boolean;
 
 	/**

@@ -4,12 +4,12 @@ import { DsSpinner } from '../../../ds-spinner';
 import styles from './ds-button-v3.module.scss';
 import type { ButtonV3Size, DsButtonV3Props } from './ds-button-v3.types';
 
-const sizeClassMap = {
+const sizeClassMap = Object.freeze({
 	large: styles.sizeLarge,
 	medium: styles.sizeMedium,
 	small: styles.sizeSmall,
 	tiny: styles.sizeTiny,
-} as const;
+});
 
 const iconSizeMap: Record<ButtonV3Size, IconSize> = Object.freeze({
 	large: 'small',
@@ -42,8 +42,9 @@ const DsButtonV3 = ({
 			// Dynamic by nature of this component
 			// eslint-disable-next-line react/button-has-type
 			type={type}
-			disabled={disabled}
+			disabled={disabled || loading}
 			aria-busy={loading || undefined}
+			aria-pressed={selected}
 			className={classNames(
 				styles.root,
 				sizeClassMap[size],

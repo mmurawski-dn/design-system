@@ -35,11 +35,12 @@ $transition-duration-quick: 0.15s;
 		color $transition-duration-default,
 		outline-color $transition-duration-quick;
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		cursor: not-allowed;
 	}
 
 	&.loading {
+		cursor: default;
 		pointer-events: none;
 	}
 
@@ -124,7 +125,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-primary-selected);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: var(--background-background-disable);
 		color: var(--font-font-on-action);
 	}
@@ -161,7 +162,7 @@ $transition-duration-quick: 0.15s;
 		border-color: var(--border-border-secondary-hover);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: var(--background-background-action-secondary);
 		color: var(--font-font-disabled);
 		border-color: var(--border-border);
@@ -196,7 +197,7 @@ $transition-duration-quick: 0.15s;
 		color: var(--font-font-action-secondary);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: transparent;
 		color: var(--font-font-disabled);
 	}
@@ -226,7 +227,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-negative-selected);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: var(--background-background-disable);
 		color: var(--font-font-on-action);
 	}
@@ -259,7 +260,7 @@ $transition-duration-quick: 0.15s;
 		border-color: var(--border-border-negative-hover);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: var(--background-background-action-secondary);
 		color: var(--font-font-disabled);
 		border-color: var(--border-border);
@@ -290,7 +291,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-negative-secondary-selected);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: transparent;
 		color: var(--font-font-disabled);
 	}
@@ -320,7 +321,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-ondark-primary-selected);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: var(--background-background-ondark-disabled);
 		color: var(--font-font-disabled);
 	}
@@ -353,7 +354,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-ondark-secondary-selected);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: transparent;
 		color: var(--font-font-ondark-disabled);
 		border-color: var(--background-background-ondark-disabled);
@@ -387,7 +388,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-ondark-secondary-selected);
 	}
 
-	&:disabled {
+	&:disabled:not(.loading) {
 		background-color: transparent;
 		color: var(--font-font-ondark-disabled);
 	}
