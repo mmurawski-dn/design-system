@@ -40,9 +40,6 @@ export interface DsButtonV3Props extends ButtonHTMLAttributes<HTMLButtonElement>
 	 */
 	size?: ButtonV3Size;
 
-	/**
-	 * If true the 'pressed' styles are applied
-	 */
 	selected?: boolean;
 
 	/**
