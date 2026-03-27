@@ -173,11 +173,11 @@ describe('DsButtonV3', () => {
 		expect(ref.current?.textContent).toBe('Ref');
 	});
 
-	it('is disabled and keeps normal colors when loading', async () => {
+	it('loading without disabled keeps normal colors', async () => {
 		const onClick = vi.fn();
 
 		await page.render(
-			<DsButtonV3 loading disabled={false} onClick={onClick}>
+			<DsButtonV3 loading onClick={onClick}>
 				Saving
 			</DsButtonV3>,
 		);
@@ -188,6 +188,20 @@ describe('DsButtonV3', () => {
 		await expect.element(button).toHaveClass(styles.loading);
 		await button.click({ force: true });
 		expect(onClick).not.toHaveBeenCalled();
+	});
+
+	it('loading + disabled shows spinner with disabled styling', async () => {
+		await page.render(
+			<DsButtonV3 loading disabled>
+				Saving
+			</DsButtonV3>,
+		);
+
+		const button = page.getByRole('button', { name: 'Saving', disabled: true });
+
+		await expect.element(button).toBeDisabled();
+		await expect.element(button).not.toHaveClass(styles.loading);
+		await expect.element(button).toHaveAttribute('aria-busy', 'true');
 	});
 
 	it('selected + disabled does not remove selected styling', async () => {
