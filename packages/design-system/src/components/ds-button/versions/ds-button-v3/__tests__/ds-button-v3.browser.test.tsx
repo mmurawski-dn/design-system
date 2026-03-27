@@ -173,6 +173,50 @@ describe('DsButtonV3', () => {
 		expect(ref.current?.textContent).toBe('Ref');
 	});
 
+	it('is disabled and keeps normal colors when loading', async () => {
+		const onClick = vi.fn();
+
+		await page.render(
+			<DsButtonV3 loading disabled={false} onClick={onClick}>
+				Saving
+			</DsButtonV3>,
+		);
+
+		const button = page.getByRole('button', { name: 'Saving', disabled: true });
+
+		await expect.element(button).toBeDisabled();
+		await expect.element(button).toHaveClass(styles.loading);
+		await button.click({ force: true });
+		expect(onClick).not.toHaveBeenCalled();
+	});
+
+	it('selected + disabled does not remove selected styling', async () => {
+		await page.render(
+			<DsButtonV3 selected disabled>
+				Toggle
+			</DsButtonV3>,
+		);
+
+		const button = page.getByRole('button', { name: 'Toggle', disabled: true });
+
+		await expect.element(button).toBeDisabled();
+		await expect.element(button).toHaveAttribute('aria-pressed', 'true');
+		await expect.element(button).toHaveAttribute('data-selected', 'true');
+	});
+
+	it('applies onDark + negative color together', async () => {
+		await page.render(
+			<DsButtonV3 onDark color="negative">
+				Remove
+			</DsButtonV3>,
+		);
+
+		const button = page.getByRole('button', { name: 'Remove' });
+
+		await expect.element(button).toHaveAttribute('data-on-dark', 'true');
+		await expect.element(button).toHaveAttribute('data-color', 'negative');
+	});
+
 	it('spreads rest props onto the button element', async () => {
 		await page.render(
 			<DsButtonV3 data-testid="my-btn" aria-label="Spread">
