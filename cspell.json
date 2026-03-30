@@ -10,12 +10,16 @@
 		"borderless",
 		"clickability",
 		"controlify",
+		"codemod",
+		"codemods",
+		"Codeshift",
 		"deslop",
 		"drivenets",
 		"evenodd",
 		"findlast",
 		"fromentries",
 		"gnmi",
+		"jscodeshift",
 		"matchall",
 		"netural",
 		"netgen",
@@ -27,7 +31,8 @@
 		"subcomponents",
 		"tosorted",
 		"TSESTree",
-		"unhover"
+		"unhover",
+		"UNMAPPABLE"
 	],
 	"ignorePaths": [".cursor", ".git", ".github", ".vscode", ".cspell", "pnpm-lock.yaml"]
 }
