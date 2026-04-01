@@ -17,15 +17,6 @@ const MANUFACTURER_OPTIONS: DsSelectOption[] = [
 	{ label: 'Nokia', value: 'nokia' },
 ];
 
-/**
- * Focuses the nearest `[data-editable]` container ancestor of the given text.
- * Direct DOM focus bypasses the CSS `:hover` swap that causes Playwright's
- * click/tab to race with the display toggle between value and editor slot.
- */
-const focusEditable = (text: string) => {
-	(page.getByText(text).element().closest('[data-editable]') as HTMLElement).focus();
-};
-
 describe('DsKeyValuePair', () => {
 	it('should render read-only vertical layout', async () => {
 		await page.render(
@@ -76,7 +67,7 @@ describe('DsKeyValuePair', () => {
 
 		await expect.element(page.getByText('99887766')).toBeVisible();
 
-		focusEditable('99887766');
+		await userEvent.tab();
 
 		await expect.element(page.getByRole('textbox')).toBeVisible();
 	});
@@ -107,10 +98,12 @@ describe('DsKeyValuePair', () => {
 
 		await expect.element(page.getByText('99887766')).toBeVisible();
 
-		focusEditable('99887766');
+		await userEvent.tab();
 
 		const input = page.getByRole('textbox');
 		await expect.element(input).toBeVisible();
+
+		await userEvent.tab();
 
 		await input.clear();
 		await input.fill('NEW SERIAL');
@@ -137,7 +130,7 @@ describe('DsKeyValuePair', () => {
 
 		await expect.element(page.getByText('Initial')).toBeVisible();
 
-		focusEditable('Initial');
+		await userEvent.tab();
 		const input = page.getByRole('textbox');
 		await input.fill('Updated');
 		await userEvent.tab();
@@ -172,7 +165,7 @@ describe('DsKeyValuePair', () => {
 		await expect.element(page.getByText('Editable value')).toBeVisible();
 		await expect.element(page.getByText('info').first()).toBeVisible();
 
-		focusEditable('Editable value');
+		await userEvent.tab();
 
 		await expect.element(page.getByRole('textbox')).toBeVisible();
 	});

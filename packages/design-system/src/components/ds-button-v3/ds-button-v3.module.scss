@@ -35,11 +35,11 @@ $transition-duration-quick: 0.15s;
 		color $transition-duration-default,
 		outline-color $transition-duration-quick;
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		cursor: not-allowed;
 	}
 
-	&.loading {
+	&[data-loading] {
 		cursor: default;
 		pointer-events: none;
 	}
@@ -52,50 +52,50 @@ $transition-duration-quick: 0.15s;
 		outline-style: solid;
 	}
 
-	&.sizeLarge {
+	&[data-size='large'] {
 		padding: var(--3xs) var(--sm);
 		min-height: $height-large;
 		font-size: var(--font-size-md);
 		line-height: var(--line-height-md);
 	}
 
-	&.sizeMedium {
+	&[data-size='medium'] {
 		padding: var(--3xs) var(--sm);
 		min-height: $height-medium;
 		font-size: var(--font-size-sm);
 		line-height: var(--line-height-sm);
 	}
 
-	&.sizeSmall {
+	&[data-size='small'] {
 		padding: var(--3xs) var(--sm);
 		min-height: $height-small;
 		font-size: var(--font-size-xs);
 		line-height: var(--line-height-xs);
 	}
 
-	&.sizeTiny {
+	&[data-size='tiny'] {
 		min-height: var(--icon-width-tiny);
 		padding: 0 var(--3xs);
 		font-size: var(--font-size-xs);
 		line-height: var(--line-height-xs);
 	}
 
-	&.iconOnly.sizeLarge {
+	&[data-icon-only][data-size='large'] {
 		padding: var(--3xs);
 		min-width: $height-large;
 	}
 
-	&.iconOnly.sizeMedium {
+	&[data-icon-only][data-size='medium'] {
 		padding: var(--3xs);
 		min-width: $height-medium;
 	}
 
-	&.iconOnly.sizeSmall {
+	&[data-icon-only][data-size='small'] {
 		padding: var(--3xs);
 		min-width: $height-small;
 	}
 
-	&.iconOnly.sizeTiny {
+	&[data-icon-only][data-size='tiny'] {
 		padding: 0;
 		min-width: var(--icon-width-tiny);
 	}
@@ -125,7 +125,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-primary-selected);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: var(--background-background-disable);
 		color: var(--font-font-on-action);
 	}
@@ -162,7 +162,7 @@ $transition-duration-quick: 0.15s;
 		border-color: var(--border-border-secondary-hover);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: var(--background-background-action-secondary);
 		color: var(--font-font-disabled);
 		border-color: var(--border-border);
@@ -197,7 +197,7 @@ $transition-duration-quick: 0.15s;
 		color: var(--font-font-action-secondary);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: transparent;
 		color: var(--font-font-disabled);
 	}
@@ -227,7 +227,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-negative-selected);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: var(--background-background-disable);
 		color: var(--font-font-on-action);
 	}
@@ -260,7 +260,7 @@ $transition-duration-quick: 0.15s;
 		border-color: var(--border-border-negative-hover);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: var(--background-background-action-secondary);
 		color: var(--font-font-disabled);
 		border-color: var(--border-border);
@@ -291,7 +291,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-negative-secondary-selected);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: transparent;
 		color: var(--font-font-disabled);
 	}
@@ -321,7 +321,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-ondark-primary-selected);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: var(--background-background-ondark-disabled);
 		color: var(--font-font-disabled);
 	}
@@ -354,7 +354,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-ondark-secondary-selected);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: transparent;
 		color: var(--font-font-ondark-disabled);
 		border-color: var(--background-background-ondark-disabled);
@@ -388,7 +388,7 @@ $transition-duration-quick: 0.15s;
 		background-color: var(--background-background-ondark-secondary-selected);
 	}
 
-	&:disabled:not(.loading) {
+	&:disabled:not([data-loading]) {
 		background-color: transparent;
 		color: var(--font-font-ondark-disabled);
 	}

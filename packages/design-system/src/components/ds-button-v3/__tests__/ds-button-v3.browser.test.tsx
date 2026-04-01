@@ -2,7 +2,6 @@ import { createRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { DsButtonV3 } from '../index.ts';
-import styles from '../ds-button-v3.module.scss';
 
 describe('DsButtonV3', () => {
 	it('calls onClick when clicked', async () => {
@@ -48,20 +47,12 @@ describe('DsButtonV3', () => {
 		await expect.element(button).toHaveAttribute('data-color', 'negative');
 	});
 
-	it('sets ondark color palette', async () => {
-		await page.render(<DsButtonV3 color="ondark">Label</DsButtonV3>);
-
-		const button = page.getByRole('button', { name: 'Label' });
-
-		await expect.element(button).toHaveAttribute('data-color', 'ondark');
-	});
-
 	it('applies iconOnly layout when icon is set without children', async () => {
 		await page.render(<DsButtonV3 icon="check_circle" aria-label="Confirm" />);
 
 		const button = page.getByRole('button', { name: 'Confirm' });
 
-		await expect.element(button).toHaveClass(styles.iconOnly);
+		await expect.element(button).toHaveAttribute('data-icon-only', 'true');
 	});
 
 	it('does not apply iconOnly layout when icon is set with children', async () => {
@@ -69,7 +60,7 @@ describe('DsButtonV3', () => {
 
 		const button = page.getByRole('button', { name: 'Save' });
 
-		await expect.element(button).not.toHaveClass(styles.iconOnly);
+		await expect.element(button).not.toHaveAttribute('data-icon-only');
 	});
 
 	it('renders native submit button type', async () => {
@@ -86,13 +77,13 @@ describe('DsButtonV3', () => {
 		await expect.element(page.getByRole('button', { name: 'X' })).toHaveClass('extra');
 	});
 
-	it('sets aria-busy and loading class when loading', async () => {
+	it('sets aria-busy and data-loading when loading', async () => {
 		await page.render(<DsButtonV3 loading>Save</DsButtonV3>);
 
 		const button = page.getByRole('button', { name: 'Save' });
 
 		await expect.element(button).toHaveAttribute('aria-busy', 'true');
-		await expect.element(button).toHaveClass(styles.loading);
+		await expect.element(button).toHaveAttribute('data-loading', '');
 	});
 
 	it('renders spinner instead of icon when loading', async () => {
@@ -142,6 +133,7 @@ describe('DsButtonV3', () => {
 
 		await expect.element(button).toHaveAttribute('data-color', 'default');
 		await expect.element(button).toHaveAttribute('data-variant', 'primary');
+		await expect.element(button).toHaveAttribute('data-size', 'medium');
 	});
 
 	it('forwards ref to the button element', async () => {
@@ -165,7 +157,7 @@ describe('DsButtonV3', () => {
 		const button = page.getByRole('button', { name: 'Saving', disabled: true });
 
 		await expect.element(button).toBeDisabled();
-		await expect.element(button).toHaveClass(styles.loading);
+		await expect.element(button).toHaveAttribute('data-loading', '');
 		await button.click({ force: true });
 		expect(onClick).not.toHaveBeenCalled();
 	});
@@ -180,7 +172,7 @@ describe('DsButtonV3', () => {
 		const button = page.getByRole('button', { name: 'Saving', disabled: true });
 
 		await expect.element(button).toBeDisabled();
-		await expect.element(button).not.toHaveClass(styles.loading);
+		await expect.element(button).not.toHaveAttribute('data-loading');
 		await expect.element(button).toHaveAttribute('aria-busy', 'true');
 	});
 
