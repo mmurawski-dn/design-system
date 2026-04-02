@@ -53,17 +53,6 @@ ruleTester.run('no-deprecated-ds-confirmation', plugin.rules['no-deprecated-ds-c
 	],
 });
 
-ruleTester.run('no-deprecated-ds-system-status', plugin.rules['no-deprecated-ds-system-status'], {
-	valid: ['<DsStatusBadge />'],
-
-	invalid: [
-		{
-			code: '<DsSystemStatus />',
-			errors: [{ message: `DsSystemStatus is deprecated. Use DsStatusBadge instead.` }],
-		},
-	],
-});
-
 ruleTester.run(
 	'no-deprecated-ds-dropdown-menu-legacy',
 	plugin.rules['no-deprecated-ds-dropdown-menu-legacy'],

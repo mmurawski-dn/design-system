@@ -25,12 +25,6 @@ const eslintPlugin = createPlugin(
 	},
 
 	{
-		name: 'no-deprecated-ds-system-status',
-		selector: JSXElement('DsSystemStatus'),
-		message: `DsSystemStatus is deprecated. Use DsStatusBadge instead.`,
-	},
-
-	{
 		name: 'no-deprecated-ds-dropdown-menu-legacy',
 		selector: JSXElement('DsDropdownMenuLegacy'),
 		message: `DsDropdownMenuLegacy is deprecated. Use DsDropdownMenu instead.`,

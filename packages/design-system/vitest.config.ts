@@ -25,7 +25,6 @@ export default defineConfig({
 				'**/ds-chip-group/**',
 				'**/ds-confirmation/**',
 				'**/ds-date-input/**',
-				'**/ds-system-status/**',
 			],
 			thresholds: {
 				lines: 90,
