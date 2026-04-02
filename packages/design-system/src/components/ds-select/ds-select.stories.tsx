@@ -280,7 +280,7 @@ export const MultiSelect: Story = {
 		// Delete the first option by clicking its delete button
 		const firstOption = mockOptions[0] as DsSelectOption;
 		const firstOptionChip = screen.getByRole('button', { name: firstOption.label });
-		const deleteButton = within(firstOptionChip).getByRole('button', { name: 'Delete chip' });
+		const deleteButton = within(firstOptionChip).getByRole('button', { name: 'Delete tag' });
 		await userEvent.click(deleteButton);
 
 		// Verify deleted option is no longer visible

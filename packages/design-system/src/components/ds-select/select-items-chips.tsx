@@ -1,8 +1,7 @@
 import { useSelectContext, type UseSelectContext } from '@ark-ui/react/select';
 import styles from './ds-select.module.scss';
 import { DsButton } from '../ds-button';
-// TODO: Use DsTag instead.
-import { DsChip } from '../ds-chip';
+import { DsTag } from '../ds-tag';
 import type { DsSelectOption, SelectOptionValue } from './ds-select.types';
 
 type SelectItemsChipsProps = {
@@ -36,11 +35,11 @@ export function SelectItemsChips({ showAll, onShowAll, onValueChange, count }: S
 					onValueChange?.(filteredValue);
 				};
 
-				return <DsChip key={itemValue} label={item.label} onDelete={onDelete} />;
+				return <DsTag key={itemValue} label={item.label} onDelete={onDelete} />;
 			})}
 
 			{!showAll && selectedItems.length > count && (
-				<DsChip label={`+${String(selectedItems.length - count)}`} onClick={onShowAll} size="small" />
+				<DsTag label={`+${String(selectedItems.length - count)}`} onClick={onShowAll} size="small" />
 			)}
 
 			<DsButton
