@@ -31,17 +31,6 @@ ruleTester.run(
 	},
 );
 
-ruleTester.run('no-deprecated-ds-dialog', plugin.rules['no-deprecated-ds-dialog'], {
-	valid: ['<Dialog />', '<DsModal />', '<DsConfirmation />'],
-
-	invalid: [
-		{
-			code: '<DsDialog>Click me</DsDialog>',
-			errors: [{ message: `DsDialog is deprecated. Use DsModal or DsConfirmation instead.` }],
-		},
-	],
-});
-
 ruleTester.run('no-deprecated-ds-confirmation', plugin.rules['no-deprecated-ds-confirmation'], {
 	valid: ['<DsModal variant="info" />'],
 
