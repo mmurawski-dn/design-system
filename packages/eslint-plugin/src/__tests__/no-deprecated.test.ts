@@ -42,32 +42,6 @@ ruleTester.run('no-deprecated-ds-system-status', plugin.rules['no-deprecated-ds-
 	],
 });
 
-ruleTester.run(
-	'no-deprecated-ds-dropdown-menu-legacy',
-	plugin.rules['no-deprecated-ds-dropdown-menu-legacy'],
-	{
-		valid: ['<DsDropdownMenu />'],
-
-		invalid: [
-			{
-				code: '<DsDropdownMenuLegacy />',
-				errors: [{ message: `DsDropdownMenuLegacy is deprecated. Use DsDropdownMenu instead.` }],
-			},
-		],
-	},
-);
-
-ruleTester.run('no-deprecated-ds-radio-group-legacy', plugin.rules['no-deprecated-ds-radio-group-legacy'], {
-	valid: ['<DsRadioGroup />'],
-
-	invalid: [
-		{
-			code: '<DsRadioGroupLegacy />',
-			errors: [{ message: `DsRadioGroupLegacy is deprecated. Use DsRadioGroup instead.` }],
-		},
-	],
-});
-
 ruleTester.run('no-deprecated-ds-chip', plugin.rules['no-deprecated-ds-chip'], {
 	valid: ['<DsTag />', '<DsTagFilter />'],
 

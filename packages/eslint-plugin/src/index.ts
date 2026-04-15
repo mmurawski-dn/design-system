@@ -19,18 +19,6 @@ const eslintPlugin = createPlugin(
 	},
 
 	{
-		name: 'no-deprecated-ds-dropdown-menu-legacy',
-		selector: JSXElement('DsDropdownMenuLegacy'),
-		message: `DsDropdownMenuLegacy is deprecated. Use DsDropdownMenu instead.`,
-	},
-
-	{
-		name: 'no-deprecated-ds-radio-group-legacy',
-		selector: JSXElement('DsRadioGroupLegacy'),
-		message: `DsRadioGroupLegacy is deprecated. Use DsRadioGroup instead.`,
-	},
-
-	{
 		name: 'no-deprecated-ds-chip',
 		selector: JSXElement('DsChip'),
 		message: `DsChip is deprecated. Use DsTag instead.`,

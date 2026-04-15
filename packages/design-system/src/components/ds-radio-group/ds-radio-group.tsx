@@ -1,13 +1,8 @@
 import type React from 'react';
-import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { RadioGroup } from '@ark-ui/react/radio-group';
 import classNames from 'classnames';
 import styles from './ds-radio-group.module.scss';
-import type {
-	DsRadioGroupItemProps,
-	DsRadioGroupLegacyProps,
-	DsRadioGroupRootProps,
-} from './ds-radio-group.types';
+import type { DsRadioGroupItemProps, DsRadioGroupRootProps } from './ds-radio-group.types';
 
 /**
  * Root component - provides radio group context
@@ -58,49 +53,6 @@ const Item: React.FC<DsRadioGroupItemProps> = ({
 		</RadioGroup.Item>
 	);
 };
-
-/**
- * DEPRECATED: Legacy DsRadioGroup component with options array
- * Use compound component pattern instead: DsRadioGroup.Root + DsRadioGroup.Item
- * @deprecated
- */
-/* c8 ignore start */
-export const DsRadioGroupLegacy: React.FC<DsRadioGroupLegacyProps> = ({
-	options,
-	value,
-	defaultValue,
-	onValueChange,
-	className,
-	...props
-}) => (
-	<RadioGroupPrimitive.Root
-		className={classNames(styles.radioGroupRoot, className)}
-		value={value}
-		defaultValue={defaultValue}
-		onValueChange={onValueChange}
-		{...props}
-	>
-		{options.map((option) => (
-			<div key={option.value} className={styles.radioItemContainer}>
-				<RadioGroupPrimitive.Item
-					className={styles.radioItem}
-					value={option.value}
-					disabled={option.disabled}
-					id={option.value}
-				>
-					<div className={styles.radioItemWrapper}>
-						<RadioGroupPrimitive.Indicator className={styles.radioIndicator} />
-					</div>
-				</RadioGroupPrimitive.Item>
-				<label className={styles.radioLabel} htmlFor={option.value}>
-					{option.label}
-					{option.labelInfo && <div className={styles.labelInfo}>{option.labelInfo}</div>}
-				</label>
-			</div>
-		))}
-	</RadioGroupPrimitive.Root>
-);
-/* c8 ignore stop */
 
 /**
  * Design system RadioGroup component
