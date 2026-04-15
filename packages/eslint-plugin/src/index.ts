@@ -13,30 +13,6 @@ const eslintPlugin = createPlugin(
 	},
 
 	{
-		name: 'no-deprecated-ds-dialog',
-		selector: JSXElement('DsDialog'),
-		message: `DsDialog is deprecated. Use DsModal or DsConfirmation instead.`,
-	},
-
-	{
-		name: 'no-deprecated-ds-confirmation',
-		selector: JSXElement('DsConfirmation'),
-		message: `DsConfirmation is deprecated. Use DsModal instead.`,
-	},
-
-	{
-		name: 'no-deprecated-ds-dropdown-menu-legacy',
-		selector: JSXElement('DsDropdownMenuLegacy'),
-		message: `DsDropdownMenuLegacy is deprecated. Use DsDropdownMenu instead.`,
-	},
-
-	{
-		name: 'no-deprecated-ds-radio-group-legacy',
-		selector: JSXElement('DsRadioGroupLegacy'),
-		message: `DsRadioGroupLegacy is deprecated. Use DsRadioGroup instead.`,
-	},
-
-	{
 		name: 'no-deprecated-ds-chip',
 		selector: JSXElement('DsChip'),
 		message: `DsChip is deprecated. Use DsTag instead.`,
