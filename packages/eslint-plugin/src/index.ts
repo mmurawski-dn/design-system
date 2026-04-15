@@ -13,12 +13,6 @@ const eslintPlugin = createPlugin(
 	},
 
 	{
-		name: 'no-deprecated-ds-system-status',
-		selector: JSXElement('DsSystemStatus'),
-		message: `DsSystemStatus is deprecated. Use DsStatusBadge instead.`,
-	},
-
-	{
 		name: 'no-deprecated-ds-chip',
 		selector: JSXElement('DsChip'),
 		message: `DsChip is deprecated. Use DsTag instead.`,

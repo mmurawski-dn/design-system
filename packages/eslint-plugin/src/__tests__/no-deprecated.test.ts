@@ -31,17 +31,6 @@ ruleTester.run(
 	},
 );
 
-ruleTester.run('no-deprecated-ds-system-status', plugin.rules['no-deprecated-ds-system-status'], {
-	valid: ['<DsStatusBadge />'],
-
-	invalid: [
-		{
-			code: '<DsSystemStatus />',
-			errors: [{ message: `DsSystemStatus is deprecated. Use DsStatusBadge instead.` }],
-		},
-	],
-});
-
 ruleTester.run('no-deprecated-ds-chip', plugin.rules['no-deprecated-ds-chip'], {
 	valid: ['<DsTag />', '<DsTagFilter />'],
 
