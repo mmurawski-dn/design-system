@@ -4,5 +4,5 @@
 ---
 
 Remove deprecated `DsButton` and `DsButtonLegacy`.
-Set `DsButtonV3` as a default `DsButton` component.
+Rename `DsButtonV3` to `DsButton` (it becomes the default `DsButton` component).
 Remove deprecation rules for `DsButtonLegacy`.

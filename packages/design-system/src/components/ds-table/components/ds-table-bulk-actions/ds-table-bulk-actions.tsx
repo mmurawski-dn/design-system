@@ -53,11 +53,15 @@ const DsTableBulkActions: React.FC<BulkActionsProps> = ({ numSelectedRows, actio
 				<DsButton
 					variant="tertiary"
 					aria-label="Clear selection"
+					icon="close"
 					className={classnames(styles.targetButton, styles.actionButton, styles.escapeButtonContent)}
 					onClick={onClearSelection}
-				>
-					<DsIcon icon="close" size="medium" />
-				</DsButton>
+					slotProps={{
+						icon: {
+							size: 'medium',
+						},
+					}}
+				/>
 			</div>
 		</div>
 	);

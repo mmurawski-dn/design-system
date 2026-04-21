@@ -1,6 +1,5 @@
 import type { ButtonHTMLAttributes, Ref } from 'react';
-import type { IconType } from '../ds-icon';
-import type { ResponsiveValue } from '../../utils/responsive';
+import type { DsIconProps, IconType } from '../ds-icon';
 
 export const buttonVariants = ['primary', 'secondary', 'tertiary'] as const;
 export type ButtonVariant = (typeof buttonVariants)[number];
@@ -11,7 +10,7 @@ export type ButtonColor = (typeof buttonColors)[number];
 export const buttonSizes = ['large', 'medium', 'small', 'tiny'] as const;
 export type ButtonSize = (typeof buttonSizes)[number];
 
-export interface DsButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface DsButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	ref?: Ref<HTMLButtonElement>;
 
 	/**
@@ -47,12 +46,11 @@ export interface DsButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElemen
 	 * @default false
 	 */
 	loading?: boolean;
-}
 
-export interface DsButtonProps extends Omit<DsButtonBaseProps, 'size'> {
 	/**
-	 * Size of the button. Accepts a static value or a responsive object.
-	 * @default 'medium'
+	 * Props forwarded to internal slots. Use to override defaults on the leading icon.
 	 */
-	size?: ResponsiveValue<ButtonSize>;
+	slotProps?: {
+		icon?: Omit<Partial<DsIconProps>, 'icon'>;
+	};
 }

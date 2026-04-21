@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { DsIcon, type IconSize } from '../ds-icon';
 import { DsSpinner } from '../ds-spinner';
 import styles from './ds-button.module.scss';
-import type { ButtonSize, DsButtonBaseProps } from './ds-button.types.ts';
+import type { ButtonSize, DsButtonProps } from './ds-button.types';
 
 const iconSizeMap: Record<ButtonSize, IconSize> = Object.freeze({
 	large: 'small',
@@ -24,8 +24,9 @@ const DsButton = ({
 	size = 'medium',
 	selected = false,
 	type = 'button',
+	slotProps,
 	...rest
-}: DsButtonBaseProps) => {
+}: DsButtonProps) => {
 	const isIconOnly = icon !== undefined && !children;
 
 	return (
@@ -46,7 +47,11 @@ const DsButton = ({
 			data-loading={loading && !disabled ? '' : undefined}
 			{...rest}
 		>
-			{loading ? <DsSpinner /> : icon && <DsIcon icon={icon} size={iconSizeMap[size]} aria-hidden />}
+			{loading ? (
+				<DsSpinner />
+			) : (
+				icon && <DsIcon size={iconSizeMap[size]} aria-hidden {...slotProps?.icon} icon={icon} />
+			)}
 			{children}
 		</button>
 	);
