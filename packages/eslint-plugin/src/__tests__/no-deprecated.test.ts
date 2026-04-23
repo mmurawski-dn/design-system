@@ -1,5 +1,5 @@
 import { RuleTester } from 'eslint';
-import plugin from '../index';
+import { expect, it } from 'vitest';
 
 const ruleTester = new RuleTester({
 	languageOptions: {
@@ -11,7 +11,11 @@ const ruleTester = new RuleTester({
 	},
 });
 
-// Example test for the futur reference
+it('placeholder: RuleTester instantiates', () => {
+	expect(ruleTester).toBeInstanceOf(RuleTester);
+});
+
+// Example test for the future reference
 
 // ruleTester.run('no-deprecated-ds-date-input', plugin.rules['no-deprecated-ds-date-input'], {
 // 	valid: ['<DsDatePicker />', '<DsDateRangePicker />'],
