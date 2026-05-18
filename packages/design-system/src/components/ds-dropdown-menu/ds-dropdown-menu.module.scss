@@ -16,6 +16,11 @@
 	&[hidden] {
 		display: none;
 	}
+
+	&[data-nested='menu'] {
+		margin-top: -1px;
+		z-index: 10000;
+	}
 }
 
 .header {
@@ -47,6 +52,14 @@
 			.indicator {
 				color: var(--background-primary);
 			}
+		}
+	}
+
+	&.variant-error {
+		color: var(--font-error);
+
+		&[data-highlighted] {
+			background: var(--background-error-secondary-hover);
 		}
 	}
 }
