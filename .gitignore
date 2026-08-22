@@ -12,3 +12,4 @@ actionlint
 
 coverage/
 **/.env*
+**/mcp.json
