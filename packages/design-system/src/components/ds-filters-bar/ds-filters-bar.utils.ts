@@ -149,6 +149,79 @@ export const describeCondition = (
 	};
 };
 
+/**
+ * One part of the collapsed summary line. Each ends with `;`, except a saved filter that other
+ * items follow.
+ */
+export type DsFiltersBarSummaryItem =
+	| { kind: 'empty' }
+	| { kind: 'advancedQuery' }
+	| { kind: 'savedFilter'; name: string }
+	| { kind: 'search'; id: string; value: string }
+	| {
+			kind: 'condition';
+			id: string;
+			label: string;
+			/**
+			 * Operator in words. Absent for `=`, which reads as `Field: value`.
+			 */
+			operator?: string;
+			value: string;
+	  };
+
+export interface DsFiltersBarSummarySource {
+	conditions: ReadonlyArray<DsFilterCondition>;
+	query: string | null;
+	fields: ReadonlyArray<DsFilterField>;
+	activeSavedFilterName?: string;
+}
+
+const EQUALS_OPERATOR = '=';
+const FIELD_PATH_SEPARATOR = ' › ';
+
+const toSummaryCondition = (
+	condition: DsFilterCondition,
+	fields: ReadonlyArray<DsFilterField>,
+): DsFiltersBarSummaryItem => {
+	const { fieldPath, operator, value } = describeCondition(condition, fields);
+
+	if (condition.kind === 'search') {
+		return { kind: 'search', id: condition.id, value };
+	}
+
+	const shownOperator = condition.operator === EQUALS_OPERATOR ? undefined : operator;
+
+	return {
+		kind: 'condition',
+		id: condition.id,
+		label: fieldPath.join(FIELD_PATH_SEPARATOR),
+		...(shownOperator && { operator: shownOperator }),
+		value,
+	};
+};
+
+/**
+ * Orders the collapsed summary: the **Active saved filter** first, then the Advanced query label or
+ * the conditions. `View: All` only shows when there is neither a saved filter nor anything to list.
+ */
+export const toSummaryItems = ({
+	conditions,
+	query,
+	fields,
+	activeSavedFilterName,
+}: DsFiltersBarSummarySource): DsFiltersBarSummaryItem[] => {
+	const items: DsFiltersBarSummaryItem[] =
+		query === null
+			? conditions.map((condition) => toSummaryCondition(condition, fields))
+			: [{ kind: 'advancedQuery' }];
+
+	if (activeSavedFilterName) {
+		return [{ kind: 'savedFilter', name: activeSavedFilterName }, ...items];
+	}
+
+	return items.length ? items : [{ kind: 'empty' }];
+};
+
 export const filtersDialogFields = (fields: ReadonlyArray<DsFilterField>): ReadonlyArray<DsFilterEnumField> =>
 	fields.filter((field): field is DsFilterEnumField => field.type === 'enum' && field.options.length > 0);
 

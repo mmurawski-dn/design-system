@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { DsFiltersBar } from './index';
 import { filtersBarViews } from './ds-filters-bar.types';
+import styles from './ds-filters-bar.stories.module.scss';
 
 const meta: Meta<typeof DsFiltersBar.Root> = {
 	title: 'Components/FiltersBar',
@@ -13,9 +14,9 @@ const meta: Meta<typeof DsFiltersBar.Root> = {
 		docs: {
 			description: {
 				component: `
-**Work in progress — the API is wired, but only some parts render.** \`Root\`, \`Toolbar\`,
-\`Search\`, the add-filter button with its filters dialog and the search chips in \`Conditions\`,
-and the advanced query view render; the other parts render nothing yet. Until \`ViewSwitch\` renders, the stories place the advanced view
+**Work in progress — the API is wired, but only some parts render.** \`Root\`, \`Disclosure\`,
+\`Summary\`, \`Toolbar\`, \`Search\`, the add-filter button with its filters dialog and the search
+chips in \`Conditions\`, and the advanced query view render; the other parts render nothing yet. Until \`ViewSwitch\` renders, the stories place the advanced view
 directly under \`Root\`.
 
 **Internal component.** Not exported from \`@drivenets/design-system\` while it is being built.
@@ -37,8 +38,10 @@ views lock until it is cleared. Evaluate such a query with \`parseFilterQuery(qu
 **Pins are a user preference,** not part of the document: loading a saved filter or clearing leaves
 them alone.
 
-**Collapsed shows a summary, expanded shows the toolbar.** \`Summary\` renders while collapsed,
-\`Toolbar\` while expanded; \`Pinned\` renders in both.
+**Collapsed shows a summary, expanded shows the toolbar.** \`Disclosure\` toggles between them and
+renders in both states, so place it once, before \`Summary\` and \`Toolbar\`; they share its line.
+\`Summary\` renders while collapsed, \`Toolbar\` while expanded; \`Pinned\` renders in both, below
+them at full width.
 				`,
 			},
 		},
@@ -148,6 +151,7 @@ export const Default: Story = {
 	},
 	render: (args) => (
 		<DsFiltersBar.Root {...args}>
+			<DsFiltersBar.Disclosure />
 			<DsFiltersBar.Summary count={18} />
 
 			<DsFiltersBar.Toolbar>
@@ -194,6 +198,123 @@ export const Default: Story = {
 				</DsFiltersBar.PinnedGroup>
 			</DsFiltersBar.Pinned>
 		</DsFiltersBar.Root>
+	),
+};
+
+/**
+ * Collapsed, the bar shows one line: the **Active saved filter**, then the conditions, or a fixed
+ * `Advanced query` label while a query is the source, then the result count. A condition on `=`
+ * (ranges included) reads `Field: value`; any other operator shows its label in italics. With no
+ * saved filter and nothing to list, the line reads `View: All`. When the line runs out of room the
+ * conditions truncate while the name and count stay, and hovering shows the full summary.
+ */
+export const Summary: Story = {
+	parameters: { docs: { canvas: { sourceState: 'none' } } },
+	args: {
+		fields: [
+			{
+				type: 'enum',
+				id: 'status',
+				label: 'Status',
+				operators: [
+					{ value: '=', label: 'equals', symbol: '=' },
+					{ value: '!=', label: 'not equal', symbol: '≠' },
+				],
+				options: [
+					{ value: 'active', label: 'Active' },
+					{ value: 'deprecated', label: 'Deprecated' },
+				],
+			},
+			{
+				type: 'enum',
+				id: 'lastRunResult',
+				label: 'Last run result',
+				operators: [
+					{ value: '=', label: 'equals', symbol: '=' },
+					{ value: '!=', label: 'not equal', symbol: '≠' },
+				],
+				options: [
+					{ value: 'success', label: 'Success' },
+					{ value: 'failure', label: 'Failure' },
+				],
+			},
+			{
+				type: 'number',
+				id: 'parents',
+				label: 'Parents',
+				operators: [
+					{ value: '=', label: 'equals', symbol: '=' },
+					{ value: '>', label: 'greater than', symbol: '>' },
+				],
+			},
+			{
+				type: 'compound',
+				id: 'input',
+				label: 'Input',
+				subfields: [
+					{ type: 'text', id: 'name', label: 'Name', operators: [{ value: '~', label: 'contains' }] },
+				],
+			},
+		],
+	},
+	render: (args) => (
+		<div className={styles.summaryMatrix}>
+			<DsFiltersBar.Root {...args}>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={726} />
+			</DsFiltersBar.Root>
+
+			<DsFiltersBar.Root
+				{...args}
+				defaultConditions={[
+					{ kind: 'field', id: 'c1', field: 'status', operator: '=', value: ['active'] },
+					{ kind: 'search', id: 'c2', text: 'AAA' },
+				]}
+			>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={18} />
+			</DsFiltersBar.Root>
+
+			<DsFiltersBar.Root {...args} defaultQuery={'status = "active" OR lastRunResult = "failure"'}>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={5} />
+			</DsFiltersBar.Root>
+
+			<DsFiltersBar.Root {...args}>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={726} activeSavedFilterName="Ira123" />
+			</DsFiltersBar.Root>
+
+			<DsFiltersBar.Root
+				{...args}
+				defaultConditions={[
+					{ kind: 'field', id: 'c1', field: 'status', operator: '=', value: ['active'] },
+					{ kind: 'field', id: 'c2', field: 'parents', operator: '=', value: { from: 2, to: 5 } },
+				]}
+			>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={18} activeSavedFilterName="Ira123" />
+			</DsFiltersBar.Root>
+
+			<DsFiltersBar.Root {...args} defaultQuery={'status = "active" OR lastRunResult = "failure"'}>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={5} activeSavedFilterName="Ira123" />
+			</DsFiltersBar.Root>
+
+			<DsFiltersBar.Root
+				{...args}
+				defaultConditions={[
+					{ kind: 'field', id: 'c1', field: 'status', operator: '=', value: ['active'] },
+					{ kind: 'field', id: 'c2', field: 'lastRunResult', operator: '!=', value: ['success'] },
+					{ kind: 'field', id: 'c3', field: 'input', subfield: 'name', operator: '~', value: 'WF456' },
+					{ kind: 'field', id: 'c4', field: 'parents', operator: '>', value: 2 },
+					{ kind: 'search', id: 'c5', text: 'AAA' },
+				]}
+			>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={18} activeSavedFilterName="Ira123" />
+			</DsFiltersBar.Root>
+		</div>
 	),
 };
 
@@ -264,6 +385,8 @@ export const FiltersDialog: Story = {
 	},
 	render: (args) => (
 		<DsFiltersBar.Root {...args}>
+			<DsFiltersBar.Disclosure />
+			<DsFiltersBar.Summary count={42} />
 			<DsFiltersBar.Toolbar>
 				<DsFiltersBar.Conditions />
 			</DsFiltersBar.Toolbar>
@@ -296,6 +419,8 @@ export const Search: Story = {
 	},
 	render: (args) => (
 		<DsFiltersBar.Root {...args}>
+			<DsFiltersBar.Disclosure />
+			<DsFiltersBar.Summary count={7} />
 			<DsFiltersBar.Toolbar>
 				<DsFiltersBar.Search />
 				<DsFiltersBar.View value="filters">
@@ -425,6 +550,18 @@ export const Localized: Story = {
 	},
 	render: (args) => (
 		<DsFiltersBar.Root {...args}>
+			<DsFiltersBar.Disclosure />
+			<DsFiltersBar.Summary
+				count={3}
+				locale={{
+					resultCount: (count) => `${String(count)} matches`,
+					activeSavedFilter: 'Preset',
+					emptyLabel: 'Showing',
+					emptyValue: 'Everything',
+					search: 'Text',
+					advancedQuery: 'Custom query',
+				}}
+			/>
 			<DsFiltersBar.Toolbar>
 				<DsFiltersBar.Search locale={{ label: 'Find', placeholder: 'Press ‘/’ to find' }} />
 				<DsFiltersBar.ViewSwitch
@@ -440,5 +577,73 @@ export const Localized: Story = {
 				/>
 			</DsFiltersBar.View>
 		</DsFiltersBar.Root>
+	),
+};
+
+/**
+ * `Summary` takes its own strings through `locale`: the saved filter, search and advanced query
+ * labels, the empty view and the announced result count.
+ */
+export const SummaryLocalized: Story = {
+	parameters: { docs: { canvas: { sourceState: 'none' } } },
+	args: {
+		fields: [
+			{
+				type: 'enum',
+				id: 'status',
+				label: 'Status',
+				operators: [
+					{ value: '=', label: 'equals' },
+					{ value: '!=', label: 'not equal' },
+				],
+				options: [
+					{ value: 'active', label: 'Active' },
+					{ value: 'deprecated', label: 'Deprecated' },
+				],
+			},
+		],
+		locale: { label: 'Refine results', expand: 'Show refinements', collapse: 'Hide refinements' },
+	},
+	render: (args) => (
+		<div className={styles.summaryMatrix}>
+			<DsFiltersBar.Root
+				{...args}
+				defaultConditions={[
+					{ kind: 'field', id: 'c1', field: 'status', operator: '!=', value: ['deprecated'] },
+					{ kind: 'search', id: 'c2', text: 'AAA' },
+				]}
+			>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary
+					count={18}
+					activeSavedFilterName="Ira123"
+					locale={{
+						resultCount: (count) => `${String(count)} matches`,
+						activeSavedFilter: 'Preset',
+						search: 'Text',
+					}}
+				/>
+			</DsFiltersBar.Root>
+
+			<DsFiltersBar.Root {...args} defaultQuery={'status = "active" OR status = "deprecated"'}>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary
+					count={5}
+					locale={{ resultCount: (count) => `${String(count)} matches`, advancedQuery: 'Custom query' }}
+				/>
+			</DsFiltersBar.Root>
+
+			<DsFiltersBar.Root {...args}>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary
+					count={726}
+					locale={{
+						resultCount: (count) => `${String(count)} matches`,
+						emptyLabel: 'Showing',
+						emptyValue: 'Everything',
+					}}
+				/>
+			</DsFiltersBar.Root>
+		</div>
 	),
 };
