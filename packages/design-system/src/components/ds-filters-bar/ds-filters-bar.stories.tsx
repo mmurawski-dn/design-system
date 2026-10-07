@@ -42,8 +42,9 @@ them alone.
 
 **Collapsed shows a summary, expanded shows the toolbar.** \`Disclosure\` toggles between them and
 renders in both states, so place it once, before \`Summary\` and \`Toolbar\`; they share its line.
-\`Summary\` renders while collapsed, \`Toolbar\` while expanded; \`Pinned\` renders in both, below
-them at full width.
+\`Summary\` renders while collapsed, \`Toolbar\` while expanded, so everything that edits the
+document (search, chips, builder and the advanced query) goes inside \`Toolbar\` and hides with it.
+\`Pinned\` renders in both, below them at full width.
 				`,
 			},
 		},
@@ -176,6 +177,9 @@ export const Default: Story = {
 				<DsFiltersBar.View value="builder">
 					<DsFiltersBar.Builder suggestedFields={['input', 'status']} />
 				</DsFiltersBar.View>
+				<DsFiltersBar.View value="advanced">
+					<DsFiltersBar.Query />
+				</DsFiltersBar.View>
 				<DsFiltersBar.SaveFilter
 					items={[
 						{ id: '1', name: 'MyFilter_1', count: 2 },
@@ -187,11 +191,6 @@ export const Default: Story = {
 				/>
 				<DsFiltersBar.ClearAll />
 			</DsFiltersBar.Toolbar>
-
-			{/* Moves back into Toolbar once Toolbar renders */}
-			<DsFiltersBar.View value="advanced">
-				<DsFiltersBar.Query />
-			</DsFiltersBar.View>
 
 			<DsFiltersBar.Pinned>
 				<DsFiltersBar.PinnedGroup label="Status">
@@ -393,6 +392,8 @@ export const QueryBuilder: Story = {
 					args.onViewChange?.(next);
 				}}
 			>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={12} />
 				<DsFiltersBar.Toolbar>
 					<DsButtonV3 variant="secondary" size="medium" onClick={() => setView('builder')}>
 						Query builder
@@ -405,8 +406,8 @@ export const QueryBuilder: Story = {
 						<DsFiltersBar.Builder suggestedFields={['input', 'output', 'status', 'tag']} />
 					</DsFiltersBar.View>
 					<DsFiltersBar.ClearAll />
+					<DsFiltersBar.Query />
 				</DsFiltersBar.Toolbar>
-				<DsFiltersBar.Query />
 			</DsFiltersBar.Root>
 		);
 	},
@@ -429,6 +430,8 @@ export const QueryBuilderLocalized: Story = {
 					args.onViewChange?.(next);
 				}}
 			>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Summary count={12} />
 				<DsFiltersBar.Toolbar>
 					<DsButtonV3 variant="secondary" size="medium" onClick={() => setView('builder')}>
 						Query builder
@@ -458,8 +461,8 @@ export const QueryBuilderLocalized: Story = {
 						/>
 					</DsFiltersBar.View>
 					<DsFiltersBar.ClearAll />
+					<DsFiltersBar.Query />
 				</DsFiltersBar.Toolbar>
-				<DsFiltersBar.Query />
 			</DsFiltersBar.Root>
 		);
 	},
@@ -729,6 +732,8 @@ export const SelectedFilters: Story = {
 	},
 	render: (args) => (
 		<DsFiltersBar.Root {...args}>
+			<DsFiltersBar.Disclosure />
+			<DsFiltersBar.Summary count={9} />
 			<DsFiltersBar.Toolbar>
 				<DsFiltersBar.Search />
 				<DsFiltersBar.View value="filters">
@@ -745,6 +750,7 @@ export const SelectedFilters: Story = {
  */
 export const AdvancedQuery: Story = {
 	args: {
+		defaultExpanded: true,
 		defaultView: 'advanced',
 		fields: [
 			{
@@ -797,9 +803,13 @@ export const AdvancedQuery: Story = {
 	},
 	render: (args) => (
 		<DsFiltersBar.Root {...args}>
-			<DsFiltersBar.View value="advanced">
-				<DsFiltersBar.Query />
-			</DsFiltersBar.View>
+			<DsFiltersBar.Disclosure />
+			<DsFiltersBar.Summary count={5} />
+			<DsFiltersBar.Toolbar>
+				<DsFiltersBar.View value="advanced">
+					<DsFiltersBar.Query />
+				</DsFiltersBar.View>
+			</DsFiltersBar.Toolbar>
 		</DsFiltersBar.Root>
 	),
 };
@@ -810,6 +820,7 @@ export const AdvancedQuery: Story = {
  */
 export const LockedViews: Story = {
 	args: {
+		defaultExpanded: true,
 		defaultView: 'advanced',
 		fields: [
 			{
@@ -831,9 +842,13 @@ export const LockedViews: Story = {
 	},
 	render: (args) => (
 		<DsFiltersBar.Root {...args}>
-			<DsFiltersBar.View value="advanced">
-				<DsFiltersBar.Query />
-			</DsFiltersBar.View>
+			<DsFiltersBar.Disclosure />
+			<DsFiltersBar.Summary count={5} />
+			<DsFiltersBar.Toolbar>
+				<DsFiltersBar.View value="advanced">
+					<DsFiltersBar.Query />
+				</DsFiltersBar.View>
+			</DsFiltersBar.Toolbar>
 		</DsFiltersBar.Root>
 	),
 };
@@ -875,15 +890,13 @@ export const Localized: Story = {
 				<DsFiltersBar.ViewSwitch
 					locale={{ views: { filters: 'Quick filters', builder: 'Guided query', advanced: 'Query editor' } }}
 				/>
+				<DsFiltersBar.View value="advanced">
+					<DsFiltersBar.Query
+						locale={{ label: 'Query editor', placeholder: 'status = "Active"', help: 'Syntax' }}
+					/>
+				</DsFiltersBar.View>
 				<DsFiltersBar.ClearAll locale={{ label: 'Reset' }} />
 			</DsFiltersBar.Toolbar>
-
-			{/* Moves back into Toolbar once Toolbar renders */}
-			<DsFiltersBar.View value="advanced">
-				<DsFiltersBar.Query
-					locale={{ label: 'Query editor', placeholder: 'status = "Active"', help: 'Syntax' }}
-				/>
-			</DsFiltersBar.View>
 		</DsFiltersBar.Root>
 	),
 };
