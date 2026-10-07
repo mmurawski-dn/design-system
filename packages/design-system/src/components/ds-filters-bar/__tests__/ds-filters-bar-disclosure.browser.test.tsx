@@ -171,9 +171,33 @@ describe('DsFiltersBar.Disclosure layout', () => {
 		await expect.element(addFilter()).toBeVisible();
 		await settleAnimations();
 
-		const toolbar = partOf(addFilter());
+		expect(isSameLineBefore(rectOf(hideButton()), rectOf(addFilter()))).toBe(true);
+	});
 
-		expect(isSameLineBefore(rectOf(hideButton()), rectOf(toolbar))).toBe(true);
+	it('wraps the lines after the first under the Disclosure', async () => {
+		await page.render(
+			<DsFiltersBar.Root fields={FIELDS} defaultExpanded style={{ width: 200 }}>
+				<DsFiltersBar.Disclosure />
+				<DsFiltersBar.Toolbar>
+					<button type="button" style={{ width: 120 }}>
+						First
+					</button>
+					<button type="button" style={{ width: 120 }}>
+						Second
+					</button>
+				</DsFiltersBar.Toolbar>
+			</DsFiltersBar.Root>,
+		);
+
+		await settleAnimations();
+
+		const disclosure = rectOf(hideButton());
+		const first = rectOf(page.getByRole('button', { name: 'First' }));
+		const second = rectOf(page.getByRole('button', { name: 'Second' }));
+
+		expect(isSameLineBefore(disclosure, first)).toBe(true);
+		expect(second.top).toBeGreaterThanOrEqual(disclosure.bottom);
+		expect(Math.abs(second.left - disclosure.left)).toBeLessThanOrEqual(LAYOUT_TOLERANCE_PX);
 	});
 
 	it('places any other child below the Disclosure line at full width', async () => {

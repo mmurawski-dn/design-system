@@ -7,6 +7,7 @@ $swap-offset: -4px;
 // A selected-filter chip, the tallest control on a toolbar line, and the small Disclosure button
 $line-height: 32px;
 $disclosure-height: 28px;
+$disclosure-width: 44px;
 $operator-border-width: 1px;
 $operator-radius: 4px;
 $operator-focus-width: 2px;
@@ -26,19 +27,22 @@ $transition-duration: 0.2s;
 
 	// Centered on the toolbar's first line, not the whole cell: a wrapped toolbar has more lines.
 	> .disclosure {
+		position: relative;
+		z-index: 1;
+		grid-row: 1;
 		grid-column: 1;
 		align-self: start;
+		width: $disclosure-width;
 		margin-block: calc(($line-height - $disclosure-height) / 2);
 
-		// Figma: 4px side padding with the 1px border drawn inside it (44px wide), not the
-		// small button's text padding. `[data-size]` outranks the button's own size rule.
+		// Figma: 4px side padding with the 1px border drawn inside it, not the small button's
+		// text padding. `[data-size]` outranks the button's own size rule.
 		&[data-size] {
 			padding-inline: calc(var(--3xs) - 1px);
 		}
 	}
 
-	> .summary,
-	> .toolbar {
+	> .summary {
 		grid-column: 2;
 	}
 
@@ -49,8 +53,15 @@ $transition-duration: 0.2s;
 			margin-inline-start: var(--sm);
 		}
 
+		// The toolbar shares the Disclosure's row across both columns, so lines after the first
+		// wrap under the button; its first line leaves the button's width free.
 		> .toolbar {
-			margin-inline-start: var(--xs);
+			grid-row: 1;
+
+			&::before {
+				width: $disclosure-width;
+				margin-inline-end: 0;
+			}
 		}
 	}
 }
