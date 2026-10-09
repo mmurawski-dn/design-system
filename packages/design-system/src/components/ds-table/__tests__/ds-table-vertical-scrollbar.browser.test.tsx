@@ -4,7 +4,6 @@ import type { CellContext, ColumnDef } from '@tanstack/react-table';
 import DsTable from '../ds-table';
 import { DsTableEditCellText } from '../components/edit/cell-editors';
 import { columns, type Person } from '../stories/common/story-data';
-import { SCROLLBAR_SPACER_WIDTH } from '../utils/constants';
 
 type Row = {
 	id: string;
@@ -46,6 +45,12 @@ const groupedColumns: ColumnDef<Row>[] = [
 	},
 ];
 
+const wideColumns: ColumnDef<Row>[] = [
+	{ accessorKey: 'firstName', header: 'First Name', cell: (info) => info.getValue(), size: 500 },
+	{ accessorKey: 'lastName', header: 'Last Name', cell: (info) => info.getValue(), size: 500 },
+	{ accessorKey: 'age', header: 'Age', cell: (info) => info.getValue(), size: 500 },
+];
+
 const fillLeafIds = ['firstName', 'lastName', 'age', 'visits', 'status', 'progress'] as const;
 
 const getHeaderCell = (columnId: string): HTMLElement => {
@@ -64,19 +69,6 @@ const getBodyCell = (columnId: string): HTMLElement => {
 		throw new Error(`Expected body cell for column "${columnId}"`);
 	}
 	return cell;
-};
-
-const getSpacers = (): HTMLElement[] =>
-	[...document.querySelectorAll('thead th[aria-hidden="true"]')].filter(
-		(node): node is HTMLElement => node instanceof HTMLElement,
-	);
-
-const getSpacer = (index = 0): HTMLElement => {
-	const spacer = getSpacers()[index];
-	if (!spacer) {
-		throw new Error(`Expected scrollbar spacer at index ${String(index)}`);
-	}
-	return spacer;
 };
 
 const getTable = (): HTMLElement => {
@@ -103,6 +95,8 @@ const getScrollContainer = (): HTMLElement => {
 	return container;
 };
 
+const overflowsVertically = (element: HTMLElement): boolean => element.scrollHeight > element.clientHeight;
+
 const contentBoxRight = (element: HTMLElement): number =>
 	element.getBoundingClientRect().left + element.clientWidth;
 
@@ -114,104 +108,106 @@ const expectAligned = (columnId: string): void => {
 	expect(Math.abs(header.width - body.width)).toBeLessThan(1);
 };
 
-describe('DsTable scrollbar spacer', () => {
-	it('aligns Fill columns after a virtualized body overflows vertically', async () => {
+describe('DsTable vertical scrollbar', () => {
+	it.each([
+		{ name: 'virtualized', virtualized: true },
+		{ name: 'non-virtualized', virtualized: false },
+	])('scrolls the $name body on the table container, not the tbody', async ({ virtualized }) => {
 		await page.render(
 			<div style={{ width: 900, height: 400 }}>
-				<DsTable columns={columns} data={generatePeople(40)} virtualized />
+				<DsTable columns={columns} data={generatePeople(40)} virtualized={virtualized} />
 			</div>,
 		);
 
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
+		await expect.poll(() => overflowsVertically(getScrollContainer())).toBe(true);
+
+		expect(overflowsVertically(getBody())).toBe(false);
 
 		for (const id of fillLeafIds) {
 			expectAligned(id);
 		}
-
-		const lastLeaf = getHeaderCell('progress').getBoundingClientRect();
-		const spacer = getSpacer().getBoundingClientRect();
-		const table = getTable().getBoundingClientRect();
-
-		expect(Math.abs(lastLeaf.right - spacer.left)).toBeLessThan(1);
-		expect(Math.abs(spacer.right - table.right)).toBeLessThan(2);
 	});
 
-	it('aligns Fill columns after a non-virtual body overflows vertically', async () => {
+	it('keeps the vertical scrollbar at the visible right edge when the table overflows horizontally', async () => {
 		await page.render(
-			<div style={{ width: 900, height: 400 }}>
+			<div style={{ width: 600, height: 300 }}>
+				<DsTable columns={wideColumns} data={generateRows(40)} />
+			</div>,
+		);
+
+		const container = getScrollContainer();
+		await expect.poll(() => overflowsVertically(container)).toBe(true);
+
+		expect(container.scrollWidth).toBeGreaterThan(container.clientWidth);
+		expect(overflowsVertically(getBody())).toBe(false);
+
+		// The vertical scrollbar belongs to the container, whose right edge is the visible table edge.
+		const root = container.parentElement;
+		if (!(root instanceof HTMLElement)) {
+			throw new Error('Expected the table root');
+		}
+
+		const rootInnerRight =
+			root.getBoundingClientRect().right - Number.parseFloat(getComputedStyle(root).borderRightWidth);
+		expect(Math.abs(container.getBoundingClientRect().right - rootInnerRight)).toBeLessThan(1);
+	});
+
+	it('keeps the header at the top while the body scrolls vertically', async () => {
+		await page.render(
+			<div style={{ width: 900, height: 300 }}>
 				<DsTable columns={columns} data={generatePeople(40)} />
 			</div>,
 		);
 
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
+		const container = getScrollContainer();
+		const headerTop = getHeaderCell('firstName').getBoundingClientRect().top;
 
-		for (const id of fillLeafIds) {
-			expectAligned(id);
-		}
+		container.scrollTop = 400;
+		await expect.poll(() => container.scrollTop).toBe(400);
+
+		expect(getHeaderCell('firstName').getBoundingClientRect().top).toBeCloseTo(headerTop, 0);
 	});
 
-	it('aligns Fill columns when the vertical scrollbar occupies no layout', async () => {
-		await page.render(
-			<>
-				<style>{'tbody { scrollbar-width: none !important; }'}</style>
-				<div style={{ width: 900, height: 400 }}>
-					<DsTable columns={columns} data={generatePeople(40)} />
-				</div>
-			</>,
-		);
-
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
-		expect(getBody().offsetWidth - getBody().clientWidth).toBe(0);
-
-		for (const id of fillLeafIds) {
-			expectAligned(id);
-		}
-	});
-
-	it('paints group and leaf header-row borders through the spacer to the table edge', async () => {
+	it('paints group and leaf header-row borders to the table edge', async () => {
 		await page.render(
 			<div style={{ width: 800, height: 240 }}>
 				<DsTable columns={groupedColumns} data={generateRows(30)} />
 			</div>,
 		);
 
-		await expect.poll(() => getSpacers().length).toBe(2);
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
+		await expect.poll(() => overflowsVertically(getScrollContainer())).toBe(true);
 
 		const tableRight = getTable().getBoundingClientRect().right;
+		const rows = document.querySelectorAll('thead tr');
 
-		for (const spacer of getSpacers()) {
-			expect(getComputedStyle(spacer).borderBottomWidth).not.toBe('0px');
-			expect(Math.abs(spacer.getBoundingClientRect().right - tableRight)).toBeLessThan(2);
+		expect(rows).toHaveLength(2);
+
+		for (const row of rows) {
+			const lastCell = row.lastElementChild;
+			if (!(lastCell instanceof HTMLElement)) {
+				throw new Error('Expected a header cell');
+			}
+
+			expect(getComputedStyle(lastCell).borderBottomWidth).not.toBe('0px');
+			expect(Math.abs(lastCell.getBoundingClientRect().right - tableRight)).toBeLessThan(1);
 		}
 	});
 
-	it('keeps spacer width when bordered is false but does not paint a bottom border', async () => {
-		await page.render(
-			<div style={{ width: 900, height: 400 }}>
-				<DsTable columns={columns} data={generatePeople(40)} bordered={false} />
-			</div>,
-		);
-
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
-		expect(getComputedStyle(getSpacer()).borderBottomWidth).toBe('0px');
-	});
-
-	it('collapses the spacer when the body does not overflow', async () => {
+	it('fills the visible width with the last leaf when the body does not overflow', async () => {
 		await page.render(
 			<div style={{ width: 900, height: 400 }}>
 				<DsTable columns={columns} data={generatePeople(2)} />
 			</div>,
 		);
 
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(0);
+		const container = getScrollContainer();
+		expect(overflowsVertically(container)).toBe(false);
 
 		const lastLeaf = getHeaderCell('progress').getBoundingClientRect();
-		const table = getTable().getBoundingClientRect();
-		expect(Math.abs(lastLeaf.right - table.right)).toBeLessThan(2);
+		expect(Math.abs(lastLeaf.right - contentBoxRight(container))).toBeLessThan(1);
 	});
 
-	it('does not persist when a resizable table gains a vertical scrollbar after seed', async () => {
+	it('does not persist or overflow when a resizable table gains a vertical scrollbar after seed', async () => {
 		const onColumnSizingChange = vi.fn();
 		const fillColumns: ColumnDef<Row>[] = [
 			{ accessorKey: 'firstName', header: 'First Name', cell: (info) => info.getValue() },
@@ -229,13 +225,7 @@ describe('DsTable scrollbar spacer', () => {
 			</div>,
 		);
 
-		await expect
-			.poll(() => {
-				const table = document.querySelector('table');
-				return table instanceof HTMLElement ? table.style.width : '';
-			})
-			.not.toBe('');
-
+		await expect.poll(() => getTable().style.width).not.toBe('');
 		expect(onColumnSizingChange).not.toHaveBeenCalled();
 
 		await rerender(
@@ -249,30 +239,10 @@ describe('DsTable scrollbar spacer', () => {
 			</div>,
 		);
 
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
+		const container = getScrollContainer();
+		await expect.poll(() => overflowsVertically(container)).toBe(true);
+		await expect.poll(() => container.scrollWidth).toBe(container.clientWidth);
 		expect(onColumnSizingChange).not.toHaveBeenCalled();
-		expect(getScrollContainer().scrollWidth).toBe(getScrollContainer().clientWidth);
-	});
-
-	it('keeps the last resize handle on the last leaf, not the spacer', async () => {
-		await page.render(
-			<div style={{ width: 800, height: 400 }}>
-				<DsTable
-					columns={[
-						{ accessorKey: 'firstName', header: 'First Name', cell: (info) => info.getValue(), size: 200 },
-						{ accessorKey: 'lastName', header: 'Last Name', cell: (info) => info.getValue(), size: 200 },
-					]}
-					data={generateRows(40)}
-					resizableColumns
-				/>
-			</div>,
-		);
-
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
-
-		const lastHandle = getHeaderCell('lastName').querySelector('[aria-label="Resize column"]');
-		expect(lastHandle).not.toBeNull();
-		expect(getSpacer().querySelector('[aria-label="Resize column"]')).toBeNull();
 	});
 
 	it('keeps expanded-row chrome off the vertical scrollbar', async () => {
@@ -287,7 +257,7 @@ describe('DsTable scrollbar spacer', () => {
 			</div>,
 		);
 
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
+		await expect.poll(() => overflowsVertically(getScrollContainer())).toBe(true);
 
 		await page.getByRole('button', { name: 'chevron_right' }).nth(0).click();
 		const details = page.getByText('Details for First1');
@@ -298,7 +268,9 @@ describe('DsTable scrollbar spacer', () => {
 			throw new Error('Expected expanded row cell');
 		}
 
-		expect(expandedCell.getBoundingClientRect().right).toBeLessThanOrEqual(contentBoxRight(getBody()) + 1);
+		expect(expandedCell.getBoundingClientRect().right).toBeLessThanOrEqual(
+			contentBoxRight(getScrollContainer()) + 1,
+		);
 	});
 
 	it('keeps an editable last-cell focus ring off the vertical scrollbar', async () => {
@@ -318,9 +290,53 @@ describe('DsTable scrollbar spacer', () => {
 			</div>,
 		);
 
-		await expect.poll(() => getSpacer().getBoundingClientRect().width).toBe(SCROLLBAR_SPACER_WIDTH);
+		await expect.poll(() => overflowsVertically(getScrollContainer())).toBe(true);
 
 		const lastCell = getBodyCell('lastName');
-		expect(lastCell.getBoundingClientRect().right).toBeLessThanOrEqual(contentBoxRight(getBody()) + 1);
+		expect(lastCell.getBoundingClientRect().right).toBeLessThanOrEqual(
+			contentBoxRight(getScrollContainer()) + 1,
+		);
+	});
+
+	it('spans the resize overlay over the visible rows after scrolling down', async () => {
+		await page.render(
+			<div style={{ width: 800, height: 300 }}>
+				<DsTable columns={wideColumns} data={generateRows(40)} resizableColumns />
+			</div>,
+		);
+
+		const container = getScrollContainer();
+		await expect.poll(() => overflowsVertically(container)).toBe(true);
+		container.scrollTop = 600;
+		await expect.poll(() => container.scrollTop).toBe(600);
+
+		const handle = getHeaderCell('firstName').querySelector('[aria-label="Resize column"]');
+		if (!(handle instanceof HTMLElement)) {
+			throw new Error('Expected a resize handle');
+		}
+
+		handle.dispatchEvent(
+			new PointerEvent('pointerover', {
+				bubbles: true,
+				cancelable: true,
+				pointerId: 1,
+				pointerType: 'mouse',
+			}),
+		);
+		handle.dispatchEvent(
+			new PointerEvent('pointerenter', {
+				bubbles: true,
+				cancelable: true,
+				pointerId: 1,
+				pointerType: 'mouse',
+			}),
+		);
+
+		await expect.poll(() => document.querySelector('[data-resize-overlay]')).not.toBeNull();
+		const overlay = document.querySelector('[data-resize-overlay]')?.getBoundingClientRect();
+		const visible = container.getBoundingClientRect();
+
+		expect(overlay?.top).toBeCloseTo(visible.top, 0);
+		expect(overlay?.height).toBeCloseTo(container.clientHeight, 0);
 	});
 });

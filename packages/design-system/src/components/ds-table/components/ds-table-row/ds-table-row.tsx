@@ -9,7 +9,8 @@ import type { DsTableRowProps } from './ds-table-row.types';
 import styles from './ds-table-row.module.scss';
 import { useDsTableContext } from '../../context/ds-table-context';
 import { mergeRefs } from '../../../../utils/merge-refs';
-import { getBodyCellSizeStyle, isExplicitColumnWidth } from '../../utils/column-size';
+import { isEditingCell } from '../../utils/editing';
+import { getBodyCellLayoutProps, type BodyCellLayoutProps } from '../../utils/sticky-columns';
 import { isFirstLeafColumnOfGroup } from '../../grouping';
 import { EXPANDER_COLUMN_ID, REORDER_COLUMN_ID, SELECT_COLUMN_ID } from '../../utils/constants';
 
@@ -18,11 +19,19 @@ interface DsRowDragHandleProps {
 	attributes: ReturnType<typeof useSortable>['attributes'];
 	listeners: ReturnType<typeof useSortable>['listeners'];
 	style?: React.CSSProperties;
+	stickyAttributes?: BodyCellLayoutProps['stickyAttributes'];
 }
 
-const DsRowDragHandle = ({ isDragging, attributes, listeners, style }: DsRowDragHandleProps) => {
+const DsRowDragHandle = ({
+	isDragging,
+	attributes,
+	listeners,
+	style,
+	stickyAttributes,
+}: DsRowDragHandleProps) => {
 	return (
 		<TableCell
+			{...stickyAttributes}
 			className={classnames(styles.tableCell, styles.cellReorder, {
 				[styles.isDragging]: isDragging,
 			})}
@@ -51,6 +60,7 @@ const DsTableRow = <TData,>({ ref, row, isSelected }: DsTableRowProps<TData>) =>
 		activeRowId,
 		loading,
 		resizeSizingReady,
+		editing,
 	} = useDsTableContext<TData, unknown>();
 	const isExpanded = row.getIsExpanded();
 	const isActive = activeRowId === row.id;
@@ -97,13 +107,7 @@ const DsTableRow = <TData,>({ ref, row, isSelected }: DsTableRowProps<TData>) =>
 				onDoubleClick={() => onRowDoubleClick?.(row.original)}
 			>
 				{row.getVisibleCells().map((cell) => {
-					const columnSizing = cell.getContext().table.getState().columnSizing;
-					const cellStyle = getBodyCellSizeStyle(
-						cell.column.id,
-						cell.column.getSize(),
-						isExplicitColumnWidth(cell.column, resizeSizingReady ? columnSizing : {}),
-						!!resizeSizingReady,
-					);
+					const { style: cellStyle, stickyAttributes } = getBodyCellLayoutProps(cell, !!resizeSizingReady);
 
 					if (cell.column.id === REORDER_COLUMN_ID) {
 						return (
@@ -113,6 +117,7 @@ const DsTableRow = <TData,>({ ref, row, isSelected }: DsTableRowProps<TData>) =>
 								attributes={attributes}
 								listeners={listeners}
 								style={cellStyle}
+								stickyAttributes={stickyAttributes}
 							/>
 						);
 					}
@@ -128,6 +133,8 @@ const DsTableRow = <TData,>({ ref, row, isSelected }: DsTableRowProps<TData>) =>
 								typeof cell.column.columnDef.editCell === 'function' && styles.editableCell,
 							)}
 							style={cellStyle}
+							{...stickyAttributes}
+							data-editing={isEditingCell(editing, cell) || undefined}
 						>
 							<DsTableCell row={row} cell={cell} />
 						</TableCell>
@@ -138,7 +145,7 @@ const DsTableRow = <TData,>({ ref, row, isSelected }: DsTableRowProps<TData>) =>
 			{isExpanded && renderExpandedRow && (
 				<TableRow className={styles.expandedRow}>
 					<TableCell colSpan={row.getVisibleCells().length} className={styles.tableCell}>
-						{renderExpandedRow(row.original)}
+						<div data-expanded-content>{renderExpandedRow(row.original)}</div>
 					</TableCell>
 				</TableRow>
 			)}

@@ -2,7 +2,6 @@ import { createContext, useContext, useMemo, type ReactNode, type RefObject } fr
 import type { DsDataTableProps, DsTableRowSize } from '../ds-table.types';
 import type { DsTablePropsWithDefaults } from '../ds-table-defaults';
 import type { DsTableResizeContextSlice } from '../hooks/use-column-resize';
-import type { ScrollbarSpacerWidth } from '../hooks/use-scrollbar-spacer';
 import { useEditingState, type UseEditingStateResult } from '../hooks/use-editing-state';
 
 /** Visual phase of the full-height column-resize divider. */
@@ -29,10 +28,11 @@ export interface DsTableContextType<TData, TValue>
 	 */
 	onToggleColumnGroup?: (groupId: string) => void;
 	/**
-	 * Ref to the scroll container, used to anchor the full-height resize drag
-	 * indicator and to measure boundary offsets while resizing.
+	 * Ref to the table scroll container (both axes). Anchors the full-height
+	 * resize drag indicator, measures boundary offsets while resizing, and is the
+	 * virtualizer's scroll element.
 	 */
-	resizeContainerRef?: RefObject<HTMLDivElement | null>;
+	scrollContainerRef: RefObject<HTMLDivElement | null>;
 	/**
 	 * True once every visible leaf has a `columnSizing` entry (snapshotted or
 	 * user-resized), so cells should read widths from CSS variables.
@@ -57,10 +57,6 @@ export interface DsTableContextType<TData, TValue>
 	 * boundary header's column (leaf or group). Clamps and fires persist.
 	 */
 	onResizeKeyboardNudge?: (columnId: string, delta: number) => void;
-	/**
-	 * Overflow-only **Scrollbar spacer** width (0 or rest scrollbar size).
-	 */
-	scrollbarSpacerWidth: ScrollbarSpacerWidth;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -124,12 +120,11 @@ export const DsTableContextProvider = <TData, TValue>({
 	const {
 		resizableColumns,
 		resizeSizingReady,
-		resizeContainerRef,
+		scrollContainerRef,
 		onResizeHover,
 		onResizeDragStart,
 		onResizeReset,
 		onResizeKeyboardNudge,
-		scrollbarSpacerWidth,
 	} = derived.resize;
 
 	const { editing, beginEdit, setDraft, commit, cancel } = useEditingState<TData, TValue>(
@@ -161,12 +156,11 @@ export const DsTableContextProvider = <TData, TValue>({
 			onCellEdit,
 			resizableColumns,
 			resizeSizingReady,
-			resizeContainerRef,
+			scrollContainerRef,
 			onResizeHover,
 			onResizeDragStart,
 			onResizeReset,
 			onResizeKeyboardNudge,
-			scrollbarSpacerWidth,
 			editing,
 			beginEdit,
 			setDraft,
@@ -196,12 +190,11 @@ export const DsTableContextProvider = <TData, TValue>({
 			onCellEdit,
 			resizableColumns,
 			resizeSizingReady,
-			resizeContainerRef,
+			scrollContainerRef,
 			onResizeHover,
 			onResizeDragStart,
 			onResizeReset,
 			onResizeKeyboardNudge,
-			scrollbarSpacerWidth,
 			editing,
 			beginEdit,
 			setDraft,

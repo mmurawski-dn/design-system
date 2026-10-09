@@ -29,7 +29,7 @@ import {
 } from '../utils/column-size';
 import { BUILTIN_COLUMN_IDS, RESIZE_DIVIDER_WIDTH, RESIZE_MIN_COLUMN_WIDTH } from '../utils/constants';
 import type { DsTableResizePhase } from '../context/ds-table-context';
-import { useScrollbarSpacer, type ScrollbarSpacerWidth } from './use-scrollbar-spacer';
+import { useVerticalScrollbarWidth } from './use-vertical-scrollbar-width';
 
 const TRACK_MATCH_PX = 3;
 
@@ -65,10 +65,6 @@ export interface UseColumnResizeOptions {
 	columns: unknown;
 	columnVisibility: VisibilityState;
 	/**
-	 * Invalidates overflow measurement (row count). Read as a dependency only.
-	 */
-	overflowKey: number;
-	/**
 	 * Authored widths for injected utility leaves. Overlaid last so they win
 	 * over persist seed and live internal state.
 	 */
@@ -78,7 +74,7 @@ export interface UseColumnResizeOptions {
 export interface DsTableResizeContextSlice {
 	resizableColumns: boolean;
 	resizeSizingReady: boolean;
-	resizeContainerRef: RefObject<HTMLDivElement | null>;
+	scrollContainerRef: RefObject<HTMLDivElement | null>;
 	onResizeHover: (columnId: string | null, offset: number | null) => void;
 	onResizeDragStart: (offset: number) => void;
 	onResizeReset: (columnIds: string[]) => void;
@@ -88,10 +84,6 @@ export interface DsTableResizeContextSlice {
 	 * the persist callback, mirroring drag end.
 	 */
 	onResizeKeyboardNudge: (columnId: string, delta: number) => void;
-	/**
-	 * Overflow-only **Scrollbar spacer** width (0 or rest scrollbar size).
-	 */
-	scrollbarSpacerWidth: ScrollbarSpacerWidth;
 }
 
 export interface UseColumnResizeActiveResize {
@@ -120,7 +112,6 @@ export interface UseColumnResizeResult {
 		columnSizingInfo: ColumnSizingInfoState;
 	};
 	bind: <TData>(table: Table<TData>) => UseColumnResizeBindResult;
-	scrollbarSpacerWidth: ScrollbarSpacerWidth;
 }
 
 /**
@@ -137,7 +128,6 @@ export const useColumnResize = ({
 	onColumnSizingChange,
 	columns,
 	columnVisibility,
-	overflowKey,
 	utilityColumnSizing,
 }: UseColumnResizeOptions): UseColumnResizeResult => {
 	const [columnResizeState, setColumnResizeState] = useState<{
@@ -168,10 +158,8 @@ export const useColumnResize = ({
 	const dragStartOffsetRef = useRef<number | null>(null);
 	const resizeOriginSizingRef = useRef<ColumnSizingState>({});
 	const containerRef = useRef<HTMLDivElement>(null);
-	const scrollbarSpacerWidth = useScrollbarSpacer(containerRef, overflowKey);
-	const spacerWidthRef = useRef(scrollbarSpacerWidth);
-	spacerWidthRef.current = scrollbarSpacerWidth;
-	const prevSpacerWidthRef = useRef<ScrollbarSpacerWidth | null>(null);
+	const verticalScrollbarWidth = useVerticalScrollbarWidth(containerRef);
+	const prevScrollbarWidthRef = useRef<number | null>(null);
 	const utilityTrackWidth = Object.values(utilityColumnSizing ?? {}).reduce((sum, size) => sum + size, 0);
 	const utilityTrackWidthRef = useRef(utilityTrackWidth);
 	utilityTrackWidthRef.current = utilityTrackWidth;
@@ -308,7 +296,7 @@ export const useColumnResize = ({
 			consumerTotal += columnSizingRef.current[id] ?? 0;
 		}
 
-		const track = container.clientWidth - spacerWidthRef.current;
+		const track = container.clientWidth;
 
 		if (Math.abs(consumerTotal + prevUtilityTrackWidth - track) > TRACK_MATCH_PX) {
 			return;
@@ -325,7 +313,7 @@ export const useColumnResize = ({
 	}, [enabled, utilityTrackWidth, handleColumnSizingChange]);
 
 	useLayoutEffect(() => {
-		prevSpacerWidthRef.current = null;
+		prevScrollbarWidthRef.current = null;
 
 		if (!enabled) {
 			return;
@@ -353,7 +341,8 @@ export const useColumnResize = ({
 			const fillableIds = leaves
 				.filter((column) => !isExplicitColumnWidth(column, {}))
 				.map((column) => column.id);
-			const trackWidth = container.clientWidth - spacerWidthRef.current;
+			// `clientWidth` excludes a vertical scrollbar that takes layout space.
+			const trackWidth = container.clientWidth;
 			const missing = collectMissingLeafSizing(measured, columnSizingRef.current, trackWidth, fillableIds);
 
 			for (const column of leaves) {
@@ -385,7 +374,7 @@ export const useColumnResize = ({
 				}));
 			}
 
-			prevSpacerWidthRef.current = spacerWidthRef.current;
+			prevScrollbarWidthRef.current = container.offsetWidth - container.clientWidth;
 			prevUtilityTrackWidthRef.current = utilityTrackWidthRef.current;
 
 			return true;
@@ -406,18 +395,18 @@ export const useColumnResize = ({
 	}, [enabled, columns, columnVisibility, handleColumnSizingChange]);
 
 	// After seed, a vertical scrollbar can appear or disappear (Infinite Scroll,
-	// filter, shorter viewport). The **Scrollbar spacer** then toggles 0↔10px.
-	// Shrink or grow the column track by that delta so leaves + spacer still
-	// fill the container — internally only, never via onColumnSizingChange.
-	// Skip when the leaves were not filling the previous track (already
-	// overflowing horizontally) so authored-wide columns are left alone.
+	// filter, shorter viewport) and change the scroll container's `clientWidth`.
+	// Shrink or grow the column track by that delta so the leaves still fill the
+	// container — internally only, never via onColumnSizingChange. Skip when the
+	// leaves were not filling the previous track (already overflowing
+	// horizontally) so authored-wide columns are left alone.
 	useLayoutEffect(() => {
 		if (!enabled) {
 			return;
 		}
 
-		const prevSpacerWidth = prevSpacerWidthRef.current;
-		if (prevSpacerWidth === null || prevSpacerWidth === scrollbarSpacerWidth) {
+		const prevScrollbarWidth = prevScrollbarWidthRef.current;
+		if (prevScrollbarWidth === null || prevScrollbarWidth === verticalScrollbarWidth) {
 			return;
 		}
 
@@ -434,18 +423,18 @@ export const useColumnResize = ({
 			leafTotal += columnSizingRef.current[id] ?? 0;
 		}
 
-		const prevTrack = container.clientWidth - prevSpacerWidth;
-		prevSpacerWidthRef.current = scrollbarSpacerWidth;
+		const delta = prevScrollbarWidth - verticalScrollbarWidth;
+		const prevTrack = container.clientWidth - delta;
+		prevScrollbarWidthRef.current = verticalScrollbarWidth;
 
 		if (Math.abs(leafTotal - prevTrack) > TRACK_MATCH_PX) {
 			return;
 		}
 
-		const delta = prevSpacerWidth - scrollbarSpacerWidth;
 		handleColumnSizingChange(
 			shiftColumnTrack(columnSizingRef.current, leafIds, delta, leafSizeBoundsRef.current),
 		);
-	}, [enabled, scrollbarSpacerWidth, handleColumnSizingChange]);
+	}, [enabled, verticalScrollbarWidth, handleColumnSizingChange]);
 
 	const tableOptions = useMemo<UseColumnResizeTableOptions>(
 		() => ({
@@ -473,7 +462,7 @@ export const useColumnResize = ({
 		const columnSizeVars: CSSProperties | undefined = resizeSizingReady
 			? {
 					...getColumnSizeCssVars(table.getFlatHeaders()),
-					width: table.getTotalSize() + scrollbarSpacerWidth,
+					width: table.getTotalSize(),
 				}
 			: undefined;
 
@@ -484,12 +473,11 @@ export const useColumnResize = ({
 				context: {
 					resizableColumns: false,
 					resizeSizingReady: false,
-					resizeContainerRef: containerRef,
+					scrollContainerRef: containerRef,
 					onResizeHover: handleResizeHover,
 					onResizeDragStart: handleResizeDragStart,
 					onResizeReset: handleResizeReset,
 					onResizeKeyboardNudge: handleResizeKeyboardNudge,
-					scrollbarSpacerWidth,
 				},
 			};
 		}
@@ -521,12 +509,11 @@ export const useColumnResize = ({
 			context: {
 				resizableColumns: enabled,
 				resizeSizingReady,
-				resizeContainerRef: containerRef,
+				scrollContainerRef: containerRef,
 				onResizeHover: handleResizeHover,
 				onResizeDragStart: handleResizeDragStart,
 				onResizeReset: handleResizeReset,
 				onResizeKeyboardNudge: handleResizeKeyboardNudge,
-				scrollbarSpacerWidth,
 			},
 		};
 	};
@@ -538,6 +525,5 @@ export const useColumnResize = ({
 			columnSizingInfo,
 		},
 		bind,
-		scrollbarSpacerWidth,
 	};
 };

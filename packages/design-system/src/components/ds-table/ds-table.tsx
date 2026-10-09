@@ -3,6 +3,7 @@ import { useImperativeHandle, useMemo } from 'react';
 import {
 	type RowSelectionState,
 	type ColumnFiltersState,
+	type ColumnPinningState,
 	getCoreRowModel,
 	getExpandedRowModel,
 	getFilteredRowModel,
@@ -18,12 +19,13 @@ import { DsBulkActions } from '../ds-bulk-actions';
 import { DsTableHeader } from './components/ds-table-header';
 import { DsTableResizeOverlay } from './components/ds-table-resize-overlay';
 import styles from './ds-table.module.scss';
-import type { DsDataTableProps, DsTableRowSize } from './ds-table.types';
+import type { DsDataTableProps, DsTableRowSize, DsTableStickyColumns } from './ds-table.types';
 import { applyDsTableDefaults } from './ds-table-defaults';
 import { DsTableRow } from './components/ds-table-row';
 import { useDragAndDrop } from './hooks/use-drag-and-drop';
 import { useColumnResize } from './hooks/use-column-resize';
 import { useTableVisibleWidth } from './hooks/use-table-visible-width';
+import { useStickyScrollState } from './hooks/use-sticky-scroll-state';
 import { DsTableContextProvider } from './context/ds-table-context';
 import { DsTableBodyVirtualized } from './components/ds-table-body-virtualized';
 import { useColumnGroups } from './grouping';
@@ -32,6 +34,7 @@ import { getRowActionsColumnWidth, getUtilityColumnSizing } from './utils/column
 import { createSkeletonRows, getAugmentedColumns, toSkeletonColumns } from './utils/table-columns';
 import { createTableApi } from './utils/table-api';
 import { areBodiesFrozen } from './utils/frozen-body';
+import { resolveColumnPinning, toStickyColumns } from './utils/sticky-columns';
 
 // Row size to pixel height mapping (matches CSS variables)
 const ROW_SIZE_HEIGHT_MAP: Record<DsTableRowSize, number> = {
@@ -82,11 +85,14 @@ const DsTable = <TData extends { id: string }, TValue>(props: DsDataTableProps<T
 		reorderableColumnWidth,
 		primaryRowActions,
 		secondaryRowActions,
+		stickyColumns: externalStickyColumns,
+		onStickyColumnsChange,
 	} = tableProps;
 	const [data, setData] = React.useState(tableData);
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [internalColumnFilters, setInternalColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [internalColumnVisibility, setInternalColumnVisibility] = React.useState<VisibilityState>({});
+	const [internalStickyColumns, setInternalStickyColumns] = React.useState<DsTableStickyColumns>({});
 	const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
 	const { DragWrapper, SortableWrapper } = useDragAndDrop<TData>({
@@ -186,6 +192,21 @@ const DsTable = <TData extends { id: string }, TValue>(props: DsDataTableProps<T
 		],
 	);
 
+	const stickyColumns = externalStickyColumns ?? internalStickyColumns;
+	const columnPinning = useMemo(
+		() => resolveColumnPinning(stickyColumns, columnsProp),
+		[stickyColumns, columnsProp],
+	);
+	const handleColumnPinningChange = (
+		updaterOrValue: ColumnPinningState | ((old: ColumnPinningState) => ColumnPinningState),
+	) => {
+		const nextPinning = typeof updaterOrValue === 'function' ? updaterOrValue(columnPinning) : updaterOrValue;
+		const nextStickyColumns = toStickyColumns(nextPinning, stickyColumns, columnsProp);
+
+		setInternalStickyColumns(nextStickyColumns);
+		onStickyColumnsChange?.(nextStickyColumns);
+	};
+
 	const skeletonColumns = useMemo(() => toSkeletonColumns(columns), [columns]);
 	const skeletonData = useMemo(() => createSkeletonRows<TData>(), []);
 	const utilityColumnSizing = useMemo(() => getUtilityColumnSizing(columns), [columns]);
@@ -202,7 +223,6 @@ const DsTable = <TData extends { id: string }, TValue>(props: DsDataTableProps<T
 		onColumnSizingChange,
 		columns,
 		columnVisibility,
-		overflowKey: (reorderable ? data : tableData).length,
 		utilityColumnSizing,
 	});
 
@@ -215,6 +235,7 @@ const DsTable = <TData extends { id: string }, TValue>(props: DsDataTableProps<T
 		onColumnFiltersChange: handleColumnFiltersChange, // TODO: looks like this is not used, since filters are handled from the outside
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: handleColumnVisibilityChange, // TODO: looks like this is not used, since visibility is handled from the outside
+		onColumnPinningChange: handleColumnPinningChange,
 		onRowSelectionChange: handleRowSelectionChange,
 		getRowId: (row) => row.id,
 		getExpandedRowModel: getExpandedRowModel(),
@@ -224,6 +245,7 @@ const DsTable = <TData extends { id: string }, TValue>(props: DsDataTableProps<T
 			sorting,
 			columnFilters,
 			columnVisibility,
+			columnPinning,
 			rowSelection,
 			...resize.state,
 		},
@@ -232,7 +254,8 @@ const DsTable = <TData extends { id: string }, TValue>(props: DsDataTableProps<T
 
 	const { columnSizeVars, activeResize, context: resizeContext } = resize.bind(table);
 
-	useTableVisibleWidth(resizeContext.resizeContainerRef);
+	useTableVisibleWidth(resizeContext.scrollContainerRef);
+	useStickyScrollState(resizeContext.scrollContainerRef);
 
 	useImperativeHandle(ref, () => createTableApi(table), [table]);
 
@@ -261,7 +284,7 @@ const DsTable = <TData extends { id: string }, TValue>(props: DsDataTableProps<T
 			>
 				{controls && <div className={styles.controls}>{controls}</div>}
 				<div
-					ref={resizeContext.resizeContainerRef}
+					ref={resizeContext.scrollContainerRef}
 					className={classnames(
 						!virtualized && styles.dataTableContainer,
 						virtualized && styles.virtualizedContainer,

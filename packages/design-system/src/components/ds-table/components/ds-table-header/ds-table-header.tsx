@@ -8,6 +8,7 @@ import type { DsTableHeaderProps } from './ds-table-header.types';
 import { useDsTableContext } from '../../context/ds-table-context';
 import { getHeaderCellSizeStyle, isExplicitColumnWidth } from '../../utils/column-size';
 import { SELECT_COLUMN_ID } from '../../utils/constants';
+import { getStickyCellProps, isStickyCell } from '../../utils/sticky-columns';
 import { DsStack } from '../../../ds-stack';
 import { DsTableColumnFilterPopover } from '../../filters/components/column-filter-popover';
 import type { ResolvedColumnFilter } from '../../filters/types/filter-adapter.types';
@@ -17,8 +18,7 @@ import { DsTableResizeHandle } from '../ds-table-resize-handle';
 import { isFirstLeafColumnOfGroup } from '../../grouping';
 
 const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
-	const { bordered, virtualized, resizableColumns, resizeSizingReady, scrollbarSpacerWidth } =
-		useDsTableContext<TData, unknown>();
+	const { bordered, virtualized, resizableColumns, resizeSizingReady } = useDsTableContext<TData, unknown>();
 
 	return (
 		<TableHeader className={classnames(styles.header, virtualized && styles.virtualizedHeader)}>
@@ -33,18 +33,32 @@ const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 				>
 					{headerGroup.headers.map((header) => {
 						const columnSizing = table.getState().columnSizing;
+						const { style: stickyStyle, ...stickyAttributes } = getStickyCellProps(
+							table,
+							header.column
+								.getLeafColumns()
+								.filter((leaf) => leaf.getIsVisible())
+								.map((leaf) => leaf.id),
+							!!resizeSizingReady,
+						);
+						// Sticky offsets need real widths, so sticky fill columns take their size.
+						const isSticky = isStickyCell(stickyAttributes);
 
 						if (header.isPlaceholder) {
 							return (
 								<TableHead
 									key={header.id}
 									className={styles.headerCell}
-									style={getHeaderCellSizeStyle(
-										header.id,
-										header.getSize(),
-										isExplicitColumnWidth(header.column, resizeSizingReady ? columnSizing : {}),
-										!!resizeSizingReady,
-									)}
+									style={{
+										...getHeaderCellSizeStyle(
+											header.id,
+											header.getSize(),
+											isExplicitColumnWidth(header.column, resizeSizingReady ? columnSizing : {}) || isSticky,
+											!!resizeSizingReady,
+										),
+										...stickyStyle,
+									}}
+									{...stickyAttributes}
 								/>
 							);
 						}
@@ -53,12 +67,15 @@ const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 							return <DsTableGroupHeaderCell key={header.id} header={header} />;
 						}
 
-						const headerStyle = getHeaderCellSizeStyle(
-							header.id,
-							header.column.getSize(),
-							isExplicitColumnWidth(header.column, resizeSizingReady ? columnSizing : {}),
-							!!resizeSizingReady,
-						);
+						const headerStyle = {
+							...getHeaderCellSizeStyle(
+								header.id,
+								header.column.getSize(),
+								isExplicitColumnWidth(header.column, resizeSizingReady ? columnSizing : {}) || isSticky,
+								!!resizeSizingReady,
+							),
+							...stickyStyle,
+						};
 						const canSort = header.column.getCanSort();
 						const sortDirection = header.column.getIsSorted();
 						const canResize = resizableColumns && header.column.getCanResize();
@@ -86,6 +103,7 @@ const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 								)}
 								onClick={header.column.getToggleSortingHandler()}
 								style={headerStyle}
+								{...stickyAttributes}
 							>
 								<div className={styles.headerSortContainer}>
 									<DsStack
@@ -123,19 +141,6 @@ const DsTableHeader = <TData,>({ table }: DsTableHeaderProps<TData>) => {
 							</TableHead>
 						);
 					})}
-					<TableHead
-						aria-hidden
-						className={classnames(
-							styles.headerCell,
-							styles.scrollbarSpacer,
-							scrollbarSpacerWidth > 0 && styles.scrollbarSpacerOccupied,
-						)}
-						style={{
-							width: scrollbarSpacerWidth,
-							minWidth: scrollbarSpacerWidth,
-							flexShrink: 0,
-						}}
-					/>
 				</TableRow>
 			))}
 		</TableHeader>

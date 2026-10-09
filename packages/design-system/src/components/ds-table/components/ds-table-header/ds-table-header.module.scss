@@ -2,8 +2,10 @@
 @use '../../styles/variables' as vars;
 
 .header {
+	// Clip the last resize handle's overhang without making the header a scroll
+	// container, which would break its sticky cells.
+	overflow-x: clip;
 	background-color: var(--background-secondary);
-	overflow: hidden;
 }
 
 .virtualizedHeader {
@@ -13,10 +15,6 @@
 .headerRow {
 	.headerCell {
 		border-bottom: 1px solid var(--color-dap-gray-400);
-	}
-
-	.scrollbarSpacer:not(.scrollbarSpacerOccupied) {
-		border-bottom: none;
 	}
 
 	&.headerRowNoBorder {
@@ -57,14 +55,6 @@
 			transition: transform 0.2s ease-in-out;
 		}
 	}
-}
-
-.scrollbarSpacer {
-	flex-shrink: 0;
-	padding: 0;
-	overflow: hidden;
-	border-left: none;
-	pointer-events: none;
 }
 
 .selectHeaderCell {
